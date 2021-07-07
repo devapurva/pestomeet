@@ -22,5 +22,5 @@ const userSchema = new mongoose.Schema<iuser>({
   approval:{type:String,require:true}
 });
 
-
-export default userSchema;
+const userModel = mongoose.model("userModel",userSchema);
+export default userModel;

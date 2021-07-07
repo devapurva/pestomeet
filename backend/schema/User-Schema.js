@@ -9,4 +9,5 @@ const userSchema = new mongoose.Schema({
     experience: { type: String, require: true },
     approval: { type: String, require: true }
 });
-export default userSchema;
+const userModel = mongoose.model("userModel", userSchema);
+export default userModel;

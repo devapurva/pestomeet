@@ -35,5 +35,13 @@
     "type": "module"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devapurva/pestomeet.git"
+  },
+  "bugs": {
+    "url": "https://github.com/devapurva/pestomeet/issues"
+  },
+  "homepage": "https://github.com/devapurva/pestomeet#readme"
 }

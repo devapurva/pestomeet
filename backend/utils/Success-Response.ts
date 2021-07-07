@@ -1,4 +1,4 @@
- export const success = (message:any,result:any,statusCode:any)=>{
+ export const pass = (message:any,result:any,statusCode:any)=>{
     return({
         "message":message,
         "result":result,
@@ -6,7 +6,7 @@
     })
  }
 
- export const error = (message:any,result:any,statusCode:any)=>{
+ export const fail = (message:any,result:any,statusCode:any)=>{
     return({
         "message":message,
         "result":result,
