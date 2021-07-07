@@ -1,0 +1,86 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "plugin:jsx-a11y/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "error",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/media-has-caption": "off",
+    "jsx-a11y/no-autofocus": "off",
+    "no-unused-expressions": "warn",
+    "prefer-const": "warn",
+    "no-var": "warn",
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "global-require": "off",
+    "no-alert": "off",
+    "react/react-in-jsx-scope": "off",
+    "consistent-return": "off",
+    "react/jsx-no-target-blank": "off",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".tsx"
+        ]
+      }
+    ],
+    "react-hooks/exhaustive-deps": "warn",
+    "eqeqeq": "warn",
+    "prefer-destructuring": [
+      "warn",
+      {
+        "array": false,
+        "object": true
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ],
+    "import/first": "error",
+    "import/order": "error",
+    "import/exports-last": "error",
+    "import/no-duplicates": "error",
+    "import/newline-after-import": "error",
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error",
+          "info"
+        ]
+      }
+    ]
+  },
+  "plugins": [
+    "react",
+    "import",
+    "react-hooks",
+    "@typescript-eslint"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

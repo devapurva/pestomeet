@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    // JS Language plugins (~required)
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "jpoissonnier.vscode-styled-components"
+  ]
+}
