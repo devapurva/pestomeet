@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import EditUser from '../../schema/User-Schema.js';
+import EditUser from '../../schema/user-schema.js';
 import { validationResult } from 'express-validator';
-import { pass, fail } from '../../utils/Success-Response.js';
+import { pass, fail } from '../../utils/success-response.js';
 const ApprovalController = (request, response) => {
     let { name, email, phone, role, experience, approval } = request.body;
     let id = request.params.id;

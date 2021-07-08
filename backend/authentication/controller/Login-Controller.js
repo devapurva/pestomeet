@@ -2,15 +2,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import registerUser from '../../schema/User-Schema.js';
-import { pass, fail } from '../../utils/Success-Response.js';
+import registerUser from '../../schema/user-schema.js';
+import { pass, fail } from '../../utils/success-response.js';
 const users = [];
 const LoginController = (request, response) => {
     const { email, phone, password } = request.body;
-    registerUser.findOne({ $or: [{ 'email': email.toLowerCase() }, { 'phone': phone }] }, function (error, result) {
+    registerUser.findOne({ $and: [
+            { $or: [{ 'email': email.toLowerCase() }, { 'phone': phone }] },
+            { 'approval': process.env.APPROVED }
+        ] }, function (error, result) {
         if (!error) {
             if (!result) {
-                response.json(fail("User is not registered with us", null, 400));
+                response.json(fail("User is not registered / Activated ", null, 400));
             }
             else if (bcrypt.compareSync(password, result.password)) {
                 console.log("JWT Token Created");

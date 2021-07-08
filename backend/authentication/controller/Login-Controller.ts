@@ -3,17 +3,21 @@ dotenv.config()
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt, { Secret } from 'jsonwebtoken'
-import registerUser from '../../schema/User-Schema.js'
-import { pass,fail } from '../../utils/Success-Response.js'
+import registerUser from '../../schema/user-schema.js'
+import { pass,fail } from '../../utils/success-response.js'
 
 
 const users =[];
 const LoginController =(request:any,response:any)=>{
   const {email,phone,password} = request.body;
-registerUser.findOne({$or:[{'email':email.toLowerCase()},{'phone':phone}]},function(error:any,result:any){
+registerUser.findOne({$and:[
+                              {$or:[{'email':email.toLowerCase()},{'phone':phone}]},
+                              {'approval':process.env.APPROVED}
+                          ]},
+                              function(error:any,result:any){
     if(!error){
       if(!result){
-        response.json(fail("User is not registered with us",null,400))
+        response.json(fail("User is not registered / Activated ",null,400))
       }else if(bcrypt.compareSync(password, result.password)){
            console.log("JWT Token Created")
            console.log(result)

@@ -1,7 +1,7 @@
 import dotenv from'dotenv'
 dotenv.config()
-import listUser from '../../schema/User-Schema.js'
-import { pass,fail } from '../../utils/Success-Response.js'
+import listUser from '../../schema/user-schema.js'
+import { pass,fail } from '../../utils/success-response.js'
 
 
 const ListuserController =(request:any,response:any)=>{
@@ -17,7 +17,7 @@ const ListuserController =(request:any,response:any)=>{
         }else{
             response.json(fail("Error while reteriving user",errors,400))
         }
-    })
+    }).select("-password").select("-_id")
     
 }
 

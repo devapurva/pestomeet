@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import DeleteUser from '../../schema/User-Schema.js';
-import { pass, fail } from '../../utils/Success-Response.js';
+import DeleteUser from '../../schema/user-schema.js';
+import { pass, fail } from '../../utils/success-response.js';
 const DeleteuserController = (request, response) => {
     const id = request.params.id;
     DeleteUser.findOneAndDelete({ "id": id }, {}, function (errors, docs) {

@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import registerUser from '../../schema/User-Schema.js';
+import registerUser from '../../schema/user-schema.js';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { validationResult } from 'express-validator';
-import { pass, fail } from '../../utils/Success-Response.js';
+import { pass, fail } from '../../utils/success-response.js';
 var id = uuidv4();
 const RegisterController = (reqest, response) => {
     const { name, email, phone, password, role, experience, approval } = reqest.body;
