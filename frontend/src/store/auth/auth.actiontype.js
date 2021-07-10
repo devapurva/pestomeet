@@ -11,3 +11,6 @@ export const authActionTypes = {
     REGISTER_FAIL: "REGISTER_FAIL",
     LOGOUT: "LOGOUT",
 };
+
+// prefix for all action type's values
+// @@PESTOMEET__

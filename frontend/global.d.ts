@@ -7,6 +7,8 @@
 // - Buddy-Pairing
 // - Mentor-Student Pairing
 
+import { ComponentType } from "react";
+import { RouteComponentProps } from "react-router-dom";
 import { Store } from "redux";
 import { Persistor } from "redux-persist/es/types";
 
