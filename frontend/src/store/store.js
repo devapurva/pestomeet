@@ -1,13 +1,13 @@
 import { applyMiddleware, compose, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { persistStore } from "redux-persist";
-import logger from "redux-logger";
-import { HTTPClient } from "../service";
+// import logger from "redux-logger";
+import { HTTPClient } from "../services";
 
 import RootReducer from "./root.reducer";
 import RootSaga from "./root.saga";
 
-import { appConst_init } from "./appStore/appStore.action";
+// import { appConst_init } from "./appStore/appStore.action";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -31,7 +31,7 @@ export const persistor = persistStore(store, {}, () => {
             key: "Authorization",
             value: `Bearer ${auth.authToken}`,
         });
-        store.dispatch(appConst_init());
+        // store.dispatch(appConst_init());
     }
 });
 

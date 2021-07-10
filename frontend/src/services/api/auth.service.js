@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { HTTPClient } from "./http.service";
 
 export const authService = {
