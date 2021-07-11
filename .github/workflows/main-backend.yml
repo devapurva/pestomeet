@@ -2,9 +2,8 @@ name: Deploy Backend to Heroku
 
 on:
   push:
-    branches: [ main, staging ]
-      tags:
-        - "v*"
+    tags:
+      - "v*"
 
 jobs:
   build:
