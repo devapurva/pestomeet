@@ -1,4 +1,4 @@
-import { ILogin, IRegister } from "../../../global";
+import { IError, ILogin, IRegister } from "../../../global";
 import { authActionTypes } from "./auth.actiontype";
 
 export const loginStart = (emailAndPassoword: ILogin) => ({
@@ -11,7 +11,7 @@ export const loginSucess = (userData: ILogin) => ({
     payload: { userData },
 });
 
-export const loginFail = (error) => ({
+export const loginFail = (error: IError) => ({
     type: authActionTypes.LOGIN_FAIL,
     payload: error,
 });
@@ -20,27 +20,27 @@ export const logoutStart = () => ({
     type: authActionTypes.LOGOUT_INIT,
 });
 
-export const frtPass_SendEmail = (email: string) => ({
+export const frtPassSendEmail = (email: string) => ({
     type: authActionTypes.FRGTPASS_EMAILINIT,
     payload: email,
 });
 
-export const frtPass_EmailSuccess = () => ({
+export const frtPassEmailSuccess = () => ({
     type: authActionTypes.FRGTPASS_EMAILSUCCESS,
 });
 
-export const frtPass_EmailError = () => ({
+export const frtPassEmailError = () => ({
     type: authActionTypes.FRGTPASS_EMAILFAIL,
 });
 
-export const register_start = (userData: IRegister) => ({
+export const registerStart = (userData: IRegister) => ({
     type: authActionTypes.REGISTER_INIT,
     payload: userData,
 });
-export const register_success = () => ({
+export const registerSuccess = () => ({
     type: authActionTypes.REGISTER_SUCCESS,
 });
-export const register_fail = () => ({
+export const registerFail = () => ({
     type: authActionTypes.REGISTER_FAIL,
 });
 export const logoutAction = () => ({

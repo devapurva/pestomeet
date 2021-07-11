@@ -6,9 +6,6 @@
 // - Directory Permission
 // - Buddy-Pairing
 // - Mentor-Student Pairing
-
-import { ComponentType } from "react";
-import { RouteComponentProps } from "react-router-dom";
 import { Store } from "redux";
 import { Persistor } from "redux-persist/es/types";
 
@@ -88,6 +85,11 @@ interface IAuthReducer extends IAuthInit, IRegister, ILogin {
     password?: string;
     experience?: number | string;
     role?: string;
+}
+
+interface IError {
+    messageCode: string;
+    statusCode: boolean;
 }
 
 // interface IAnalytics {

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { takeLatest, put, call, all } from "redux-saga/effects";
 import { authService, HTTPClient } from "../../services";
+import { ILogin } from "../../../global";
 import { authActionTypes } from "./auth.actiontype";
 import { loginSucess, loginFail } from "./auth.action";
 // import { forgotLastLocation } from "../../router/RouterHelpers";
@@ -10,7 +11,11 @@ import { loginSucess, loginFail } from "./auth.action";
 //     logoutAction,
 // } from "../modules_mallsStore/mm.actions";
 
-export function* handleLogin({ payload: { email, password } }) {
+export function* handleLogin({
+    payload: { email, password },
+}: {
+    payload: ILogin;
+}) {
     try {
         const userData = yield authService.login({ email, password });
         HTTPClient.saveHeader({
@@ -53,8 +58,8 @@ export function* handleFrgtPassSendEmail({ payload: email }) {
     try {
         const response = yield authService.forgotPass_sendEmail(email);
         console.log(response);
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -91,8 +96,8 @@ export function* handleRegisterUser({
             mobile,
         });
         console.log(response);
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
     }
 }
 
