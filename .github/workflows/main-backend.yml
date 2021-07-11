@@ -20,5 +20,4 @@ jobs:
           heroku_email: "ninja4epsilon@gmail.com"
           appdir: "backend"
       - run: npm install
-      - run: tsc
-      - run: npm start
+      - run: tsc && node --unhandled-rejections=strict ./dist/server.js
