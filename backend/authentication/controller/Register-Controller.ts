@@ -1,37 +1,33 @@
-import dotenv from'dotenv'
-dotenv.config()
-import registerUser from '../../schema/user-schema.js'
+import registerUser from '../../user/schema/user-schema.js'
 import bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid';
 import {validationResult } from 'express-validator';
-import { pass,fail } from '../../utils/success-response.js'
+import {message} from '../../utils/success-response.js'
 
 
-var id = uuidv4();
+const id = uuidv4();
 const RegisterController = (reqest:any,response:any)=>{
 
 const {name,email,phone,password,role,experience,approval} = reqest.body;
 const errors = validationResult(reqest);
     if (!errors.isEmpty()) {
-      return response.json(fail("Validation Error",errors.array(),400));
+      return response.json(message("Validation Error",errors.array(),false));
     }
 
 const hash = bcrypt.hashSync(password,10);
-let newUser = new registerUser({"id":id,"name":name.toLowerCase(),"email":email.toLowerCase(),"phone":phone,"password":hash,"role":role.toLowerCase(),"experience":experience,"approval":approval})
+const newUser = new registerUser({"id":id,"name":name.toLowerCase(),"email":email.toLowerCase(),"phone":phone,"password":hash,"role":role.toLowerCase(),"experience":experience,"approval":approval})
 
-registerUser.findOne({$or:[{'email':email.toLowerCase()},{'phone':phone}]},function(error:any,result:any){
-    if(!error){
-      if(!result){
-        newUser.save(function(error:any,result:any){
+registerUser.findOne({$or:[{'email':email.toLowerCase()},{'phone':phone}]},(error:any,result:any)=>{
+    if(error){
+      response.json(message("Error Happened while registering User, Try Again !",null,false))
+    }else if(!result){
+        newUser.save((error:any,result:any)=>{
                     if (error){response.json({message:error}); }
-                    else{response.json(pass("User Registered Successfully",null,200))}})
-      }else{
+                    else{response.json(message("User Registered Successfully",null,true))}})
+    }else{
         console.log(result)
-        response.json(fail("User Already Available",null,400))
+        response.json(message("User Already Available",null,false))
       }
-    } else{
-        response.json(pass("Error Happened while registering User, Try Again !",null,400))
-    }
   })
 
 }

@@ -1,4 +1,4 @@
- export const pass = (message:any,result:any,statusCode:any)=>{
+ export const message = (message:String,result:any,statusCode:boolean)=>{
     return({
         "message":message,
         "result":result,
@@ -6,10 +6,3 @@
     })
  }
 
- export const fail = (message:any,result:any,statusCode:any)=>{
-    return({
-        "message":message,
-        "result":result,
-        "statusCode":statusCode
-    })
- }

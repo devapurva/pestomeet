@@ -1,15 +1,22 @@
+import dotenv from'dotenv'
+dotenv.config()
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import registerRouter from './authentication/routes/register-route.js'
 import loginRouter from './authentication/routes/login-route.js'
-import edituserRouter from './admin/routes/edituser-route.js'
-import listuserRouter from './admin/routes/listuser-route.js'
-import deleteuserRouter from './admin/routes/deleteuser-route.js'
-import createteamRouter from './admin/routes/createteam-route.js'
-import editteamRouter from './admin/routes/editteam-route.js'
-import deleteteamRouter from './admin/routes/deleteteam-route.js'
+import edituserRouter from './user/routes/edituser-route.js'
+import listuserRouter from './user/routes/listuser-route.js'
+import deleteuserRouter from './user/routes/deleteuser-route.js'
+import createteamRouter from './team/routes/createteam-route.js'
+import editteamRouter from './team/routes/editteam-route.js'
+import listteamRouter from './team/routes/listteam-route.js'
+import deleteteamRouter from './team/routes/deleteteam-route.js'
+import listbatchRouter from './batch/routes/listbatch-route.js'
+import createbatchRouter from './batch/routes/createbatch-route.js'
+import editbatchRouter from './batch/routes/editbatch-route.js'
+import deletebatchRouter from './batch/routes/deletebatch-route.js'
 
 
 const app = express();
@@ -31,11 +38,15 @@ app.use('/api/pesto/login',loginRouter)
 app.use('/api/pesto/list/user',listuserRouter)
 app.use('/api/pesto/edit/user',edituserRouter)
 app.use('/api/pesto/delete/user',deleteuserRouter)
+app.use('/api/pesto/list/team',listteamRouter)
 app.use('/api/pesto/create/team',createteamRouter)
 app.use('/api/pesto/edit/team',editteamRouter)
 app.use('/api/pesto/delete/team',deleteteamRouter)
+app.use('/api/pesto/list/batch',listbatchRouter)
+app.use('/api/pesto/create/batch',createbatchRouter)
+app.use('/api/pesto/edit/batch',editbatchRouter)
+app.use('/api/pesto/delete/batch',deletebatchRouter)
 
-
-const serverListen = app.listen(process.env.PORT||5000,function(){
+const serverListen = app.listen(process.env.PORT||5000,()=>{
   console.log('Server Started Successfully')
   })

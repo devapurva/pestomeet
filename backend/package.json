@@ -26,13 +26,8 @@
     "nodemon": "^2.0.9"
   },
   "scripts": {
-    "build": "rimraf dist && tsc",
-    "preserve": "npm run build",
-    "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/index.js\"",
-    "prestart": "npm run build",
-    "start": "nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "type": "module"
+    "start": "tsc && node --unhandled-rejections=strict ./dist/server.js",
+    "debug": "export DEBUG=* && npm run start"
   },
   "author": "",
   "license": "ISC",

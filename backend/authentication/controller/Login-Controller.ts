@@ -1,46 +1,40 @@
-import dotenv from'dotenv'
-dotenv.config()
-import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt, { Secret } from 'jsonwebtoken'
-import registerUser from '../../schema/user-schema.js'
-import { pass,fail } from '../../utils/success-response.js'
+import registerUser from '../../user/schema/user-schema.js'
+import { message } from '../../utils/success-response.js'
 
 
-const users =[];
 const LoginController =(request:any,response:any)=>{
-  const {email,phone,password} = request.body;
+const {email,phone,password} = request.body;
 registerUser.findOne({$and:[
                               {$or:[{'email':email.toLowerCase()},{'phone':phone}]},
                               {'approval':process.env.APPROVED}
                           ]},
-                              function(error:any,result:any){
-    if(!error){
-      if(!result){
-        response.json(fail("User is not registered / Activated ",null,400))
-      }else if(bcrypt.compareSync(password, result.password)){
+                              (error:any,result:any)=>{
+    if(error){
+      response.json(message("Error Happened while registering User, Try Again !",null,false))
+    }else if(!result){
+        response.json(message("User is not registered / Activated ",null,false))
+    }else if(bcrypt.compareSync(password, result.password)){
            console.log("JWT Token Created")
            console.log(result)
-           var key =process.env.JWT_SECRET as Secret
+           const key =process.env.JWT_SECRET as Secret
            try{
-             jwt.sign({auth:true,name:result.name,id:result.id,role:result.role}, key,function(error:any, token:any) {
+             jwt.sign({auth:true,name:result.name,id:result.id,role:result.role}, key,(error:any, token:any)=> {
                if(error){
-                 response.json(fail("Login Error",error,400))
+                 response.json(message("Login Error",error,false))
                }else{
-                 response.json(pass("Login Success",token,200));
+                 response.json(message("Login Success",token,true));
                  console.log(token)
                }})
            }catch{
-             response.json(fail("Authentication Error",null,400))
+             response.json(message("Authentication Error",null,false))
            }
       }else if(! bcrypt.compareSync(password, result.password)){
-           response.json(fail("Wrong Username/Password",null,400))
+           response.json(message("Wrong Username/Password",null,false))
       }else{
-        response.json(fail("Error Happened while registering User, Try Again !",null,400))
+        response.json(message("Error Happened while registering User, Try Again !",null,false))
       }
-    } else{
-        response.json(fail("Error Happened while registering User, Try Again !",null,400))
-    }
   })
 
 }
