@@ -20,6 +20,6 @@ export const getErrorsFromValidationError = (validationError) => {
     }, {});
 };
 
-export const handleSubmitting = ({ setSubmitting, setErrors }) => {
+export const handleSubmitting = ({ setSubmitting }) => {
     setSubmitting(false);
 };

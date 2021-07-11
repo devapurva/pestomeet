@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
 import { takeLatest, put, call, all } from "redux-saga/effects";
 import { authService, HTTPClient } from "../../services";
-import { ILogin } from "../../../global";
+import { ILogin, IAuthReducer } from "../../../global";
 import { authActionTypes } from "./auth.actiontype";
 import { loginSucess, loginFail } from "./auth.action";
 // import { forgotLastLocation } from "../../router/RouterHelpers";
@@ -12,8 +13,10 @@ import { loginSucess, loginFail } from "./auth.action";
 // } from "../modules_mallsStore/mm.actions";
 
 export function* handleLogin({
+    type,
     payload: { email, password },
 }: {
+    type: typeof authActionTypes.LOGIN_INIT;
     payload: ILogin;
 }) {
     try {
@@ -54,7 +57,13 @@ export function* logoutSaga() {
     yield takeLatest(authActionTypes.LOGOUT_INIT, handleLogout);
 }
 
-export function* handleFrgtPassSendEmail({ payload: email }) {
+export function* handleFrgtPassSendEmail({
+    type,
+    payload: email,
+}: {
+    type: typeof authActionTypes.FRGTPASS_EMAILINIT;
+    payload: string;
+}) {
     try {
         const response = yield authService.forgotPass_sendEmail(email);
         console.log(response);
@@ -75,25 +84,21 @@ export function* frgtPassSaga() {
 }
 
 export function* handleRegisterUser({
-    payload: {
-        email,
-        password,
-        confirmPassword,
-        token,
-        firstName,
-        lastName,
-        mobile,
-    },
+    type,
+    payload: { email, password, authToken, fullName, phone, experience, role },
+}: {
+    type: typeof authActionTypes.REGISTER_INIT;
+    payload: IAuthReducer;
 }) {
     try {
         const response = yield authService.registerUser({
             email,
-            firstName,
-            lastName,
-            setPassword: password,
-            confirmPassword,
-            verificationCode: token,
-            mobile,
+            password,
+            authToken,
+            fullName,
+            phone,
+            experience,
+            role,
         });
         console.log(response);
     } catch (error) {

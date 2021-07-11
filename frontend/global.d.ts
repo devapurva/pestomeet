@@ -56,11 +56,12 @@ interface ILogin {
 
 interface IRegister {
     fullName: string;
-    email: string;
-    phone: number;
+    email: string | null;
+    phone: number | null;
     password: string;
     experience: number | string;
     role: string;
+    confirmPassword?: string;
 }
 
 interface IAuthInit {
@@ -72,7 +73,7 @@ interface IAuthInit {
     apiProcess: boolean;
 }
 
-interface IAuthReducer extends IAuthInit, IRegister, ILogin {
+interface IAuthReducer extends IAuthInit, IRegister, ILogin, PersistPartial {
     authToken?: string | null;
     loginProcess?: boolean;
     loginError?: null | boolean;
@@ -80,8 +81,8 @@ interface IAuthReducer extends IAuthInit, IRegister, ILogin {
     frgtPassEmailError?: boolean;
     apiProcess?: boolean;
     fullName?: string;
-    email?: string;
-    phone?: number;
+    email?: string | null;
+    phone?: number | null;
     password?: string;
     experience?: number | string;
     role?: string;
@@ -91,7 +92,3 @@ interface IError {
     messageCode: string;
     statusCode: boolean;
 }
-
-// interface IAnalytics {
-//   total
-// }
