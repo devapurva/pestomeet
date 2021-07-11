@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt, { Secret } from 'jsonwebtoken'
-import registerUser from '../../user/schema/user-schema'
-import { message } from '../../utils/success-response'
+import registerUser from '../../user/schema/user-schema.js'
+import { message } from '../../utils/success-response.js'
 
 
 const LoginController =(request:any,response:any)=>{

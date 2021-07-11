@@ -1,5 +1,5 @@
 import express, {Router}  from 'express'
-import createteamController from '../controller/createteam-controller'
+import createteamController from '../controller/createteam-controller.js'
 
 
 

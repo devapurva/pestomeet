@@ -1,5 +1,5 @@
 import express from 'express';
-import listbatchController from '../../batch/controller/listbatch-controller';
+import listbatchController from '../../batch/controller/listbatch-controller.js';
 
 
 const listbatchRouter = express.Router();

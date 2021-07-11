@@ -1,6 +1,6 @@
 import express from 'express'
 import { body,check} from 'express-validator';
-import editteamController from '../controller/editteam-controller'
+import editteamController from '../controller/editteam-controller.js'
 
 const editteamRouter= express.Router()
 

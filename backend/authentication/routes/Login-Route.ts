@@ -1,5 +1,5 @@
 import express, {Router}  from 'express'
-import loginController from '../controller/login-controller'
+import loginController from '../controller/login-controller.js'
 
 
 

@@ -1,5 +1,5 @@
 import express, {Router}  from 'express'
-import createbatchController from '../controller/createbatch-controller'
+import createbatchController from '../controller/createbatch-controller.js'
 
 
 const createbatchRouter:Router= express.Router()

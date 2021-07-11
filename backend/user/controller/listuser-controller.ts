@@ -1,5 +1,5 @@
-import listUser from '../schema/user-schema'
-import {message} from '../../utils/success-response'
+import listUser from '../schema/user-schema.js'
+import {message} from '../../utils/success-response.js'
 
 
 const ListuserController =(request:any,response:any)=>{
