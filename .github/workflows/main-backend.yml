@@ -18,5 +18,5 @@ jobs:
           heroku_api_key: "d32c781d-2fba-438e-98f6-99c7dd4fc601"
           heroku_app_name: "pestomeet" #Must be unique in Heroku
           heroku_email: "ninja4epsilon@gmail.com"
-          buildpack: "https://github.com/heroku/heroku-buildpack-nodejs.git"
+      - run: heroku create --buildpack https://github.com/heroku/heroku-buildpack-nodejs.git
       - run: npm start
