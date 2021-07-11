@@ -9,7 +9,7 @@ import { UserFormObject, INIT_VALUE, useStyles } from "./validationAndStyles";
 const LoginForm: React.FunctionComponent = () => {
     const classes = useStyles();
 
-    const createNewUser = async (values: ILogin, { setSubmitting }) => {
+    const loginUser = async (values: ILogin, { setSubmitting }) => {
         try {
             // API call integration will be here. Handle success / error response accordingly.
             if (values) {
@@ -27,7 +27,7 @@ const LoginForm: React.FunctionComponent = () => {
         <div className={classes.root}>
             <Formik
                 initialValues={INIT_VALUE}
-                onSubmit={createNewUser}
+                onSubmit={loginUser}
                 validate={validate(UserFormObject)}
                 validateOnBlur={false}
             >

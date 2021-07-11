@@ -11,6 +11,3 @@ export const authActionTypes = {
     REGISTER_FAIL: "@@PESTOMEET__REGISTER_FAIL",
     LOGOUT: "@@PESTOMEET__LOGOUT",
 };
-
-// prefix for all action type's values
-// @@PESTOMEET__
