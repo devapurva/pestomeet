@@ -51,6 +51,45 @@ interface IApp {
     persistor: Persistor;
 }
 
+interface ILogin {
+    email?: string;
+    phone?: number;
+    password: string;
+}
+
+interface IRegister {
+    fullName: string;
+    email: string;
+    phone: number;
+    password: string;
+    experience: number | string;
+    role: string;
+}
+
+interface IAuthInit {
+    authToken: string | null;
+    loginProcess: boolean;
+    loginError: null | boolean;
+    frgtPassEmailSent: boolean;
+    frgtPassEmailError: boolean;
+    apiProcess: boolean;
+}
+
+interface IAuthReducer extends IAuthInit, IRegister, ILogin {
+    authToken?: string | null;
+    loginProcess?: boolean;
+    loginError?: null | boolean;
+    frgtPassEmailSent?: boolean;
+    frgtPassEmailError?: boolean;
+    apiProcess?: boolean;
+    fullName?: string;
+    email?: string;
+    phone?: number;
+    password?: string;
+    experience?: number | string;
+    role?: string;
+}
+
 // interface IAnalytics {
 //   total
 // }

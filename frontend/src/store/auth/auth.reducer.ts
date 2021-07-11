@@ -1,9 +1,11 @@
+import { PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { IAuthInit, IAuthReducer } from "../../../global";
 import { authActionTypes } from "./auth.actiontype";
 
-const INIT_STATE = {
-    authToken: undefined,
+const INIT_STATE: IAuthInit = {
+    authToken: null,
     loginProcess: false,
     loginError: null,
     frgtPassEmailSent: false,
@@ -15,61 +17,52 @@ const authReducer = persistReducer(
     {
         storage,
         key: "demo1-auth",
-        whitelist: ["user", "authToken", "userMall"],
+        whitelist: ["user", "authToken", "userType"],
     },
-    (state = INIT_STATE, { type, payload }) => {
-        switch (type) {
+    (state = INIT_STATE, action: PayloadAction<IAuthReducer>) => {
+        switch (action.type) {
             case authActionTypes.LOGIN_INIT:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     loginProcess: true,
-                };
+                });
             case authActionTypes.LOGIN_SUCCESS:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     loginProcess: false,
-                    authToken: payload.userData.authToken,
-                };
+                    authToken: action.payload.authToken,
+                });
             case authActionTypes.LOGIN_FAIL:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     loginProcess: false,
-                    loginError: payload,
-                };
+                    loginError: action.payload,
+                });
             case authActionTypes.LOGOUT_INIT:
                 return INIT_STATE;
             case authActionTypes.FRGTPASS_EMAILINIT:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     apiProcess: true,
-                };
+                });
             case authActionTypes.FRGTPASS_EMAILSUCCESS:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     apiProcess: false,
                     frgtPassEmailSent: true,
-                };
+                });
             case authActionTypes.FRGTPASS_EMAILFAIL:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     apiProcess: false,
                     frgtPassEmailError: true,
-                };
+                });
             case authActionTypes.REGISTER_INIT:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     apiProcess: true,
-                };
+                });
             case authActionTypes.REGISTER_SUCCESS:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     apiProcess: false,
-                };
+                });
             case authActionTypes.REGISTER_FAIL:
-                return {
-                    ...state,
+                return Object.assign({}, state, {
                     apiProcess: false,
-                };
+                });
             case authActionTypes.LOGOUT:
                 return INIT_STATE;
             default:

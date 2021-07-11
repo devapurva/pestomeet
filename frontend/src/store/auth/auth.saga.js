@@ -24,10 +24,10 @@ export function* handleLogin({ payload: { email, password } }) {
             // put(modules_allowed(userData.permissions)),
             //
         ]);
-    } catch (e) {
+    } catch (error) {
         const {
             data: { status },
-        } = e;
+        } = error;
         console.log(status);
         yield put(loginFail(status));
     }

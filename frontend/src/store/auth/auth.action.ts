@@ -1,11 +1,12 @@
+import { ILogin, IRegister } from "../../../global";
 import { authActionTypes } from "./auth.actiontype";
 
-export const loginStart = (emailAndPassoword) => ({
+export const loginStart = (emailAndPassoword: ILogin) => ({
     type: authActionTypes.LOGIN_INIT,
     payload: emailAndPassoword,
 });
 
-export const loginSucess = (userData) => ({
+export const loginSucess = (userData: ILogin) => ({
     type: authActionTypes.LOGIN_SUCCESS,
     payload: { userData },
 });
@@ -19,7 +20,7 @@ export const logoutStart = () => ({
     type: authActionTypes.LOGOUT_INIT,
 });
 
-export const frtPass_SendEmail = (email) => ({
+export const frtPass_SendEmail = (email: string) => ({
     type: authActionTypes.FRGTPASS_EMAILINIT,
     payload: email,
 });
@@ -32,9 +33,9 @@ export const frtPass_EmailError = () => ({
     type: authActionTypes.FRGTPASS_EMAILFAIL,
 });
 
-export const register_start = (payload) => ({
+export const register_start = (userData: IRegister) => ({
     type: authActionTypes.REGISTER_INIT,
-    payload,
+    payload: userData,
 });
 export const register_success = () => ({
     type: authActionTypes.REGISTER_SUCCESS,
