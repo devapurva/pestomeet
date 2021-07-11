@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: AkhileshNS/heroku-deploy@v3.12.12 # This is the action
-        working-directory: ./backend
         with:
           heroku_api_key: "d32c781d-2fba-438e-98f6-99c7dd4fc601"
           heroku_app_name: "pestomeet" #Must be unique in Heroku
           heroku_email: "ninja4epsilon@gmail.com"
-      - run: npm start
+        working-directory: ./backend
+        run: npm start
