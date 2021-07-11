@@ -1,6 +1,6 @@
-import EditUser from '../schema/user-schema.js'
+import EditUser from '../schema/user-schema'
 import { validationResult } from 'express-validator';
-import {message} from '../../utils/success-response.js'
+import {message} from '../../utils/success-response'
 
 
 const ApprovalController =(request:any,response:any)=>{

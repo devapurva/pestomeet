@@ -1,6 +1,6 @@
 import express from 'express'
 import { body,check} from 'express-validator';
-import editbatchController from '../controller/editbatch-controller.js'
+import editbatchController from '../controller/editbatch-controller'
 
 const editbatchRouter= express.Router()
 

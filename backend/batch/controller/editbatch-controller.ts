@@ -1,6 +1,6 @@
-import editBatch from '../schema/batch-schema.js'
+import editBatch from '../schema/batch-schema'
 import { validationResult } from 'express-validator';
-import {message} from '../../utils/success-response.js'
+import {message} from '../../utils/success-response'
 
 
 const ApprovalController =(request:any,response:any)=>{

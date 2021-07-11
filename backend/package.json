@@ -26,7 +26,7 @@
     "nodemon": "^2.0.9"
   },
   "scripts": {
-    "start": "tsc && node --unhandled-rejections=strict ./dist/server.js",
+    "start": "tsc && node --es-module-specifier-resolution=node --unhandled-rejections=strict ./dist/server.js",
     "debug": "export DEBUG=* && npm run start"
   },
   "author": "",

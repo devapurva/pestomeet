@@ -1,5 +1,5 @@
-import DeleteUser from '../schema/user-schema.js'
-import { message } from '../../utils/success-response.js'
+import DeleteUser from '../schema/user-schema'
+import { message } from '../../utils/success-response'
 
 
 const DeleteuserController =(request:any,response:any)=>{

@@ -1,6 +1,6 @@
-import editTeam from '../schema/team-schema.js'
+import editTeam from '../schema/team-schema'
 import { validationResult } from 'express-validator';
-import {message} from '../../utils/success-response.js'
+import {message} from '../../utils/success-response'
 
 
 const ApprovalController =(request:any,response:any)=>{

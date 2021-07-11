@@ -1,5 +1,5 @@
-import listTeam from '../schema/team-schema.js'
-import {message} from '../../utils/success-response.js'
+import listTeam from '../schema/team-schema'
+import {message} from '../../utils/success-response'
 
 
 const ListteamController =(request:any,response:any)=>{

@@ -1,8 +1,8 @@
-import registerUser from '../../user/schema/user-schema.js'
+import registerUser from '../../user/schema/user-schema'
 import bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid';
 import {validationResult } from 'express-validator';
-import {message} from '../../utils/success-response.js'
+import {message} from '../../utils/success-response'
 
 
 const id = uuidv4();

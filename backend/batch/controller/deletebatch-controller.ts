@@ -1,5 +1,5 @@
-import deleteBatch from '../schema/batch-schema.js'
-import {message} from '../../utils/success-response.js'
+import deleteBatch from '../schema/batch-schema'
+import {message} from '../../utils/success-response'
 
 
 const DeleteteamController =(request:any,response:any)=>{
