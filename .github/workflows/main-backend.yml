@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend/dist
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v2
       - uses: AkhileshNS/heroku-deploy@v3.12.12 # This is the action
@@ -20,5 +20,4 @@ jobs:
           heroku_email: "ninja4epsilon@gmail.com"
           appdir: "backend"
       - run: npm install
-      - run: tsc
-      - run: npm start
+      - run: tsc && node --unhandled-rejections=strict ./dist/server.js
