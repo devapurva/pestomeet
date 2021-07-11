@@ -1,6 +1,6 @@
 import express from 'express'
 import { body,check} from 'express-validator';
-import editController from '../controller/edituser-controller.js'
+import editController from '../controller/edituser-controller'
 
 const edituserRouter= express.Router()
 

@@ -1,6 +1,6 @@
-import registerBatch from '../schema/batch-schema.js'
+import registerBatch from '../schema/batch-schema'
 import { v4 as uuidv4 } from 'uuid';
-import {message} from '../../utils/success-response.js'
+import {message} from '../../utils/success-response'
 
 
 const batchId = uuidv4();

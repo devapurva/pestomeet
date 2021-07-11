@@ -1,6 +1,6 @@
-import registerTeam from '../schema/team-schema.js'
+import registerTeam from '../schema/team-schema'
 import { v4 as uuidv4 } from 'uuid';
-import {message} from '../../utils/success-response.js'
+import {message} from '../../utils/success-response'
 
 
 var teamId = uuidv4();

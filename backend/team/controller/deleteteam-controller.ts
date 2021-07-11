@@ -1,7 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import deleteTeam from '../schema/team-schema.js'
-import { message } from '../../utils/success-response.js'
+import deleteTeam from '../schema/team-schema'
+import { message } from '../../utils/success-response'
 
 
 const DeleteteamController =(request:any,response:any)=>{

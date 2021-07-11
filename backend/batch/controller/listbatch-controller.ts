@@ -1,5 +1,5 @@
-import listBatch from '../schema/batch-schema.js'
-import {message} from '../../utils/success-response.js'
+import listBatch from '../schema/batch-schema'
+import {message} from '../../utils/success-response'
 
 
 const ListbatchController =(request:any,response:any)=>{
