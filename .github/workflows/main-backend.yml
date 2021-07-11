@@ -6,9 +6,11 @@ on:
       - "v*"
 
 jobs:
-  build:
+  job1:
     runs-on: ubuntu-latest
-    working-directory: ./backend
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v2
       - uses: AkhileshNS/heroku-deploy@v3.12.12 # This is the action
