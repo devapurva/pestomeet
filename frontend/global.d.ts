@@ -6,7 +6,6 @@
 // - Directory Permission
 // - Buddy-Pairing
 // - Mentor-Student Pairing
-
 import { Store } from "redux";
 import { Persistor } from "redux-persist/es/types";
 
@@ -49,6 +48,47 @@ interface IApp {
     persistor: Persistor;
 }
 
-// interface IAnalytics {
-//   total
-// }
+interface ILogin {
+    email?: string;
+    phone?: number;
+    password: string;
+}
+
+interface IRegister {
+    fullName: string;
+    email: string | null;
+    phone: number | null;
+    password: string;
+    experience: number | string;
+    role: string;
+    confirmPassword?: string;
+}
+
+interface IAuthInit {
+    authToken: string | null;
+    loginProcess: boolean;
+    loginError: null | boolean;
+    frgtPassEmailSent: boolean;
+    frgtPassEmailError: boolean;
+    apiProcess: boolean;
+}
+
+interface IAuthReducer extends IAuthInit, IRegister, ILogin, PersistPartial {
+    authToken?: string | null;
+    loginProcess?: boolean;
+    loginError?: null | boolean;
+    frgtPassEmailSent?: boolean;
+    frgtPassEmailError?: boolean;
+    apiProcess?: boolean;
+    fullName?: string;
+    email?: string | null;
+    phone?: number | null;
+    password?: string;
+    experience?: number | string;
+    role?: string;
+}
+
+interface IError {
+    messageCode: string;
+    statusCode: boolean;
+}

@@ -8,6 +8,8 @@ import { LastLocationProvider } from "react-router-last-location";
 import { IApp } from "../global";
 import theme from "./styles/theme";
 import SplashScreen from "./components/splashScreen";
+import UserForm from "./components/forms/userForm/userForm";
+import LoginForm from "./components/forms/loginForm/loginForm";
 
 const App: React.FC<IApp> = ({ store, persistor }) => {
     return (
@@ -17,16 +19,15 @@ const App: React.FC<IApp> = ({ store, persistor }) => {
             <PersistGate persistor={persistor} loading={<SplashScreen />}>
                 {/* Add high level `Suspense` in case if was not handled inside the React tree. */}
                 <React.Suspense fallback={<SplashScreen />}>
-                    {/* Override `basename` (e.g: `homepage` in `package.json`) */}
+                    {/* Override `basename` (e.g: `homepage` in `package.json`) sdfsad sds*/}
                     <BrowserRouter basename="/">
                         {/*This library only returns the location that has been active before the recent location change in the current window lifetime.*/}
                         <LastLocationProvider>
                             {/* Provide Material theme overrides. */}
                             <ThemeProvider theme={theme}>
                                 <CssBaseline />
-                                <div>
-                                    <p>A bare bones application!</p>
-                                </div>
+                                <UserForm />
+                                <LoginForm />
                             </ThemeProvider>
                         </LastLocationProvider>
                     </BrowserRouter>
