@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { getUserList, deleteUser } from '../../redux/slices/user';
+import { deleteUser } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // @types
@@ -35,16 +35,17 @@ import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_dashboard/user/list';
+import UserCreateModal from './UserCreateModal';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phone', label: 'Phone', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' }
+  { id: 'experience', label: 'Experience', alignRight: false },
+  { id: 'approval', label: 'Approval Status', alignRight: false }
 ];
 
 // ----------------------------------------------------------------------
@@ -95,9 +96,9 @@ export default function UserList() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  useEffect(() => {
-    dispatch(getUserList());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getUserList());
+  // }, [dispatch]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -158,19 +159,10 @@ export default function UserList() {
           heading="User List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
+            { name: 'User', href: PATH_DASHBOARD.user },
             { name: 'List' }
           ]}
-          action={
-            <Button
-              variant="contained"
-              component={RouterLink}
-              to={PATH_DASHBOARD.user.newUser}
-              startIcon={<Icon icon={plusFill} />}
-            >
-              New User
-            </Button>
-          }
+          action={<UserCreateModal />}
         />
 
         <Card>
@@ -196,7 +188,7 @@ export default function UserList() {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                      const { id, name, role, experience, approval, avatar, email, phone } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
 
                       return (
@@ -213,21 +205,25 @@ export default function UserList() {
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={name} src={avatarUrl} />
+                              <Avatar alt={name} src={avatar} />
                               <Typography variant="subtitle2" noWrap>
                                 {name}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{company}</TableCell>
+                          <TableCell align="left">{email}</TableCell>
+                          <TableCell align="left">{phone}</TableCell>
                           <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{experience}</TableCell>
+                          <TableCell align="left">
+                            {approval === 'approved' ? 'Yes' : 'No'}
+                          </TableCell>
                           <TableCell align="left">
                             <Label
                               variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                              color={(status === 'banned' && 'error') || 'success'}
+                              color={(approval === 'approved' && 'success') || 'error'}
                             >
-                              {sentenceCase(status)}
+                              {sentenceCase(approval)}
                             </Label>
                           </TableCell>
 

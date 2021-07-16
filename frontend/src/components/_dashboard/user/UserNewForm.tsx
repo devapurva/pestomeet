@@ -1,8 +1,13 @@
 import * as Yup from 'yup';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikProvider, useFormik } from 'formik';
+import { makeStyles } from '@material-ui/core/styles';
+import eyeFill from '@iconify/icons-eva/eye-fill';
+import closeFill from '@iconify/icons-eva/close-fill';
+import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
+import { Icon } from '@iconify/react';
 // material
 import { LoadingButton } from '@material-ui/lab';
 import {
@@ -14,7 +19,12 @@ import {
   TextField,
   Typography,
   FormHelperText,
-  FormControlLabel
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core';
 // utils
 import { fData } from '../../../utils/formatNumber';
@@ -26,9 +36,14 @@ import { UserManager } from '../../../@types/user';
 //
 import Label from '../../Label';
 import { UploadAvatar } from '../../upload';
-import countries from './countries';
 
 // ----------------------------------------------------------------------
+
+const useStyles = makeStyles({
+  legend: {
+    paddingTop: 8
+  }
+});
 
 type UserNewFormProps = {
   isEdit: boolean;
@@ -38,36 +53,62 @@ type UserNewFormProps = {
 export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const classes = useStyles();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email(),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.mixed().required('Avatar is required')
-  });
+  const NewUserSchema = Yup.object().shape(
+    {
+      name: Yup.string()
+        .max(50, `Full name cannot be more than ${50} characters`)
+        .required('Full name is required'),
+      phone: Yup.string()
+        .matches(/^([7-9][0-9]{9})$/, 'Enter valid phone number')
+        .required('Phone number is required'),
+      email: Yup.string().email().required('Enter valid email-id'),
+      role: Yup.string().required('Role is Required'),
+      password: Yup.string()
+        .min(8, `Password must be atleast ${8} characters`)
+        .max(20, `Password cannot be more than ${20} characters`)
+        .matches(
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,20}\S$/,
+          `Password must contain - One uppercase, one lowercase, one special character, no spaces and of ${
+            8 - 20
+          } characters.`
+        )
+        .required(
+          `Enter valid password. One uppercase, one lowercase, one special character and no spaces`
+        ),
+      confirmPassword: Yup.string()
+        .required('Required')
+        .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+      experience: Yup.string().when('role', {
+        is: (role: string) => role === 'student',
+        then: Yup.string()
+          .max(2, `Experience cannot be more than ${2} characters`)
+          .required('Experience is required for student role')
+          .nullable(),
+        otherwise: Yup.string().when('role', {
+          is: (role: string) => role === 'mentor',
+          then: Yup.string().nullable()
+        })
+      }),
+      avatar: Yup.mixed().required('Avatar is required')
+    },
+    [['email', 'phone']]
+  );
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
+      password: '',
+      confirmPassword: '',
       name: currentUser?.name || '',
       email: currentUser?.email || '',
-      phoneNumber: currentUser?.phoneNumber || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || null,
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || ''
+      phone: currentUser?.phone || '',
+      avatar: currentUser?.avatar || null,
+      approval: currentUser?.approval,
+      role: currentUser?.role || '',
+      experience: currentUser?.experience || ''
     },
     validationSchema: NewUserSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
@@ -76,7 +117,7 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
         resetForm();
         setSubmitting(false);
         enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user.list);
+        navigate(PATH_DASHBOARD.user);
       } catch (error) {
         console.error(error);
         setSubmitting(false);
@@ -85,14 +126,22 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
     }
   });
 
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } =
-    formik;
+  const {
+    errors,
+    values,
+    touched,
+    handleSubmit,
+    isSubmitting,
+    setFieldValue,
+    getFieldProps,
+    handleChange
+  } = formik;
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (file) {
-        setFieldValue('avatarUrl', {
+        setFieldValue('avatar', {
           ...file,
           preview: URL.createObjectURL(file)
         });
@@ -109,20 +158,20 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
             <Card sx={{ py: 10, px: 3 }}>
               {isEdit && (
                 <Label
-                  color={values.status !== 'active' ? 'error' : 'success'}
+                  color="success"
                   sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
                 >
-                  {values.status}
+                  Success
                 </Label>
               )}
 
               <Box sx={{ mb: 5 }}>
                 <UploadAvatar
                   accept="image/*"
-                  file={values.avatarUrl}
+                  file={values.avatar}
                   maxSize={3145728}
                   onDrop={handleDrop}
-                  error={Boolean(touched.avatarUrl && errors.avatarUrl)}
+                  error={Boolean(touched.avatar && errors.avatar)}
                   caption={
                     <Typography
                       variant="caption"
@@ -140,38 +189,18 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
                   }
                 />
                 <FormHelperText error sx={{ px: 2, textAlign: 'center' }}>
-                  {touched.avatarUrl && errors.avatarUrl}
+                  {touched.avatar && errors.avatar}
                 </FormHelperText>
               </Box>
 
-              {isEdit && (
-                <FormControlLabel
-                  labelPlacement="start"
-                  control={
-                    <Switch
-                      onChange={(event) =>
-                        setFieldValue('status', event.target.checked ? 'banned' : 'active')
-                      }
-                      checked={values.status !== 'active'}
-                    />
-                  }
-                  label={
-                    <>
-                      <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                        Banned
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Apply disable account
-                      </Typography>
-                    </>
-                  }
-                  sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-                />
-              )}
-
-              <FormControlLabel
+              {/* <FormControlLabel
                 labelPlacement="start"
-                control={<Switch {...getFieldProps('isVerified')} checked={values.isVerified} />}
+                control={
+                  <Switch
+                    {...getFieldProps('approval')}
+                    checked={values.approval === 'approved' ? true : false}
+                  />
+                }
                 label={
                   <>
                     <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
@@ -183,7 +212,7 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
                   </>
                 }
                 sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-              />
+              /> */}
             </Card>
           </Grid>
 
@@ -198,6 +227,9 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
                     error={Boolean(touched.name && errors.name)}
                     helperText={touched.name && errors.name}
                   />
+                </Stack>
+
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
                     label="Email Address"
@@ -205,79 +237,76 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
                     error={Boolean(touched.email && errors.email)}
                     helperText={touched.email && errors.email}
                   />
-                </Stack>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
                     label="Phone Number"
-                    {...getFieldProps('phoneNumber')}
-                    error={Boolean(touched.phoneNumber && errors.phoneNumber)}
-                    helperText={touched.phoneNumber && errors.phoneNumber}
+                    {...getFieldProps('phone')}
+                    error={Boolean(touched.phone && errors.phone)}
+                    helperText={touched.phone && errors.phone}
+                  />
+                </Stack>
+
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    fullWidth
+                    autoComplete="experience"
+                    type="text"
+                    label="Experience"
+                    {...getFieldProps('experience')}
+                    error={Boolean(touched.experience && errors.experience)}
+                    helperText={touched.experience && errors.experience}
                   />
                   <TextField
-                    select
                     fullWidth
-                    label="Country"
-                    placeholder="Country"
-                    {...getFieldProps('country')}
-                    SelectProps={{ native: true }}
-                    error={Boolean(touched.country && errors.country)}
-                    helperText={touched.country && errors.country}
+                    autoComplete="current-password"
+                    type={showPassword ? 'text' : 'password'}
+                    label="Password"
+                    {...getFieldProps('password')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                            <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                    error={Boolean(touched.password && errors.password)}
+                    helperText={touched.password && errors.password}
+                  />
+                </Stack>
+
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <FormLabel className={classes.legend} component="legend">
+                    Role:
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    value={values?.role}
+                    aria-label="role"
+                    name="role"
+                    id="role"
+                    onChange={handleChange}
                   >
-                    <option value="" />
-                    {countries.map((option) => (
-                      <option key={option.code} value={option.label}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
+                    <FormControlLabel value="student" control={<Radio />} label="Student" />
+                    <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                    <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                    <FormControlLabel value="superadmin" control={<Radio />} label="Super Admin" />
+                  </RadioGroup>
+                  {touched.role && errors.role && <FormHelperText>{errors.role}</FormHelperText>}
                 </Stack>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                {values?.role === 'student' && (
                   <TextField
                     fullWidth
-                    label="State/Region"
-                    {...getFieldProps('state')}
-                    error={Boolean(touched.state && errors.state)}
-                    helperText={touched.state && errors.state}
+                    autoComplete="experience"
+                    type="text"
+                    label="Experience"
+                    {...getFieldProps('experience')}
+                    error={Boolean(touched.experience && errors.experience)}
+                    helperText={touched.experience && errors.experience}
                   />
-                  <TextField
-                    fullWidth
-                    label="City"
-                    {...getFieldProps('city')}
-                    error={Boolean(touched.city && errors.city)}
-                    helperText={touched.city && errors.city}
-                  />
-                </Stack>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    label="Address"
-                    {...getFieldProps('address')}
-                    error={Boolean(touched.address && errors.address)}
-                    helperText={touched.address && errors.address}
-                  />
-                  <TextField fullWidth label="Zip/Code" {...getFieldProps('zipCode')} />
-                </Stack>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    label="Company"
-                    {...getFieldProps('company')}
-                    error={Boolean(touched.company && errors.company)}
-                    helperText={touched.company && errors.company}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Role"
-                    {...getFieldProps('role')}
-                    error={Boolean(touched.role && errors.role)}
-                    helperText={touched.role && errors.role}
-                  />
-                </Stack>
+                )}
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                   <LoadingButton type="submit" variant="contained" loading={isSubmitting}>

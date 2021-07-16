@@ -32,13 +32,14 @@ export const PATH_DASHBOARD = {
     app: path(ROOTS_DASHBOARD, '/overview')
   },
   calendar: path(ROOTS_DASHBOARD, '/calendar'),
-  user: {
-    root: path(ROOTS_DASHBOARD, '/user'),
-    profile: path(ROOTS_DASHBOARD, '/user/profile'),
-    cards: path(ROOTS_DASHBOARD, '/user/cards'),
-    list: path(ROOTS_DASHBOARD, '/user/list'),
-    newUser: path(ROOTS_DASHBOARD, '/user/new'),
-    editById: path(ROOTS_DASHBOARD, '/user/ada-lindgren/edit'),
-    account: path(ROOTS_DASHBOARD, '/user/account')
-  }
+  user: path(ROOTS_DASHBOARD, '/user')
+  // {
+  //   root: path(ROOTS_DASHBOARD, '/user'),
+  //   profile: path(ROOTS_DASHBOARD, '/user/profile'),
+  //   cards: path(ROOTS_DASHBOARD, '/user/cards'),
+  //   list: path(ROOTS_DASHBOARD, '/user/list'),
+  //   newUser: path(ROOTS_DASHBOARD, '/user/new'),
+  //   editById: path(ROOTS_DASHBOARD, '/user/ada-lindgren/edit'),
+  //   account: path(ROOTS_DASHBOARD, '/user/account')
+  // }
 };

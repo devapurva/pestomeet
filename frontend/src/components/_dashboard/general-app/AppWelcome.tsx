@@ -1,7 +1,10 @@
 import { Link as RouterLink } from 'react-router-dom';
+import { Icon } from '@iconify/react';
+import peopleOutline from '@iconify/icons-eva/people-outline';
 // material
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Typography, Button, Card, CardContent, CardProps } from '@material-ui/core';
+import UserCreateModal from 'pages/dashboard/UserCreateModal';
 import { SeoIllustration } from '../../../assets';
 
 // ----------------------------------------------------------------------
@@ -44,9 +47,21 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
           If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything
         </Typography>
 
-        <Button variant="contained" to="#" component={RouterLink}>
-          Go Now
-        </Button>
+        <div style={{ display: 'flex' }}>
+          <UserCreateModal />
+
+          <Button
+            variant="contained"
+            startIcon={<Icon icon={peopleOutline} />}
+            style={{ marginLeft: 15 }}
+          >
+            New Batch
+          </Button>
+        </div>
+
+        {/* <Button variant="contained" to="#" component={RouterLink}>
+          Add Batch
+        </Button> */}
       </CardContent>
 
       <SeoIllustration

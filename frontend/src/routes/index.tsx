@@ -82,13 +82,13 @@ export default function Router() {
         {
           path: '/dashboard/user',
           children: [
-            { path: '/', element: <Navigate to="/dashboard/user/profile" replace /> },
-            { path: 'profile', element: <UserProfile /> },
-            { path: 'cards', element: <UserCards /> },
-            { path: 'list', element: <UserList /> },
-            { path: 'new', element: <UserCreate /> },
-            { path: '/:name/edit', element: <UserCreate /> },
-            { path: 'account', element: <UserAccount /> }
+            { path: '/', element: <UserList /> }
+            // { path: 'profile', element: <UserProfile /> },
+            // { path: 'cards', element: <UserCards /> },
+            // { path: 'list', element: <UserList /> },
+            // { path: 'new', element: <UserCreate /> },
+            // { path: '/:name/edit', element: <UserCreate /> },
+            // { path: 'account', element: <UserAccount /> }
           ]
         },
         { path: '/dashboard/calendar', element: <Calendar /> }

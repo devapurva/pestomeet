@@ -5,7 +5,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
-import { getUserList } from '../../redux/slices/user';
+// import { getUserList } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -23,9 +23,9 @@ export default function UserCreate() {
   const isEdit = pathname.includes('edit');
   const currentUser = userList.find((user) => paramCase(user.name) === name);
 
-  useEffect(() => {
-    dispatch(getUserList());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getUserList());
+  // }, [dispatch]);
 
   return (
     <Page title="User: Create a new user">
@@ -34,12 +34,12 @@ export default function UserCreate() {
           heading={!isEdit ? 'Create a new user' : 'Edit user'}
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
+            { name: 'User', href: PATH_DASHBOARD.user },
             { name: !isEdit ? 'New user' : name }
           ]}
         />
 
-        <UserNewForm isEdit={isEdit} currentUser={currentUser} />
+        <UserNewForm isEdit={isEdit} />
       </Container>
     </Page>
   );
