@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-// hooks
-import useAuth from '../hooks/useAuth';
 // routes
 import { PATH_DASHBOARD, PATH_AUTH } from '../routes/paths';
 
@@ -12,9 +10,9 @@ type GuestGuardProps = {
 };
 
 export default function GuestGuard({ children }: GuestGuardProps) {
-  const { isAuthenticated } = useAuth();
+  const accessToken = window.localStorage.getItem('accessToken');
 
-  if (isAuthenticated) {
+  if (accessToken) {
     return <Navigate to={PATH_DASHBOARD.root} />;
   }
 

@@ -5,7 +5,7 @@ import { HTTPClient } from './axios';
 
 // ----------------------------------------------------------------------
 
-const isValidToken = (accessToken: string) => {
+const isValidToken = (accessToken: string | null) => {
   if (!accessToken) {
     return false;
   }

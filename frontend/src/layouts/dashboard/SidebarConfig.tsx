@@ -22,7 +22,7 @@ const sidebarConfig = [
     subheader: 'general',
     items: [
       {
-        title: 'app',
+        title: 'overview',
         path: PATH_DASHBOARD.general.app,
         icon: ICONS.dashboard
       }

@@ -116,27 +116,35 @@ export default function RegisterForm() {
           values?.email,
           values?.password,
           'inprogress'
-        );
-        enqueueSnackbar('Register success', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
+        ).then((response: any) => {
+          if (response?.data?.statusCode) {
+            enqueueSnackbar('Register success', {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
+            if (isMountedRef.current) {
+              setSubmitting(false);
+            }
+          } else {
+            handleError(response?.data, setSubmitting, setErrors);
+          }
         });
-        if (isMountedRef.current) {
-          setSubmitting(false);
-        }
       } catch (error) {
-        console.error(error);
-        if (isMountedRef.current) {
-          setErrors({ afterSubmit: error.message });
-          setSubmitting(false);
-        }
+        handleError(error, setSubmitting, setErrors);
       }
     }
   });
+
+  const handleError = (error: any, setSubmitting: any, setErrors: any) => {
+    if (isMountedRef.current) {
+      setSubmitting(false);
+      setErrors({ afterSubmit: error.message });
+    }
+  };
 
   const { values, errors, touched, handleSubmit, isSubmitting, getFieldProps, handleChange } =
     formik;

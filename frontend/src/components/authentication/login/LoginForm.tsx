@@ -54,28 +54,37 @@ export default function LoginForm() {
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
-        await login(values.email, values.password, null);
-        enqueueSnackbar('Login success', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
+        await login(values.email, values.password, null).then((response: any) => {
+          if (response?.data?.statusCode) {
+            enqueueSnackbar('Login success', {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
+            if (isMountedRef.current) {
+              setSubmitting(false);
+            }
+          } else {
+            handleError(response?.data, resetForm, setSubmitting, setErrors);
+          }
         });
-        if (isMountedRef.current) {
-          setSubmitting(false);
-        }
       } catch (error) {
         console.error(error);
-        resetForm();
-        if (isMountedRef.current) {
-          setSubmitting(false);
-          setErrors({ afterSubmit: error.message });
-        }
+        handleError(error, resetForm, setSubmitting, setErrors);
       }
     }
   });
+
+  const handleError = (error: any, resetForm: any, setSubmitting: any, setErrors: any) => {
+    resetForm();
+    if (isMountedRef.current) {
+      setSubmitting(false);
+      setErrors({ afterSubmit: error.message });
+    }
+  };
 
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
 

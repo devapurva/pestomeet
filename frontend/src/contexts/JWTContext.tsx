@@ -31,6 +31,8 @@ type JWTAuthPayload = {
   };
 };
 
+const REGEX = /(\b[a-z](?!\s))/g;
+
 export type JWTActions = ActionMap<JWTAuthPayload>[keyof ActionMap<JWTAuthPayload>];
 
 const initialState: AuthState = {
@@ -82,18 +84,20 @@ function AuthProvider({ children }: { children: ReactNode }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-
-        if (accessToken && isValidToken(accessToken)) {
+        // console.log(isValidToken(accessToken));
+        if (accessToken) {
           setSession(accessToken);
-
-          const response = await HTTPClient.get('/api/account/my-account');
-          const { user } = response.data;
+          const user: LoggedIn = jwt_decode(accessToken);
 
           dispatch({
             type: Types.Initial,
             payload: {
               isAuthenticated: true,
-              user
+              user: {
+                ...user,
+                name: user.name.replace(REGEX, (c) => c.toUpperCase()),
+                role: user.role.replace(REGEX, (c) => c.toUpperCase())
+              }
             }
           });
         } else {
@@ -105,8 +109,8 @@ function AuthProvider({ children }: { children: ReactNode }) {
             }
           });
         }
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
         dispatch({
           type: Types.Initial,
           payload: {
@@ -126,16 +130,26 @@ function AuthProvider({ children }: { children: ReactNode }) {
       phone,
       password
     });
-    const { result } = response.data;
-    const user: LoggedIn = jwt_decode(result);
-    // window.localStorage.setItem('accessToken', accessToken);
-    setSession(result);
-    dispatch({
-      type: Types.Login,
-      payload: {
-        user
-      }
-    });
+    if (response?.data?.statusCode) {
+      const { result } = response.data;
+      const user: LoggedIn = jwt_decode(result);
+      window.localStorage.setItem('accessToken', result);
+      setSession(result);
+      dispatch({
+        type: Types.Login,
+        payload: {
+          user: {
+            ...user,
+            name: user.name.replace(REGEX, (c) => c.toUpperCase()),
+            role:
+              user.role === 'superadmin'
+                ? 'super admin'.replace(REGEX, (c) => c.toUpperCase())
+                : user.role.replace(REGEX, (c) => c.toUpperCase())
+          }
+        }
+      });
+    }
+    return response;
   };
 
   const register = async (
@@ -175,9 +189,11 @@ function AuthProvider({ children }: { children: ReactNode }) {
       });
       navigate(PATH_AUTH.login);
     }
+    return response;
   };
 
   const logout = async () => {
+    window.localStorage.removeItem('accessToken');
     setSession(null);
     dispatch({ type: Types.Logout });
   };

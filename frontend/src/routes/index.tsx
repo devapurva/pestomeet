@@ -77,6 +77,7 @@ export default function Router() {
       ),
       children: [
         { path: '/', element: <Navigate to="/dashboard/overview" replace /> },
+        { path: '/dashboard', element: <Navigate to="/dashboard/overview" replace /> },
         { path: '/dashboard/overview', element: <GeneralApp /> },
         {
           path: '/dashboard/user',
