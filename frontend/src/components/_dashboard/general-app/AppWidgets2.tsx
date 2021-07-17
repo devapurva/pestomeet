@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import { Icon } from '@iconify/react';
 import emailFill from '@iconify/icons-eva/email-fill';
 // material
