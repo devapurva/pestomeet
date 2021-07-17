@@ -1,4 +1,4 @@
-name: Deploy Backend to Heroku
+name: Deploy PestoMeet to Heroku
 
 on:
   push:
