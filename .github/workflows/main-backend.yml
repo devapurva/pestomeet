@@ -35,5 +35,3 @@ jobs:
           heroku_app_name: "pestomeet-frontend" #Must be unique in Heroku
           heroku_email: "apurva.w17@gmail.com"
           appdir: "frontend"
-      - run: npm install
-      - run: npm run start
