@@ -1,6 +1,5 @@
 import { merge } from 'lodash';
 import { Icon } from '@iconify/react';
-import ReactApexChart from 'react-apexcharts';
 import emailFill from '@iconify/icons-eva/email-fill';
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
