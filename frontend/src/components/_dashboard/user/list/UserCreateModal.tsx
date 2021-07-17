@@ -14,18 +14,18 @@ import {
 } from '@material-ui/core';
 import plusFill from '@iconify/icons-eva/plus-fill';
 // redux
-import { useDispatch, useSelector, RootState } from '../../redux/store';
+import { useDispatch, useSelector, RootState } from '../../../../redux/store';
 // import { getUserList } from '../../redux/slices/user';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_DASHBOARD } from '../../../../routes/paths';
 // components
-import Page from '../../components/Page';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import UserNewForm from '../../components/_dashboard/user/UserNewForm';
+import Page from '../../..//Page';
+import HeaderBreadcrumbs from '../../..//HeaderBreadcrumbs';
+import UserNewForm from '../UserNewForm';
 
 // ----------------------------------------------------------------------
 
-export default function UserCreateModal({ setRefresh }: { setRefresh: any }) {
+export default function UserCreateModal() {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
@@ -55,7 +55,7 @@ export default function UserCreateModal({ setRefresh }: { setRefresh: any }) {
       <Dialog open={open} maxWidth="lg" onClose={handleClose}>
         <DialogTitle>Create New User</DialogTitle>
         <DialogContent>
-          <UserNewForm isEdit={false} setRefresh={setRefresh} handleClose={handleClose} />
+          <UserNewForm isEdit={isEdit} />
         </DialogContent>
         {/* <DialogActions>
         <Button onClick={handleClose} color="inherit">

@@ -77,7 +77,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }: Dash
       </Box>
 
       <Box sx={{ mb: 2, mx: 2.5 }}>
-        <Link underline="none" component={RouterLink} to={PATH_DASHBOARD.user}>
+        <Link underline="none" component={RouterLink} to={PATH_DASHBOARD.mentor}>
           <AccountStyle>
             <MyAvatar />
             <Box sx={{ ml: 2 }}>

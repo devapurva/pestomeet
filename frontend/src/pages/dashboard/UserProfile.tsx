@@ -122,7 +122,7 @@ export default function UserProfile() {
           heading="Profile"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user },
+            { name: 'User', href: PATH_DASHBOARD.mentor },
             { name: user?.name }
           ]}
         />

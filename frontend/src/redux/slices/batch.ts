@@ -19,12 +19,12 @@ import {
 
 // ----------------------------------------------------------------------
 
-type UserState = {
+type BatchState = {
   isLoading: boolean;
   error: boolean;
   myProfile: null | Profile;
   posts: UserPost[];
-  users: UserData[];
+  batches: [];
   userList: UserManager[];
   followers: Follower[];
   friends: Friend[];
@@ -35,12 +35,12 @@ type UserState = {
   notifications: NotificationSettings | null;
 };
 
-const initialState: UserState = {
+const initialState: BatchState = {
   isLoading: false,
   error: false,
   myProfile: null,
   posts: [],
-  users: [],
+  batches: [],
   userList: [],
   followers: [],
   friends: [],
@@ -52,16 +52,12 @@ const initialState: UserState = {
 };
 
 const slice = createSlice({
-  name: 'user',
+  name: 'batch',
   initialState,
   reducers: {
     // START LOADING
     startLoading(state) {
       state.isLoading = true;
-    },
-
-    emptyUserList(state) {
-      state.users = [];
     },
 
     // HAS ERROR
@@ -83,15 +79,15 @@ const slice = createSlice({
     },
 
     // GET USERS
-    getUsersSuccess(state, action) {
+    getBatchsSuccess(state, action) {
       state.isLoading = false;
-      state.users = action.payload;
+      state.batches = action.payload;
     },
 
     // DELETE USERS
-    deleteUser(state, action) {
-      const deleteUser = filter(state.userList, (user) => user.id !== action.payload);
-      state.userList = deleteUser;
+    deleteBatch(state, action) {
+      const deleteBatch = filter(state.userList, (user) => user.id !== action.payload);
+      state.userList = deleteBatch;
     },
 
     // GET FOLLOWERS
@@ -130,7 +126,7 @@ const slice = createSlice({
     },
 
     // GET MANAGE USERS
-    getUserListSuccess(state, action) {
+    getBatchListSuccess(state, action) {
       state.isLoading = false;
       state.userList = action.payload;
     },
@@ -165,7 +161,7 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const { onToggleFollow, deleteUser } = slice.actions;
+export const { onToggleFollow, deleteBatch } = slice.actions;
 
 // ----------------------------------------------------------------------
 
@@ -239,12 +235,12 @@ export function getGallery() {
 
 // ----------------------------------------------------------------------
 
-export function getUserList(type: string) {
+export function getBatchList(type: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.get(`/list/user/inprogress/${type}`);
-      dispatch(slice.actions.getUserListSuccess(response.data.result));
+      dispatch(slice.actions.getBatchListSuccess(response.data.result));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -309,49 +305,14 @@ export function getNotifications() {
 
 // ----------------------------------------------------------------------
 
-export function getUsers() {
+export function getBatchs() {
   return async () => {
     dispatch(slice.actions.startLoading());
-    dispatch(slice.actions.emptyUserList());
     try {
       const response = await HTTPClient.get('/api/user/all');
-      dispatch(slice.actions.getUsersSuccess(response.data.users));
+      dispatch(slice.actions.getBatchsSuccess(response.data.batches));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
   };
 }
-
-// ----------------------------------------------------------------------
-
-export const addUser = async (
-  name: string,
-  role: string,
-  phone: string,
-  experience: string,
-  email: string,
-  password: string,
-  approval: string
-) => {
-  const response = await HTTPClient.post('/register', {
-    name,
-    role,
-    phone,
-    experience,
-    email,
-    password,
-    approval
-  });
-  if (response.data.statusCode) {
-    const user = {
-      name,
-      role,
-      phone,
-      experience,
-      email,
-      password,
-      approval
-    };
-  }
-  return response;
-};

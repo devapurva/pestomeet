@@ -1,3 +1,5 @@
+import GroupIcon from '@material-ui/icons/Group';
+import CastForEducationIcon from '@material-ui/icons/CastForEducation';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -8,9 +10,10 @@ import SvgIconStyle from '../../components/SvgIconStyle';
 const getIcon = (name: string) => (
   <SvgIconStyle src={`/static/icons/navbar/${name}.svg`} sx={{ width: '100%', height: '100%' }} />
 );
-
 const ICONS = {
-  user: getIcon('ic_user'),
+  student: getIcon('ic_user'),
+  mentor: <GroupIcon />,
+  batch: <CastForEducationIcon />,
   calendar: getIcon('ic_calendar'),
   dashboard: getIcon('ic_dashboard')
 };
@@ -36,17 +39,19 @@ const sidebarConfig = [
     items: [
       // MANAGEMENT : USER
       {
-        title: 'user',
-        path: PATH_DASHBOARD.user,
-        icon: ICONS.user
-        // children: [
-        //   { title: 'profile', path: PATH_DASHBOARD.user.profile },
-        //   { title: 'cards', path: PATH_DASHBOARD.user.cards },
-        //   { title: 'list', path: PATH_DASHBOARD.user.list },
-        //   { title: 'create', path: PATH_DASHBOARD.user.newUser },
-        //   { title: 'edit', path: PATH_DASHBOARD.user.editById },
-        //   { title: 'account', path: PATH_DASHBOARD.user.account }
-        // ]
+        title: 'Students',
+        path: PATH_DASHBOARD.student,
+        icon: ICONS.student
+      },
+      {
+        title: 'Mentors',
+        path: PATH_DASHBOARD.mentor,
+        icon: ICONS.mentor
+      },
+      {
+        title: 'Batches',
+        path: PATH_DASHBOARD.batch,
+        icon: ICONS.batch
       }
     ]
   },

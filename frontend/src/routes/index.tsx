@@ -80,16 +80,16 @@ export default function Router() {
         { path: '/dashboard', element: <Navigate to="/dashboard/overview" replace /> },
         { path: '/dashboard/overview', element: <GeneralApp /> },
         {
-          path: '/dashboard/user',
-          children: [
-            { path: '/', element: <UserList /> }
-            // { path: 'profile', element: <UserProfile /> },
-            // { path: 'cards', element: <UserCards /> },
-            // { path: 'list', element: <UserList /> },
-            // { path: 'new', element: <UserCreate /> },
-            // { path: '/:name/edit', element: <UserCreate /> },
-            // { path: 'account', element: <UserAccount /> }
-          ]
+          path: '/dashboard/mentor',
+          children: [{ path: '/', element: <MentorList /> }]
+        },
+        {
+          path: '/dashboard/student',
+          children: [{ path: '/', element: <StudentList /> }]
+        },
+        {
+          path: '/dashboard/batch',
+          children: [{ path: '/', element: <Batches /> }]
         },
         { path: '/dashboard/calendar', element: <Calendar /> }
       ]
@@ -120,11 +120,9 @@ const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetP
 const VerifyCode = Loadable(lazy(() => import('../pages/authentication/VerifyCode')));
 // Dashboard
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
-const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
-const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
-const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
-const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
-const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
+const StudentList = Loadable(lazy(() => import('../pages/dashboard/StudentList')));
+const MentorList = Loadable(lazy(() => import('../pages/dashboard/MentorList')));
+const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 // Main
 const ComingSoon = Loadable(lazy(() => import('../pages/ComingSoon')));

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import peopleOutline from '@iconify/icons-eva/people-outline';
@@ -29,6 +30,7 @@ interface AppWelcomeProps extends CardProps {
 }
 
 export default function AppWelcome({ displayName }: AppWelcomeProps) {
+  const [refresh, setRefresh] = useState(false);
   return (
     <RootStyle>
       <CardContent
@@ -48,7 +50,7 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
         </Typography>
 
         <div style={{ display: 'flex' }}>
-          <UserCreateModal />
+          <UserCreateModal setRefresh={setRefresh} />
 
           <Button
             variant="contained"

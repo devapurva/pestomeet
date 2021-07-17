@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { deleteUser } from '../../redux/slices/user';
+import { deleteUser, getUserList } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // @types
@@ -34,7 +34,7 @@ import Label from '../../components/Label';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../components/_dashboard/user/list';
+import { UserList } from '../../components/_dashboard/user/list';
 import UserCreateModal from './UserCreateModal';
 
 // ----------------------------------------------------------------------
@@ -85,20 +85,25 @@ function applySortFilter(
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserList() {
+export default function MentorList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { userList } = useSelector((state: RootState) => state.user);
   const [page, setPage] = useState(0);
+  const [refresh, setRefresh] = useState(false);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // useEffect(() => {
-  //   dispatch(getUserList());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(getUserList('mentor'));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (refresh) dispatch(getUserList('mentor'));
+  }, [refresh]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -153,115 +158,34 @@ export default function UserList() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="User: List">
+    <Page title="Mentors: List">
       <Container>
         <HeaderBreadcrumbs
-          heading="User List"
+          heading="Mentor List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user },
+            { name: 'Mentor', href: PATH_DASHBOARD.mentor },
             { name: 'List' }
           ]}
-          action={<UserCreateModal />}
+          action={<UserCreateModal setRefresh={setRefresh} />}
         />
-
-        <Card>
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-          />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={userList.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id, name, role, experience, approval, avatar, email, phone } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={isItemSelected} onClick={() => handleClick(name)} />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={name} src={avatar} />
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{phone}</TableCell>
-                          <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">{experience}</TableCell>
-                          <TableCell align="left">
-                            {approval === 'approved' ? 'Yes' : 'No'}
-                          </TableCell>
-                          <TableCell align="left">
-                            <Label
-                              variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                              color={(approval === 'approved' && 'success') || 'error'}
-                            >
-                              {sentenceCase(approval)}
-                            </Label>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={name} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-                {isUserNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={userList.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={(e, page) => setPage(page)}
-            onRowsPerPageChange={(e) => handleChangeRowsPerPage}
-          />
-        </Card>
+        <UserList
+          type="mentor"
+          handleRequestSort={handleRequestSort}
+          handleSelectAllClick={handleSelectAllClick}
+          handleClick={handleClick}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          handleFilterByName={handleFilterByName}
+          handleDeleteUser={handleDeleteUser}
+          page={page}
+          setPage={setPage}
+          order={order}
+          selected={selected}
+          orderBy={orderBy}
+          filterName={filterName}
+          rowsPerPage={rowsPerPage}
+          userList={userList}
+        />
       </Container>
     </Page>
   );

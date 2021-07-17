@@ -60,7 +60,7 @@ export type Profile = {
 
 export type UserManager = {
   id: string;
-  avatar: string;
+  avatar?: string;
   name: string;
   email: string;
   phone: string;

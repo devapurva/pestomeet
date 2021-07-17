@@ -34,7 +34,7 @@ export default function UserCreate() {
           heading={!isEdit ? 'Create a new user' : 'Edit user'}
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user },
+            { name: 'User', href: PATH_DASHBOARD.mentor },
             { name: !isEdit ? 'New user' : name }
           ]}
         />

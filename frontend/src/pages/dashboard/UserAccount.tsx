@@ -94,7 +94,7 @@ export default function UserAccount() {
           heading="Account"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user },
+            { name: 'User', href: PATH_DASHBOARD.mentor },
             { name: 'Account Settings' }
           ]}
         />

@@ -8,6 +8,7 @@ import eyeFill from '@iconify/icons-eva/eye-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { Icon } from '@iconify/react';
+import MIconButton from 'components/@material-extend/MIconButton';
 // material
 import { LoadingButton } from '@material-ui/lab';
 import {
@@ -28,12 +29,13 @@ import {
 } from '@material-ui/core';
 // utils
 import { fData } from '../../../utils/formatNumber';
-import fakeRequest from '../../../utils/fakeRequest';
+import { addUser } from '../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
 import { UserManager } from '../../../@types/user';
 //
+import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import Label from '../../Label';
 import { UploadAvatar } from '../../upload';
 
@@ -48,11 +50,19 @@ const useStyles = makeStyles({
 type UserNewFormProps = {
   isEdit: boolean;
   currentUser?: UserManager;
+  setRefresh?: any;
+  handleClose?: any;
 };
 
-export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
+export default function UserNewForm({
+  isEdit,
+  currentUser,
+  setRefresh,
+  handleClose
+}: UserNewFormProps) {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  const isMountedRef = useIsMountedRef();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -78,9 +88,6 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
         .required(
           `Enter valid password. One uppercase, one lowercase, one special character and no spaces`
         ),
-      confirmPassword: Yup.string()
-        .required('Required')
-        .oneOf([Yup.ref('password'), null], 'Passwords must match'),
       experience: Yup.string().when('role', {
         is: (role: string) => role === 'student',
         then: Yup.string()
@@ -92,7 +99,7 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
           then: Yup.string().nullable()
         })
       }),
-      avatar: Yup.mixed().required('Avatar is required')
+      avatar: Yup.mixed()
     },
     [['email', 'phone']]
   );
@@ -101,7 +108,6 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
     enableReinitialize: true,
     initialValues: {
       password: '',
-      confirmPassword: '',
       name: currentUser?.name || '',
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
@@ -111,20 +117,47 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
       experience: currentUser?.experience || ''
     },
     validationSchema: NewUserSchema,
-    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
+    onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
-        await fakeRequest(500);
-        resetForm();
-        setSubmitting(false);
-        enqueueSnackbar(!isEdit ? 'Create success' : 'Update success', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user);
+        await addUser(
+          values?.name,
+          values?.role,
+          values?.phone,
+          values?.role === 'student' ? values?.experience : 'not_applicable',
+          values?.email,
+          values?.password,
+          'inprogress'
+        ).then((response: any) => {
+          if (response?.data?.statusCode) {
+            enqueueSnackbar('User added successfully', {
+              variant: 'success',
+              action: (key) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+                  <Icon icon={closeFill} />
+                </MIconButton>
+              )
+            });
+            if (isMountedRef.current) {
+              setSubmitting(false);
+            }
+            if (setRefresh) setRefresh(true);
+            if (handleClose) handleClose();
+          } else {
+            handleError(response?.data, setSubmitting, setErrors);
+          }
+        });
       } catch (error) {
-        console.error(error);
-        setSubmitting(false);
-        setErrors(error);
+        handleError(error, setSubmitting, setErrors);
       }
     }
   });
+
+  const handleError = (error: any, setSubmitting: any, setErrors: any) => {
+    if (isMountedRef.current) {
+      setSubmitting(false);
+      setErrors({ afterSubmit: error.message });
+    }
+  };
 
   const {
     errors,
@@ -149,6 +182,8 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
     },
     [setFieldValue]
   );
+
+  console.log(errors);
 
   return (
     <FormikProvider value={formik}>
@@ -247,15 +282,6 @@ export default function UserNewForm({ isEdit, currentUser }: UserNewFormProps) {
                 </Stack>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    autoComplete="experience"
-                    type="text"
-                    label="Experience"
-                    {...getFieldProps('experience')}
-                    error={Boolean(touched.experience && errors.experience)}
-                    helperText={touched.experience && errors.experience}
-                  />
                   <TextField
                     fullWidth
                     autoComplete="current-password"
