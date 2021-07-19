@@ -10,7 +10,7 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { useState, useRef, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
-import { Card, Button, Container, DialogTitle, useMediaQuery } from '@material-ui/core';
+import { Card, Button, Container, Dialog, DialogTitle, useMediaQuery } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import {
@@ -25,7 +25,6 @@ import {
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import Page from '../../components/Page';
-import { DialogAnimate } from '../../components/animate';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { CalendarForm, CalendarStyle, CalendarToolbar } from '../../components/_dashboard/calendar';
 
@@ -213,7 +212,7 @@ export default function Calendar() {
           </CalendarStyle>
         </Card>
 
-        <DialogAnimate open={isOpenModal} onClose={handleCloseModal}>
+        <Dialog open={isOpenModal} onClose={handleCloseModal}>
           <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
 
           <CalendarForm
@@ -221,7 +220,7 @@ export default function Calendar() {
             range={selectedRange}
             onCancel={handleCloseModal}
           />
-        </DialogAnimate>
+        </Dialog>
       </Container>
     </Page>
   );

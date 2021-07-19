@@ -99,7 +99,6 @@ export default function Router() {
       path: '*',
       element: <LogoOnlyLayout />,
       children: [
-        { path: 'coming-soon', element: <ComingSoon /> },
         { path: 'maintenance', element: <Maintenance /> },
         { path: '500', element: <Page500 /> },
         { path: '404', element: <NotFound /> },
@@ -124,7 +123,6 @@ const MentorList = Loadable(lazy(() => import('../pages/dashboard/MentorList')))
 const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 // Main
-const ComingSoon = Loadable(lazy(() => import('../pages/ComingSoon')));
 const Maintenance = Loadable(lazy(() => import('../pages/Maintenance')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));

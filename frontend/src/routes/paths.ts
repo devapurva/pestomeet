@@ -22,7 +22,6 @@ export const PATH_AUTH = {
 };
 
 export const PATH_PAGE = {
-  comingSoon: '/coming-soon',
   maintenance: '/maintenance',
   page404: '/404',
   page500: '/500'
@@ -37,13 +36,4 @@ export const PATH_DASHBOARD = {
   mentor: path(ROOTS_DASHBOARD, '/mentor'),
   student: path(ROOTS_DASHBOARD, '/student'),
   batch: path(ROOTS_DASHBOARD, '/batch')
-  // {
-  //   root: path(ROOTS_DASHBOARD, '/user'),
-  //   profile: path(ROOTS_DASHBOARD, '/user/profile'),
-  //   cards: path(ROOTS_DASHBOARD, '/user/cards'),
-  //   list: path(ROOTS_DASHBOARD, '/user/list'),
-  //   newUser: path(ROOTS_DASHBOARD, '/user/new'),
-  //   editById: path(ROOTS_DASHBOARD, '/user/ada-lindgren/edit'),
-  //   account: path(ROOTS_DASHBOARD, '/user/account')
-  // }
 };
