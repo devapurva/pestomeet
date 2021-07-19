@@ -188,7 +188,13 @@ export default function UserList({
                       </TableCell>
 
                       <TableCell align="right">
-                        <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={name} />
+                        {/* <UserMoreMenu
+                          setRefresh={setRefresh}
+                          currentUser={row}
+                          onDelete={() => handleDeleteUser(id)}
+                          onApprove={() => handleApproveUser(row)}
+                          userName={name}
+                        /> */}
                       </TableCell>
                     </TableRow>
                   );

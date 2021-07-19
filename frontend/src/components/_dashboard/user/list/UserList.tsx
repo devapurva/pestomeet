@@ -1,5 +1,8 @@
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
+import { useSnackbar } from 'notistack';
+import closeFill from '@iconify/icons-eva/close-fill';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -17,9 +20,10 @@ import {
   TableContainer,
   TablePagination
 } from '@material-ui/core';
+import MIconButton from 'components/@material-extend/MIconButton';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../../redux/store';
-import { deleteUser } from '../../../../redux/slices/user';
+import { deleteUser, editUser } from '../../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
@@ -104,6 +108,7 @@ type UserListProps = {
   filterName: string;
   rowsPerPage: number;
   userList: UserManager[];
+  setRefresh?: any;
 };
 
 export default function UserList({
@@ -121,9 +126,11 @@ export default function UserList({
   orderBy,
   filterName,
   rowsPerPage,
-  userList
+  userList,
+  setRefresh
 }: UserListProps) {
   const theme = useTheme();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 
@@ -153,6 +160,39 @@ export default function UserList({
       default:
         return 'NA';
     }
+  };
+
+  const handleApproveUser = async (row: UserManager) => {
+    await editUser(
+      row?.id,
+      row?.name,
+      row?.role,
+      row?.phone,
+      row?.role === 'student' ? row?.experience : 'not_applicable',
+      row?.email,
+      'approved'
+    ).then((response: any) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('User approved successfully', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+      } else {
+        enqueueSnackbar('Error. Try Again.', {
+          variant: 'error',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+      }
+      setRefresh(true);
+    });
   };
 
   return (
@@ -191,9 +231,6 @@ export default function UserList({
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isItemSelected} onClick={() => handleClick(name)} />
-                      </TableCell>
                       <TableCell component="th" scope="row" padding="none">
                         <Stack direction="row" alignItems="center" spacing={2}>
                           <Avatar alt={name} src={avatar} />
@@ -228,7 +265,13 @@ export default function UserList({
                       </TableCell>
 
                       <TableCell align="left">
-                        <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={name} />
+                        <UserMoreMenu
+                          setRefresh={setRefresh}
+                          currentUser={row}
+                          onDelete={() => handleDeleteUser(id)}
+                          onApprove={() => handleApproveUser(row)}
+                          userName={name}
+                        />
                       </TableCell>
                     </TableRow>
                   );

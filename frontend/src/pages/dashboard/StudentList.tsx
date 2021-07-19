@@ -168,7 +168,7 @@ export default function StudentList() {
             { name: 'Student', href: PATH_DASHBOARD.student },
             { name: 'List' }
           ]}
-          action={<UserCreateModal setRefresh={setRefresh} />}
+          action={<UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />}
         />
         <UserList
           type="student"
@@ -186,6 +186,7 @@ export default function StudentList() {
           filterName={filterName}
           rowsPerPage={rowsPerPage}
           userList={studentList}
+          setRefresh={setRefresh}
         />
       </Container>
     </Page>

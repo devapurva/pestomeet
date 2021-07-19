@@ -169,7 +169,7 @@ export default function MentorList() {
             { name: 'Mentor', href: PATH_DASHBOARD.mentor },
             { name: 'List' }
           ]}
-          action={<UserCreateModal setRefresh={setRefresh} />}
+          action={<UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />}
         />
         <UserList
           type="mentor"
@@ -187,6 +187,7 @@ export default function MentorList() {
           filterName={filterName}
           rowsPerPage={rowsPerPage}
           userList={mentorList}
+          setRefresh={setRefresh}
         />
       </Container>
     </Page>

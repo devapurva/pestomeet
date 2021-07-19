@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { Form, FormikProvider, useFormik } from 'formik';
+import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -27,9 +27,7 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core';
-// utils
-import { fData } from '../../../utils/formatNumber';
-import { addUser } from '../../../redux/slices/user';
+import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
@@ -49,9 +47,35 @@ const useStyles = makeStyles({
 
 type UserNewFormProps = {
   isEdit: boolean;
-  currentUser?: UserManager;
+  currentUser?: UserManager | null;
   setRefresh?: any;
   handleClose?: any;
+};
+
+type FormikValues = {
+  password: string;
+  name: string;
+  email: string;
+  phone: string;
+  avatar: string | null;
+  approval: string | undefined;
+  role: string;
+  experience: string;
+};
+
+type FormikSetErrors = {
+  (
+    errors: FormikErrors<{
+      password: string;
+      name: string;
+      email: string;
+      phone: string;
+      avatar: string | null;
+      approval: string | undefined;
+      role: string;
+      experience: string;
+    }>
+  ): void;
 };
 
 export default function UserNewForm({
@@ -104,6 +128,41 @@ export default function UserNewForm({
     [['email', 'phone']]
   );
 
+  const EditUserSchema = Yup.object().shape(
+    {
+      name: Yup.string()
+        .max(50, `Full name cannot be more than ${50} characters`)
+        .required('Full name is required'),
+      phone: Yup.string()
+        .matches(/^([7-9][0-9]{9})$/, 'Enter valid phone number')
+        .required('Phone number is required'),
+      email: Yup.string().email().required('Enter valid email-id'),
+      role: Yup.string().required('Role is Required'),
+      password: Yup.string()
+        .min(8, `Password must be atleast ${8} characters`)
+        .max(20, `Password cannot be more than ${20} characters`)
+        .matches(
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,20}\S$/,
+          `Password must contain - One uppercase, one lowercase, one special character, no spaces and of ${
+            8 - 20
+          } characters.`
+        ),
+      experience: Yup.string().when('role', {
+        is: (role: string) => role === 'student',
+        then: Yup.string()
+          .max(2, `Experience cannot be more than ${2} characters`)
+          .required('Experience is required for student role')
+          .nullable(),
+        otherwise: Yup.string().when('role', {
+          is: (role: string) => role === 'mentor',
+          then: Yup.string().nullable()
+        })
+      }),
+      avatar: Yup.mixed()
+    },
+    [['email', 'phone']]
+  );
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -116,41 +175,85 @@ export default function UserNewForm({
       role: currentUser?.role || '',
       experience: currentUser?.experience || ''
     },
-    validationSchema: NewUserSchema,
+    validationSchema: isEdit ? EditUserSchema : NewUserSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
-        await addUser(
-          values?.name,
-          values?.role,
-          values?.phone,
-          values?.role === 'student' ? values?.experience : 'not_applicable',
-          values?.email,
-          values?.password,
-          'inprogress'
-        ).then((response: any) => {
-          if (response?.data?.statusCode) {
-            enqueueSnackbar('User added successfully', {
-              variant: 'success',
-              action: (key) => (
-                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                  <Icon icon={closeFill} />
-                </MIconButton>
-              )
-            });
-            if (isMountedRef.current) {
-              setSubmitting(false);
-            }
-            if (setRefresh) setRefresh(true);
-            if (handleClose) handleClose();
-          } else {
-            handleError(response?.data, setSubmitting, setErrors);
-          }
-        });
+        if (isEdit) {
+          handleEditUser(values, { setErrors, setSubmitting });
+        } else {
+          handleAddUser(values, { setErrors, setSubmitting });
+        }
       } catch (error) {
         handleError(error, setSubmitting, setErrors);
       }
     }
   });
+
+  const handleAddUser = async (
+    values: FormikValues,
+    { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
+  ) => {
+    await addUser(
+      values?.name,
+      values?.role,
+      values?.phone,
+      values?.role === 'student' ? values?.experience : 'not_applicable',
+      values?.email,
+      values?.password,
+      'inprogress'
+    ).then((response: any) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('User added successfully', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+        if (isMountedRef.current) {
+          setSubmitting(false);
+        }
+        if (setRefresh) setRefresh(true);
+        if (handleClose) handleClose();
+      } else {
+        handleError(response?.data, setSubmitting, setErrors);
+      }
+    });
+  };
+
+  const handleEditUser = async (
+    values: FormikValues,
+    { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
+  ) => {
+    await editUser(
+      currentUser?.id,
+      values?.name,
+      values?.role,
+      values?.phone,
+      values?.role === 'student' ? values?.experience : 'not_applicable',
+      values?.email,
+      'inprogress'
+    ).then((response: any) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('User updated successfully', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+        if (isMountedRef.current) {
+          setSubmitting(false);
+        }
+        if (setRefresh) setRefresh(true);
+        if (handleClose) handleClose();
+      } else {
+        handleError(response?.data, setSubmitting, setErrors);
+      }
+    });
+  };
 
   const handleError = (error: any, setSubmitting: any, setErrors: any) => {
     if (isMountedRef.current) {
@@ -183,54 +286,54 @@ export default function UserNewForm({
     [setFieldValue]
   );
 
-  console.log(errors);
-
   return (
     <FormikProvider value={formik}>
       <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ py: 10, px: 3 }}>
-              {isEdit && (
-                <Label
-                  color="success"
-                  sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-                >
-                  Success
-                </Label>
-              )}
+          {isEdit && (
+            <Grid item xs={12} md={4}>
+              <Card sx={{ py: 10, px: 3 }}>
+                {/* {isEdit && (
+                  <Label
+                    color="success"
+                    sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
+                  >
+                    Success
+                  </Label>
+                )} */}
 
-              <Box sx={{ mb: 5 }}>
-                <UploadAvatar
-                  accept="image/*"
-                  file={values.avatar}
-                  maxSize={3145728}
-                  onDrop={handleDrop}
-                  error={Boolean(touched.avatar && errors.avatar)}
-                  caption={
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        mt: 2,
-                        mx: 'auto',
-                        display: 'block',
-                        textAlign: 'center',
-                        color: 'text.secondary'
-                      }}
-                    >
-                      Allowed *.jpeg, *.jpg, *.png, *.gif
-                      <br /> max size of {fData(3145728)}
-                    </Typography>
-                  }
-                />
-                <FormHelperText error sx={{ px: 2, textAlign: 'center' }}>
-                  {touched.avatar && errors.avatar}
-                </FormHelperText>
-              </Box>
-            </Card>
-          </Grid>
+                <Box sx={{ mb: 5 }}>
+                  <UploadAvatar
+                    accept="image/*"
+                    file={values.avatar}
+                    maxSize={3145728}
+                    onDrop={handleDrop}
+                    error={Boolean(touched.avatar && errors.avatar)}
+                    caption={
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          mt: 2,
+                          mx: 'auto',
+                          display: 'block',
+                          textAlign: 'center',
+                          color: 'text.secondary'
+                        }}
+                      >
+                        Allowed *.jpeg, *.jpg, *.png, *.gif
+                        <br /> max size of 2MB
+                      </Typography>
+                    }
+                  />
+                  <FormHelperText error sx={{ px: 2, textAlign: 'center' }}>
+                    {touched.avatar && errors.avatar}
+                  </FormHelperText>
+                </Box>
+              </Card>
+            </Grid>
+          )}
 
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={isEdit ? 8 : 12}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>

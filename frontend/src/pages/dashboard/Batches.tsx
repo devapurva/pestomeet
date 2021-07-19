@@ -167,7 +167,7 @@ export default function Batches() {
             { name: 'Batches', href: PATH_DASHBOARD.batch },
             { name: 'List' }
           ]}
-          action={<UserCreateModal setRefresh={setRefresh} />}
+          action={<UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />}
         />
         <BatchList
           type="mentor"

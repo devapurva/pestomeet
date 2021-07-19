@@ -382,3 +382,42 @@ export const addUser = async (
   }
   return response;
 };
+
+// ----------------------------------------------------------------------
+
+export const addAvatar = async (formData: FormData, id: string) => {
+  const response = await HTTPClient.post(`/avatar/upload/${id}`, formData);
+  return response;
+};
+
+// ----------------------------------------------------------------------
+
+export const editUser = async (
+  id: string | undefined,
+  name: string,
+  role: string,
+  phone: string,
+  experience: string,
+  email: string,
+  approval: string
+) => {
+  const response = await HTTPClient.patch(`/edit/user/${id}`, {
+    name,
+    role,
+    phone,
+    experience,
+    email,
+    approval
+  });
+  if (response.data.statusCode) {
+    const user = {
+      name,
+      role,
+      phone,
+      experience,
+      email,
+      approval
+    };
+  }
+  return response;
+};

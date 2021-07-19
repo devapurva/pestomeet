@@ -1,25 +1,38 @@
 import { Icon } from '@iconify/react';
-import { paramCase } from 'change-case';
 import { useRef, useState } from 'react';
-import editFill from '@iconify/icons-eva/edit-fill';
-import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
+import checkAll from '@iconify/icons-mdi/check-all';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
+// components
+import UserCreateModal from '../../../../pages/dashboard/UserCreateModal';
+import { UserManager } from '../../../../@types/user';
 
 // ----------------------------------------------------------------------
 
 type UserMoreMenuProps = {
   onDelete: VoidFunction;
   userName: string;
+  setRefresh?: any;
+  currentUser?: UserManager;
+  onApprove: VoidFunction;
 };
 
-export default function UserMoreMenu({ onDelete, userName }: UserMoreMenuProps) {
+export default function UserMoreMenu({
+  onDelete,
+  onApprove,
+  userName,
+  currentUser,
+  setRefresh
+}: UserMoreMenuProps) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(!open);
+  };
 
   return (
     <>
@@ -37,22 +50,27 @@ export default function UserMoreMenu({ onDelete, userName }: UserMoreMenuProps) 
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
+        <MenuItem onClick={handleClickOpen} sx={{ color: 'text.secondary' }}>
+          <UserCreateModal
+            isEdit={true}
+            setRefresh={setRefresh}
+            currentUser={currentUser}
+            openModal={open}
+          />
+        </MenuItem>
+
+        <MenuItem onClick={onApprove} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Icon icon={checkAll} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Approve" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-
-        <MenuItem
-          component={RouterLink}
-          to={`${PATH_DASHBOARD.mentor}/${paramCase(userName)}/edit`}
-          sx={{ color: 'text.secondary' }}
-        >
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

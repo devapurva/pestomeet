@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -7,17 +6,13 @@ import { Icon } from '@iconify/react';
 import {
   Button,
   Dialog,
+  DialogTitle,
   DialogContent,
   ListItemIcon,
-  ListItemText,
-  WithStyles
+  ListItemText
 } from '@material-ui/core';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import editFill from '@iconify/icons-eva/edit-fill';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
@@ -32,40 +27,6 @@ type UserCreateModalProps = {
   setRefresh: any;
   openModal?: boolean | undefined;
 };
-
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2)
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
-    }
-  });
-
-export interface DialogTitleProps extends WithStyles<typeof styles> {
-  id: string;
-  children: React.ReactNode | string;
-  onClose: () => void;
-}
-
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
 
 export default function UserCreateModal({
   isEdit,
@@ -116,9 +77,7 @@ export default function UserCreateModal({
           }
         }}
       >
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'Edit User' : 'Create New User'}
-        </DialogTitle>
+        <DialogTitle>{isEdit ? 'Edit User' : 'Create New User'}</DialogTitle>
         <DialogContent>
           <UserNewForm
             isEdit={isEdit}

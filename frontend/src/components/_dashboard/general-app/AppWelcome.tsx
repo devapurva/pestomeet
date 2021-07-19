@@ -50,7 +50,7 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
         </Typography>
 
         <div style={{ display: 'flex' }}>
-          <UserCreateModal setRefresh={setRefresh} />
+          <UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />
 
           <Button
             variant="contained"
