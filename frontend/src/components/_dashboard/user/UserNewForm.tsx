@@ -227,27 +227,6 @@ export default function UserNewForm({
                   {touched.avatar && errors.avatar}
                 </FormHelperText>
               </Box>
-
-              {/* <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Switch
-                    {...getFieldProps('approval')}
-                    checked={values.approval === 'approved' ? true : false}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Email Verified
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Disabling this will automatically send the user a verification email
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-              /> */}
             </Card>
           </Grid>
 
@@ -282,27 +261,6 @@ export default function UserNewForm({
                 </Stack>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    autoComplete="current-password"
-                    type={showPassword ? 'text' : 'password'}
-                    label="Password"
-                    {...getFieldProps('password')}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                            <Icon icon={showPassword ? eyeFill : eyeOffFill} />
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                    error={Boolean(touched.password && errors.password)}
-                    helperText={touched.password && errors.password}
-                  />
-                </Stack>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <FormLabel className={classes.legend} component="legend">
                     Role:
                   </FormLabel>
@@ -322,17 +280,40 @@ export default function UserNewForm({
                   {touched.role && errors.role && <FormHelperText>{errors.role}</FormHelperText>}
                 </Stack>
 
-                {values?.role === 'student' && (
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
-                    autoComplete="experience"
-                    type="text"
-                    label="Experience"
-                    {...getFieldProps('experience')}
-                    error={Boolean(touched.experience && errors.experience)}
-                    helperText={touched.experience && errors.experience}
+                    style={{ width: values?.role === 'student' ? '100%' : '50%' }}
+                    autoComplete="current-password"
+                    type={showPassword ? 'text' : 'password'}
+                    label="Password"
+                    {...getFieldProps('password')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                            <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                    error={Boolean(touched.password && errors.password)}
+                    helperText={touched.password && errors.password}
                   />
-                )}
+                  {values?.role === 'student' ? (
+                    <TextField
+                      fullWidth
+                      autoComplete="experience"
+                      type="text"
+                      label="Experience"
+                      {...getFieldProps('experience')}
+                      error={Boolean(touched.experience && errors.experience)}
+                      helperText={touched.experience && errors.experience}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </Stack>
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                   <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
