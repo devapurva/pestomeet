@@ -1,5 +1,4 @@
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
@@ -38,8 +37,18 @@ const TABLE_HEAD = [
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'phone', label: 'Phone', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
+  { id: 'approval', label: 'Approval Status', alignRight: false },
+  { id: '', label: 'Actions', alignRight: false }
+];
+
+const STUDENT_HEAD = [
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phone', label: 'Phone', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
   { id: 'experience', label: 'Experience', alignRight: false },
-  { id: 'approval', label: 'Approval Status', alignRight: false }
+  { id: 'approval', label: 'Approval Status', alignRight: false },
+  { id: '', label: 'Actions', alignRight: false }
 ];
 
 // ----------------------------------------------------------------------
@@ -115,17 +124,36 @@ export default function UserList({
   userList
 }: UserListProps) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(getUserList());
-  // }, [dispatch]);
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 
   const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
+
+  const getApprovalText = (approval: string) => {
+    switch (approval) {
+      case 'inprogress':
+        return 'IN PROGRESS';
+      case 'approved':
+        return 'APPROVED';
+      case 'deleted':
+        return 'DELETED';
+      default:
+        return 'NA';
+    }
+  };
+
+  const getRoleText = (approval: string) => {
+    switch (approval) {
+      case 'student':
+        return 'STUDENT';
+      case 'mentor':
+        return 'MENTOR';
+      default:
+        return 'NA';
+    }
+  };
 
   return (
     <Card>
@@ -141,7 +169,7 @@ export default function UserList({
             <UserListHead
               order={order}
               orderBy={orderBy}
-              headLabel={TABLE_HEAD}
+              headLabel={type === 'mentor' || type === 'all' ? TABLE_HEAD : STUDENT_HEAD}
               rowCount={userList.length}
               numSelected={selected.length}
               onRequestSort={handleRequestSort}
@@ -176,18 +204,30 @@ export default function UserList({
                       </TableCell>
                       <TableCell align="left">{email}</TableCell>
                       <TableCell align="left">{phone}</TableCell>
-                      <TableCell align="left">{role}</TableCell>
-                      <TableCell align="left">{experience}</TableCell>
                       <TableCell align="left">
                         <Label
                           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(approval === 'approved' && 'success') || 'error'}
+                          color={(role === 'mentor' && 'warning') || 'info'}
                         >
-                          {sentenceCase(approval)}
+                          {getRoleText(role)}
+                        </Label>
+                      </TableCell>
+                      {type === 'all' ||
+                        (type === 'student' && <TableCell align="left">{experience}</TableCell>)}
+                      <TableCell align="left">
+                        <Label
+                          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                          color={
+                            (approval === 'approved' && 'success') ||
+                            (approval === 'inprogress' && 'warning') ||
+                            'error'
+                          }
+                        >
+                          {getApprovalText(approval)}
                         </Label>
                       </TableCell>
 
-                      <TableCell align="right">
+                      <TableCell align="left">
                         <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={name} />
                       </TableCell>
                     </TableRow>
