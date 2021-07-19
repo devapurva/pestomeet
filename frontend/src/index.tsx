@@ -20,10 +20,6 @@ import 'react-image-lightbox/style.css';
 import 'react-quill/dist/quill.snow.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-// slick-carousel
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-
 // lazy image
 import 'lazysizes';
 import 'lazysizes/plugins/attrchange/ls.attrchange';
@@ -44,9 +40,6 @@ import { store, persistor } from './redux/store';
 import { SettingsProvider } from './contexts/SettingsContext';
 // components
 import LoadingScreen from './components/LoadingScreen';
-
-// Check our docs
-// https://docs-minimals.vercel.app/authentication/ts-version
 
 import { AuthProvider } from './contexts/JWTContext';
 

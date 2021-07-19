@@ -1,5 +1,12 @@
+import { Icon, InlineIcon } from '@iconify/react';
+import { experimentalStyled as styled } from '@material-ui/core/styles';
 import GroupIcon from '@material-ui/icons/Group';
-import CastForEducationIcon from '@material-ui/icons/CastForEducation';
+// for students
+import accountGroup from '@iconify/icons-mdi/account-group';
+// for mentors
+import accountTie from '@iconify/icons-mdi/account-tie';
+// for batches
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -10,10 +17,17 @@ import SvgIconStyle from '../../components/SvgIconStyle';
 const getIcon = (name: string) => (
   <SvgIconStyle src={`/static/icons/navbar/${name}.svg`} sx={{ width: '100%', height: '100%' }} />
 );
+
+const IconStyle = styled(Icon)(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+  color: theme.palette.grey[600]
+}));
+
 const ICONS = {
-  student: getIcon('ic_user'),
-  mentor: <GroupIcon />,
-  batch: <CastForEducationIcon />,
+  student: <IconStyle icon={accountGroup} />,
+  mentor: <IconStyle icon={accountTie} />,
+  batch: <IconStyle icon={googleClassroom} />,
   calendar: getIcon('ic_calendar'),
   dashboard: getIcon('ic_dashboard')
 };

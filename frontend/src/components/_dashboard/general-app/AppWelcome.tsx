@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import peopleOutline from '@iconify/icons-eva/people-outline';
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 // material
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Typography, Button, Card, CardContent, CardProps } from '@material-ui/core';
@@ -54,7 +54,7 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
 
           <Button
             variant="contained"
-            startIcon={<Icon icon={peopleOutline} />}
+            startIcon={<Icon icon={googleClassroom} />}
             style={{ marginLeft: 15 }}
           >
             New Batch

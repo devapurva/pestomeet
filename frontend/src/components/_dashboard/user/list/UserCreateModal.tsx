@@ -52,19 +52,11 @@ export default function UserCreateModal() {
       <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
         New User
       </Button>
-      <Dialog open={open} maxWidth="lg" onClose={handleClose}>
+      <Dialog open={open} maxWidth="xl" onClose={handleClose}>
         <DialogTitle>Create New User</DialogTitle>
         <DialogContent>
           <UserNewForm isEdit={isEdit} />
         </DialogContent>
-        {/* <DialogActions>
-        <Button onClick={handleClose} color="inherit">
-          Cancel
-        </Button>
-        <Button onClick={handleClose} variant="contained">
-          Subscribe
-        </Button>
-      </DialogActions> */}
       </Dialog>
     </div>
   );

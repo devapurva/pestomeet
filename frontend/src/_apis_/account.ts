@@ -9,7 +9,7 @@ import mock from './mock';
 
 // ----------------------------------------------------------------------
 
-const JWT_SECRET = 'minimal-secret-key';
+const JWT_SECRET = '';
 const JWT_EXPIRES_IN = '5 days';
 
 const users: User[] = [
