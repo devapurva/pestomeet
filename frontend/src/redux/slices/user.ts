@@ -26,6 +26,8 @@ type UserState = {
   posts: UserPost[];
   users: UserData[];
   userList: UserManager[];
+  studentList: UserManager[];
+  mentorList: UserManager[];
   followers: Follower[];
   friends: Friend[];
   gallery: Gallery[];
@@ -42,6 +44,8 @@ const initialState: UserState = {
   posts: [],
   users: [],
   userList: [],
+  studentList: [],
+  mentorList: [],
   followers: [],
   friends: [],
   gallery: [],
@@ -134,6 +138,24 @@ const slice = createSlice({
       state.isLoading = false;
       state.userList = action.payload;
     },
+
+    // GET STUDENT LIST
+    getStudentListSuccess(state, action) {
+      state.isLoading = false;
+      state.studentList = action.payload;
+    },
+
+    // GET MENTOR LIST
+    getMentorListSuccess(state, action) {
+      state.isLoading = false;
+      state.mentorList = action.payload;
+    },
+
+    // GET BATCH LIST
+    // getBatchListSuccess(state, action) {
+    //   state.isLoading = false;
+    //   state.batchList = action.payload;
+    // },
 
     // GET CARDS
     getCardsSuccess(state, action) {
@@ -239,12 +261,17 @@ export function getGallery() {
 
 // ----------------------------------------------------------------------
 
-export function getUserList(type: string) {
+export function getUserList(approval: string, type: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get(`/list/user/inprogress/${type}`);
-      dispatch(slice.actions.getUserListSuccess(response.data.result));
+      const response = await HTTPClient.get(`/list/user/${approval}/${type}`);
+      if (type === 'student') {
+        dispatch(slice.actions.getStudentListSuccess(response.data.result));
+      }
+      if (type === 'mentor') {
+        dispatch(slice.actions.getMentorListSuccess(response.data.result));
+      }
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

@@ -88,10 +88,10 @@ function applySortFilter(
 export default function StudentList() {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const [users, setUsers] = useState<UserManager[]>([]);
-  const { userList } = useSelector((state: RootState) => state.user);
-  const [page, setPage] = useState(0);
   const [refresh, setRefresh] = useState(false);
+  const { userList } = useSelector((state: RootState) => state.user);
+  const { studentList } = useSelector((state: RootState) => state.user);
+  const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
   const [orderBy, setOrderBy] = useState('name');
@@ -99,15 +99,11 @@ export default function StudentList() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    setUsers(userList);
-  }, [userList]);
-
-  useEffect(() => {
-    dispatch(getUserList('student'));
+    dispatch(getUserList('inprogress', 'student'));
   }, [dispatch]);
 
   useEffect(() => {
-    if (refresh) dispatch(getUserList('student'));
+    if (refresh) dispatch(getUserList('inprogress', 'student'));
   }, [refresh]);
 
   const handleRequestSort = (property: string) => {
@@ -189,7 +185,7 @@ export default function StudentList() {
           orderBy={orderBy}
           filterName={filterName}
           rowsPerPage={rowsPerPage}
-          userList={users}
+          userList={studentList}
         />
       </Container>
     </Page>

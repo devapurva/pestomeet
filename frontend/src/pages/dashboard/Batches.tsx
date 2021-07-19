@@ -88,9 +88,9 @@ function applySortFilter(
 export default function Batches() {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const [refresh, setRefresh] = useState(false);
   const { userList } = useSelector((state: RootState) => state.user);
   const [page, setPage] = useState(0);
-  const [refresh, setRefresh] = useState(false);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
   const [orderBy, setOrderBy] = useState('name');
@@ -98,11 +98,11 @@ export default function Batches() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getUserList('mentor'));
+    dispatch(getUserList('inprogress', 'mentor'));
   }, [dispatch]);
 
   useEffect(() => {
-    if (refresh) dispatch(getUserList('mentor'));
+    if (refresh) dispatch(getUserList('inprogress', 'mentor'));
   }, [refresh]);
 
   const handleRequestSort = (property: string) => {
