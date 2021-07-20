@@ -3,6 +3,7 @@ import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 // material
 import {
   Button,
@@ -98,7 +99,11 @@ export default function BatchModal({
   return (
     <div>
       {!isEdit ? (
-        <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
+        <Button
+          variant="contained"
+          onClick={handleClickOpen}
+          startIcon={<Icon icon={googleClassroom} />}
+        >
           Create Batch
         </Button>
       ) : (
