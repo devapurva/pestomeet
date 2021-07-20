@@ -13,8 +13,12 @@ import {
   CreditCard,
   UserInvoice,
   UserManager,
+  BatchManager,
   UserAddressBook,
-  NotificationSettings
+  NotificationSettings,
+  TeamManager,
+  BatchMembers,
+  TeamMember
 } from '../../@types/user';
 
 // ----------------------------------------------------------------------
@@ -28,6 +32,8 @@ type UserState = {
   userList: UserManager[];
   studentList: UserManager[];
   mentorList: UserManager[];
+  batchList: BatchManager[];
+  teamList: TeamManager[];
   followers: Follower[];
   friends: Friend[];
   gallery: Gallery[];
@@ -46,6 +52,8 @@ const initialState: UserState = {
   userList: [],
   studentList: [],
   mentorList: [],
+  batchList: [],
+  teamList: [],
   followers: [],
   friends: [],
   gallery: [],
@@ -152,10 +160,16 @@ const slice = createSlice({
     },
 
     // GET BATCH LIST
-    // getBatchListSuccess(state, action) {
-    //   state.isLoading = false;
-    //   state.batchList = action.payload;
-    // },
+    getBatchListSuccess(state, action) {
+      state.isLoading = false;
+      state.batchList = action.payload;
+    },
+
+    // GET TEAM LIST
+    getTeamListSuccess(state, action) {
+      state.isLoading = false;
+      state.teamList = action.payload;
+    },
 
     // GET CARDS
     getCardsSuccess(state, action) {
@@ -261,6 +275,20 @@ export function getGallery() {
 
 // ----------------------------------------------------------------------
 
+export function getAllUserList() {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/list/user/all`);
+      dispatch(slice.actions.getUserListSuccess(response.data.result));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
 export function getUserList(approval: string, type: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
@@ -277,6 +305,50 @@ export function getUserList(approval: string, type: string) {
     }
   };
 }
+
+// ----------------------------------------------------------------------
+
+export function getBatchList(type: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/list/batch/${type}`);
+      dispatch(slice.actions.getBatchListSuccess(response.data.result));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export const deleteBatch = async (id: string) => {
+  dispatch(slice.actions.startLoading());
+  const response = await HTTPClient.delete(`/delete/batch/${id}`);
+  return response;
+};
+
+// ----------------------------------------------------------------------
+
+export function getTeamList(type: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/list/team/${type}`);
+      dispatch(slice.actions.getTeamListSuccess(response.data.result));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export const deleteTeam = async (id: string) => {
+  dispatch(slice.actions.startLoading());
+  const response = await HTTPClient.delete(`/delete/team/${id}`);
+  return response;
+};
 
 // ----------------------------------------------------------------------
 
@@ -419,5 +491,39 @@ export const editUser = async (
       approval
     };
   }
+  return response;
+};
+
+// ----------------------------------------------------------------------
+
+export const addBatch = async (
+  batchName: string,
+  batchType: string,
+  batchOwner: string,
+  batchMembers: BatchMembers[] | []
+) => {
+  const response = await HTTPClient.post('/create/batch', {
+    batchName,
+    batchType,
+    batchOwner,
+    batchMembers
+  });
+  return response;
+};
+
+// ----------------------------------------------------------------------
+
+export const addTeam = async (
+  teamName: string,
+  teamType: string,
+  mentorName: string,
+  teamMembers: TeamMember[] | []
+) => {
+  const response = await HTTPClient.post('/create/team', {
+    teamName,
+    teamType,
+    mentorName,
+    teamMembers
+  });
   return response;
 };

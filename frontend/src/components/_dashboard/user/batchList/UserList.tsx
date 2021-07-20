@@ -1,6 +1,9 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
+import { useSnackbar } from 'notistack';
+import closeFill from '@iconify/icons-eva/close-fill';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -18,26 +21,28 @@ import {
   TableContainer,
   TablePagination
 } from '@material-ui/core';
+import MIconButton from 'components/@material-extend/MIconButton';
 // redux
-import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { deleteUser } from '../../../redux/slices/user';
+import { RootState, useDispatch, useSelector } from '../../../../redux/store';
+import { deleteUser, editUser } from '../../../../redux/slices/user';
 // routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
+import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
-import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
+import { BatchManager, BatchMembers, UserManager } from '../../../../@types/user';
 // components
-import Label from '../../Label';
-import Scrollbar from '../../Scrollbar';
-import SearchNotFound from '../../SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../user/batchList';
+import Label from '../../../Label';
+import Scrollbar from '../../../Scrollbar';
+import SearchNotFound from '../../../SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from './index';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'batchName', label: 'Batch Name', alignRight: false },
-  { id: 'batchOwner', label: 'Batch Owner', alignRight: false },
-  { id: 'batchType', label: 'Batch Type', alignRight: false },
-  { id: 'batchMember', label: 'Batch Members', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phone', label: 'Phone', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'approval', label: 'Approval Status', alignRight: false },
   { id: '', label: 'Actions', alignRight: false }
 ];
 
@@ -81,14 +86,14 @@ function applySortFilter(
   return stabilizedThis.map((el) => el[0]);
 }
 
-type BatchListProps = {
+type UserListProps = {
   type: string;
   handleRequestSort: any;
   handleSelectAllClick: any;
   handleClick: any;
   handleChangeRowsPerPage: any;
   handleFilterByName: any;
-  handleDeleteBatch: any;
+  handleDeleteUser: any;
   page: number;
   setPage: any;
   order: 'asc' | 'desc';
@@ -97,7 +102,7 @@ type BatchListProps = {
   filterName: string;
   rowsPerPage: number;
   userList: BatchManager[];
-  setRefresh: any;
+  setRefresh?: any;
   admins: UserManager[];
   otherUsers: UserManager[];
 };
@@ -109,7 +114,7 @@ export default function UserList({
   handleClick,
   handleChangeRowsPerPage,
   handleFilterByName,
-  handleDeleteBatch,
+  handleDeleteUser,
   page,
   setPage,
   order,
@@ -121,7 +126,7 @@ export default function UserList({
   setRefresh,
   admins,
   otherUsers
-}: BatchListProps) {
+}: UserListProps) {
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -141,12 +146,12 @@ export default function UserList({
   };
 
   return (
-    <Card style={{ paddingTop: 25 }}>
-      {/* <UserListToolbar
+    <Card>
+      <UserListToolbar
         numSelected={selected.length}
         filterName={filterName}
         onFilterName={handleFilterByName}
-      /> */}
+      />
 
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800 }}>
@@ -197,11 +202,11 @@ export default function UserList({
                         </Label>
                       </TableCell> */}
 
-                      <TableCell align="left">
+                      <TableCell align="right">
                         <UserMoreMenu
                           setRefresh={setRefresh}
                           currentBatch={row}
-                          onDelete={() => handleDeleteBatch(batchId)}
+                          onDelete={() => handleDeleteUser(batchId)}
                           userName={batchName}
                           admins={admins}
                           otherUsers={otherUsers}

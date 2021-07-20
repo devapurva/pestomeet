@@ -7,6 +7,9 @@ import accountGroup from '@iconify/icons-mdi/account-group';
 import accountTie from '@iconify/icons-mdi/account-tie';
 // for batches
 import googleClassroom from '@iconify/icons-mdi/google-classroom';
+import accountChild from '@iconify/icons-mdi/account-child';
+import accountMultiplePlus from '@iconify/icons-mdi/account-multiple-plus';
+
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -29,7 +32,9 @@ const ICONS = {
   mentor: <IconStyle icon={accountTie} />,
   batch: <IconStyle icon={googleClassroom} />,
   calendar: getIcon('ic_calendar'),
-  dashboard: getIcon('ic_dashboard')
+  dashboard: getIcon('ic_dashboard'),
+  mentorTeam: <IconStyle icon={accountChild} />,
+  buddyPairing: <IconStyle icon={accountMultiplePlus} />
 };
 
 const sidebarConfig = [
@@ -66,6 +71,16 @@ const sidebarConfig = [
         title: 'Batches',
         path: PATH_DASHBOARD.batch,
         icon: ICONS.batch
+      },
+      {
+        title: 'Mentor Team',
+        path: PATH_DASHBOARD.mentorTeam,
+        icon: ICONS.mentorTeam
+      },
+      {
+        title: 'Buddy Pairing',
+        path: PATH_DASHBOARD.buddyPairing,
+        icon: ICONS.buddyPairing
       }
     ]
   },

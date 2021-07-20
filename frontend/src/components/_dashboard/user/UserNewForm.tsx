@@ -380,8 +380,11 @@ export default function UserNewForm({
                     <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                     <FormControlLabel value="superadmin" control={<Radio />} label="Super Admin" />
                   </RadioGroup>
-                  {touched.role && errors.role && <FormHelperText>{errors.role}</FormHelperText>}
                 </Stack>
+
+                {touched.role && errors.role && (
+                  <FormHelperText error={true}>{errors.role}</FormHelperText>
+                )}
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField

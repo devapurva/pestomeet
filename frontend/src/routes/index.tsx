@@ -90,6 +90,14 @@ export default function Router() {
           path: '/dashboard/batch',
           children: [{ path: '/', element: <Batches /> }]
         },
+        {
+          path: '/dashboard/team-mentor',
+          children: [{ path: '/', element: <MentorTeams /> }]
+        },
+        {
+          path: '/dashboard/buddy-pairing',
+          children: [{ path: '/', element: <Batches /> }]
+        },
         { path: '/dashboard/calendar', element: <Calendar /> }
       ]
     },
@@ -121,6 +129,7 @@ const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')))
 const StudentList = Loadable(lazy(() => import('../pages/dashboard/StudentList')));
 const MentorList = Loadable(lazy(() => import('../pages/dashboard/MentorList')));
 const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));
+const MentorTeams = Loadable(lazy(() => import('../pages/dashboard/MentorTeam')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 // Main
 const Maintenance = Loadable(lazy(() => import('../pages/Maintenance')));

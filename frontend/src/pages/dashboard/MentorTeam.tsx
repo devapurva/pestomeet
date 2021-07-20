@@ -25,19 +25,19 @@ import {
 } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { deleteBatch, getBatchList, getAllUserList } from '../../redux/slices/user';
+import { deleteTeam, getTeamList, getAllUserList } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // @types
-import { BatchManager } from '../../@types/user';
+import { TeamManager } from '../../@types/user';
 // components
 import Page from '../../components/Page';
 import Label from '../../components/Label';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import BatchList from '../../components/_dashboard/batch/batchList';
-import BatchModal from './CreateBatchModal';
+import TeamList from '../../components/_dashboard/team/teamList';
+import TeamModal from './CreateTeamModal';
 
 // ----------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ function getComparator(order: string, orderBy: string) {
 }
 
 function applySortFilter(
-  array: BatchManager[],
+  array: TeamManager[],
   comparator: (a: any, b: any) => number,
   query: string
 ) {
@@ -84,18 +84,18 @@ function applySortFilter(
   if (query) {
     return filter(
       array,
-      (_batch) => _batch.batchName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (_team) => _team.teamName.toLowerCase().indexOf(query.toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Batches() {
+export default function MentorTeams() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
-  const { batchList, userList } = useSelector((state: RootState) => state.user);
+  const { teamList, userList } = useSelector((state: RootState) => state.user);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
@@ -105,21 +105,19 @@ export default function Batches() {
 
   useEffect(() => {
     dispatch(getAllUserList());
-    dispatch(getBatchList('ninja'));
+    dispatch(getTeamList('mentor'));
   }, [dispatch]);
 
   useEffect(() => {
     if (refresh) {
       dispatch(getAllUserList());
-      dispatch(getBatchList('ninja'));
+      dispatch(getTeamList('mentor'));
       setRefresh(false);
     }
   }, [refresh]);
 
-  const admins = userList.filter((users) => users.role === 'admin');
-  const otherUsers = userList.filter(
-    (users) => users.role === 'mentor' || users.role === 'student'
-  );
+  const mentors = userList.filter((users) => users.role === 'mentor');
+  const students = userList.filter((users) => users.role === 'student');
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -129,7 +127,7 @@ export default function Batches() {
 
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      const newSelecteds = batchList.map((n) => n.batchName);
+      const newSelecteds = teamList.map((n) => n.teamName);
       setSelected(newSelecteds);
       return;
     }
@@ -163,17 +161,17 @@ export default function Batches() {
     setFilterName(filterName);
   };
 
-  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - batchList.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - teamList.length) : 0;
 
-  // const filteredUsers = applySortFilter(batchList, getComparator(order, orderBy), filterName);
+  //   const filteredUsers = applySortFilter(teamList, getComparator(order, orderBy), filterName);
 
-  // const isUserNotFound = filteredUsers.length === 0;
+  //   const isUserNotFound = filteredUsers.length === 0;
 
-  const handleDeleteBatch = async (id: string) => {
-    await deleteBatch(id).then((response) => {
+  const handleDeleteTeam = async (id: string) => {
+    await deleteTeam(id).then((response) => {
       console.log(response);
       if (response?.data?.statusCode) {
-        enqueueSnackbar('Batch deleted successfully', {
+        enqueueSnackbar('Team deleted successfully', {
           variant: 'success'
         });
         setRefresh(true);
@@ -182,47 +180,43 @@ export default function Batches() {
   };
 
   return (
-    <Page title="Batches: List">
+    <Page title="Teams: List">
       <Container>
         <HeaderBreadcrumbs
-          heading="Batches List"
+          heading="Teams List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Batches', href: PATH_DASHBOARD.batch },
+            { name: 'Mentor Teams', href: PATH_DASHBOARD.batch },
             { name: 'List' }
           ]}
           action={
-            <BatchModal
+            <TeamModal
               isEdit={false}
-              currentBatch={null}
+              currentTeam={null}
               setRefresh={setRefresh}
-              admins={admins}
-              otherUsers={otherUsers}
+              mentors={mentors}
+              students={students}
             />
           }
         />
-        {batchList?.length > 0 && (
-          <BatchList
-            type="mentor"
-            handleRequestSort={handleRequestSort}
-            handleSelectAllClick={handleSelectAllClick}
-            handleClick={handleClick}
-            handleChangeRowsPerPage={handleChangeRowsPerPage}
-            handleFilterByName={handleFilterByName}
-            handleDeleteBatch={handleDeleteBatch}
-            page={page}
-            setPage={setPage}
-            order={order}
-            selected={selected}
-            orderBy={orderBy}
-            filterName={filterName}
-            rowsPerPage={rowsPerPage}
-            userList={batchList}
-            setRefresh={setRefresh}
-            admins={admins}
-            otherUsers={otherUsers}
-          />
-        )}
+        {/* <TeamList
+          type="mentor"
+          handleRequestSort={handleRequestSort}
+          handleSelectAllClick={handleSelectAllClick}
+          handleClick={handleClick}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          handleFilterByName={handleFilterByName}
+          handleDeleteTeam={handleDeleteTeam}
+          page={page}
+          setPage={setPage}
+          order={order}
+          selected={selected}
+          orderBy={orderBy}
+          filterName={filterName}
+          rowsPerPage={rowsPerPage}
+          userList={teamList}
+          setRefresh={setRefresh}
+        /> */}
       </Container>
     </Page>
   );

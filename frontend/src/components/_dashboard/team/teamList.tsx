@@ -24,7 +24,7 @@ import { deleteUser } from '../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
-import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
+import { BatchManager, BatchMembers } from '../../../@types/user';
 // components
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
@@ -98,8 +98,6 @@ type BatchListProps = {
   rowsPerPage: number;
   userList: BatchManager[];
   setRefresh: any;
-  admins: UserManager[];
-  otherUsers: UserManager[];
 };
 
 export default function UserList({
@@ -118,9 +116,7 @@ export default function UserList({
   filterName,
   rowsPerPage,
   userList,
-  setRefresh,
-  admins,
-  otherUsers
+  setRefresh
 }: BatchListProps) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -198,14 +194,14 @@ export default function UserList({
                       </TableCell> */}
 
                       <TableCell align="left">
-                        <UserMoreMenu
+                        {/* <UserMoreMenu
                           setRefresh={setRefresh}
                           currentBatch={row}
                           onDelete={() => handleDeleteBatch(batchId)}
                           userName={batchName}
                           admins={admins}
                           otherUsers={otherUsers}
-                        />
+                        /> */}
                       </TableCell>
                     </TableRow>
                   );

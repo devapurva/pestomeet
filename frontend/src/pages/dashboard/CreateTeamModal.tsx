@@ -21,18 +21,18 @@ import Typography from '@material-ui/core/Typography';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
-import BatchForm from '../../components/_dashboard/user/BatchForm';
-import { BatchManager, UserManager } from '../../@types/user';
+import TeamForm from '../../components/_dashboard/user/TeamForm';
+import { TeamManager, UserManager } from '../../@types/user';
 
 // ----------------------------------------------------------------------
 
-type BatchModalProps = {
+type TeamModalProps = {
   isEdit: boolean;
-  currentBatch?: BatchManager | null;
+  currentTeam?: TeamManager | null;
   setRefresh: any;
   openModal?: boolean | undefined;
-  admins: UserManager[];
-  otherUsers: UserManager[];
+  mentors: UserManager[];
+  students: UserManager[];
 };
 
 const styles = (theme: Theme) =>
@@ -69,14 +69,14 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-export default function BatchModal({
+export default function TeamModal({
   isEdit,
-  currentBatch,
+  currentTeam,
   setRefresh,
   openModal,
-  admins,
-  otherUsers
-}: BatchModalProps) {
+  mentors,
+  students
+}: TeamModalProps) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
@@ -99,7 +99,7 @@ export default function BatchModal({
     <div>
       {!isEdit ? (
         <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
-          Create Batch
+          Create Team
         </Button>
       ) : (
         <div style={{ display: 'flex' }}>
@@ -121,16 +121,16 @@ export default function BatchModal({
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'Edit Batch' : 'Create Batch'}
+          {isEdit ? 'Edit Team' : 'Create Team'}
         </DialogTitle>
         <DialogContent>
-          <BatchForm
+          <TeamForm
             isEdit={isEdit}
-            currentBatch={currentBatch}
+            currentTeam={currentTeam}
             setRefresh={setRefresh}
             handleClose={handleClose}
-            admins={admins}
-            otherUsers={otherUsers}
+            mentors={mentors}
+            students={students}
           />
         </DialogContent>
       </Dialog>

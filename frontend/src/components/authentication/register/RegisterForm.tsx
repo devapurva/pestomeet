@@ -198,7 +198,7 @@ export default function RegisterForm() {
             <FormControlLabel value="student" control={<Radio />} label="Student" />
             <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
           </RadioGroup>
-          <FormHelperText>{errors?.role}</FormHelperText>
+          <FormHelperText error={true}>{errors?.role}</FormHelperText>
 
           {values?.role === 'student' && (
             <TextField
