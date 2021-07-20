@@ -90,12 +90,12 @@ function applySortFilter(
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function MentorTeams() {
+export default function BuddyPairing() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
-  const { mentorTeamList, userList } = useSelector((state: RootState) => state.user);
+  const { buddyList, userList } = useSelector((state: RootState) => state.user);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
@@ -105,13 +105,13 @@ export default function MentorTeams() {
 
   useEffect(() => {
     dispatch(getAllUserList());
-    dispatch(getTeamList('mentor'));
+    dispatch(getTeamList('buddypairing'));
   }, [dispatch]);
 
   useEffect(() => {
     if (refresh) {
       dispatch(getAllUserList());
-      dispatch(getTeamList('mentor'));
+      dispatch(getTeamList('buddypairing'));
       setRefresh(false);
     }
   }, [refresh]);
@@ -127,7 +127,7 @@ export default function MentorTeams() {
 
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      const newSelecteds = mentorTeamList.map((n) => n.teamName);
+      const newSelecteds = buddyList.map((n) => n.teamName);
       setSelected(newSelecteds);
       return;
     }
@@ -161,9 +161,9 @@ export default function MentorTeams() {
     setFilterName(filterName);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - mentorTeamList.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - buddyList.length) : 0;
 
-  //   const filteredUsers = applySortFilter(mentorTeamList, getComparator(order, orderBy), filterName);
+  //   const filteredUsers = applySortFilter(buddyList, getComparator(order, orderBy), filterName);
 
   //   const isUserNotFound = filteredUsers.length === 0;
 
@@ -186,7 +186,7 @@ export default function MentorTeams() {
           heading="Teams List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Mentor Teams', href: PATH_DASHBOARD.batch },
+            { name: 'Buddy Pairing', href: PATH_DASHBOARD.batch },
             { name: 'List' }
           ]}
           action={
@@ -214,7 +214,7 @@ export default function MentorTeams() {
           orderBy={orderBy}
           filterName={filterName}
           rowsPerPage={rowsPerPage}
-          userList={mentorTeamList}
+          userList={buddyList}
           setRefresh={setRefresh}
         />
       </Container>

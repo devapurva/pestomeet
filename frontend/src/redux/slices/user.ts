@@ -33,6 +33,8 @@ type UserState = {
   studentList: UserManager[];
   mentorList: UserManager[];
   batchList: BatchManager[];
+  mentorTeamList: TeamManager[];
+  buddyList: TeamManager[];
   teamList: TeamManager[];
   followers: Follower[];
   friends: Friend[];
@@ -53,6 +55,8 @@ const initialState: UserState = {
   studentList: [],
   mentorList: [],
   batchList: [],
+  mentorTeamList: [],
+  buddyList: [],
   teamList: [],
   followers: [],
   friends: [],
@@ -163,6 +167,18 @@ const slice = createSlice({
     getBatchListSuccess(state, action) {
       state.isLoading = false;
       state.batchList = action.payload;
+    },
+
+    // GET MENTOR TEAM LIST
+    getMentorTeamListSuccess(state, action) {
+      state.isLoading = false;
+      state.mentorTeamList = action.payload;
+    },
+
+    // GET BUDDY PAIRING LIST
+    getBuddyListSuccess(state, action) {
+      state.isLoading = false;
+      state.buddyList = action.payload;
     },
 
     // GET TEAM LIST
@@ -335,7 +351,12 @@ export function getTeamList(type: string) {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.get(`/list/team/${type}`);
-      dispatch(slice.actions.getTeamListSuccess(response.data.result));
+      if (type === 'buddypairing') {
+        dispatch(slice.actions.getBuddyListSuccess(response.data.result));
+      }
+      if (type === 'mentor') {
+        dispatch(slice.actions.getMentorTeamListSuccess(response.data.result));
+      }
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

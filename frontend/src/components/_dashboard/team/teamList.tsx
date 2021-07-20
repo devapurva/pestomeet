@@ -24,7 +24,7 @@ import { deleteUser } from '../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
-import { BatchManager, BatchMembers } from '../../../@types/user';
+import { TeamManager, TeamMember } from '../../../@types/user';
 // components
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
@@ -34,10 +34,10 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../user/batchList';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'batchName', label: 'Batch Name', alignRight: false },
-  { id: 'batchOwner', label: 'Batch Owner', alignRight: false },
-  { id: 'batchType', label: 'Batch Type', alignRight: false },
-  { id: 'batchMember', label: 'Batch Members', alignRight: false },
+  { id: 'teamName', label: 'Team Name', alignRight: false },
+  { id: 'mentorName', label: 'Team Owner', alignRight: false },
+  { id: 'teamType', label: 'Team Type', alignRight: false },
+  { id: 'teamMembers', label: 'Team Members', alignRight: false },
   { id: '', label: 'Actions', alignRight: false }
 ];
 
@@ -62,7 +62,7 @@ function getComparator(order: string, orderBy: string) {
 }
 
 function applySortFilter(
-  array: BatchManager[],
+  array: TeamManager[],
   comparator: (a: any, b: any) => number,
   query: string
 ) {
@@ -75,20 +75,20 @@ function applySortFilter(
   if (query) {
     return filter(
       array,
-      (_batch) => _batch.batchName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (_team) => _team.teamName.toLowerCase().indexOf(query.toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-type BatchListProps = {
+type TeamListProps = {
   type: string;
   handleRequestSort: any;
   handleSelectAllClick: any;
   handleClick: any;
   handleChangeRowsPerPage: any;
   handleFilterByName: any;
-  handleDeleteBatch: any;
+  handleDeleteTeam: any;
   page: number;
   setPage: any;
   order: 'asc' | 'desc';
@@ -96,18 +96,18 @@ type BatchListProps = {
   orderBy: string;
   filterName: string;
   rowsPerPage: number;
-  userList: BatchManager[];
+  userList: TeamManager[];
   setRefresh: any;
 };
 
-export default function UserList({
+export default function TeamList({
   type,
   handleRequestSort,
   handleSelectAllClick,
   handleClick,
   handleChangeRowsPerPage,
   handleFilterByName,
-  handleDeleteBatch,
+  handleDeleteTeam,
   page,
   setPage,
   order,
@@ -117,7 +117,7 @@ export default function UserList({
   rowsPerPage,
   userList,
   setRefresh
-}: BatchListProps) {
+}: TeamListProps) {
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -131,8 +131,8 @@ export default function UserList({
 
   const isUserNotFound = filteredUsers.length === 0;
 
-  const getMembersName = (batchMembers: BatchMembers[]) => {
-    const names = batchMembers.map((element) => element.name);
+  const getMembersName = (teamMembers: TeamMember[]) => {
+    const names = teamMembers.map((element) => element.name);
     return names.toString();
   };
 
@@ -160,29 +160,29 @@ export default function UserList({
               {filteredUsers
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
-                  const { batchId, batchName, batchOwner, batchType, batchMembers } = row;
-                  const isItemSelected = selected.indexOf(batchName) !== -1;
+                  const { teamId, teamName, mentorName, teamType, teamMembers } = row;
+                  const isItemSelected = selected.indexOf(teamName) !== -1;
 
                   return (
                     <TableRow
                       hover
-                      key={batchId}
+                      key={teamId}
                       tabIndex={-1}
                       role="checkbox"
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
                     >
-                      <TableCell align="left">{sentenceCase(batchName)}</TableCell>
-                      <TableCell align="left">{batchOwner}</TableCell>
+                      <TableCell align="left">{sentenceCase(teamName)}</TableCell>
+                      <TableCell align="left">{mentorName}</TableCell>
                       <TableCell align="left">
                         <Label
                           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(batchType === 'ninja' && 'success') || 'info'}
+                          color={(teamType === 'mentor' && 'success') || 'info'}
                         >
-                          {sentenceCase(batchType)}
+                          {teamType === 'buddypairing' ? 'Buddy Pairing' : 'Mentor Team'}
                         </Label>
                       </TableCell>
-                      <TableCell align="left">{getMembersName(batchMembers)}</TableCell>
+                      <TableCell align="left">{getMembersName(teamMembers)}</TableCell>
                       {/* <TableCell align="left">{experience}</TableCell>
                       <TableCell align="left">
                         <Label
@@ -196,8 +196,8 @@ export default function UserList({
                       <TableCell align="left">
                         {/* <UserMoreMenu
                           setRefresh={setRefresh}
-                          currentBatch={row}
-                          onDelete={() => handleDeleteBatch(batchId)}
+                          currentTeam={row}
+                          onDelete={() => handleDeleteTeam(batchId)}
                           userName={batchName}
                           admins={admins}
                           otherUsers={otherUsers}

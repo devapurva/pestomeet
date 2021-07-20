@@ -364,7 +364,11 @@ export default function TeamForm({
                     onChange={handleChange}
                   >
                     <FormControlLabel value="mentor" control={<Radio />} label="Mentor Team" />
-                    <FormControlLabel value="buddy" control={<Radio />} label="Buddy Pairing" />
+                    <FormControlLabel
+                      value="buddypairing"
+                      control={<Radio />}
+                      label="Buddy Pairing"
+                    />
                   </RadioGroup>
                 </Stack>
 

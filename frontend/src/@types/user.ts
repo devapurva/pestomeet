@@ -88,7 +88,7 @@ export type TeamMember = {
 };
 
 export type TeamManager = {
-  id?: string;
+  teamId?: string;
   teamName: string;
   teamType: string;
   mentorName: string;
