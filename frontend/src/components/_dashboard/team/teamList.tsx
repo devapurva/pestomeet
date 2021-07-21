@@ -35,7 +35,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../user/batchList';
 
 const TABLE_HEAD = [
   { id: 'teamName', label: 'Team Name', alignRight: false },
-  { id: 'mentorName', label: 'Team Owner', alignRight: false },
+  { id: 'mentorName', label: 'Team Mentor', alignRight: false },
   { id: 'teamType', label: 'Team Type', alignRight: false },
   { id: 'teamMembers', label: 'Team Members', alignRight: false },
   { id: '', label: 'Actions', alignRight: false }

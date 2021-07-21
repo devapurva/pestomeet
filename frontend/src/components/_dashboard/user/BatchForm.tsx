@@ -95,8 +95,8 @@ export default function BatchForm({
       .required('Batch name is required'),
     batchType: Yup.string().required('Batch Type is Required'),
     batchOwner: Yup.string()
-      .max(50, `Batch Owner's Name cannot be more than ${50} characters`)
-      .required(`Batch Owner's Name is required`),
+      .max(50, `Batch Admin cannot be more than ${50} characters`)
+      .required(`Batch Admin Name is required`),
     batchMembers: Yup.mixed()
   });
 
@@ -256,7 +256,7 @@ export default function BatchForm({
                 )}
 
                 <FormLabel className={classes.legend} component="legend">
-                  Batch Owner:
+                  Batch Admin:
                 </FormLabel>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
@@ -278,8 +278,8 @@ export default function BatchForm({
                           error={Boolean(touched.batchOwner && errors.batchOwner)}
                           helperText={touched.batchOwner && errors.batchOwner}
                           {...params}
-                          label="Batch Owner"
-                          placeholder="Owner"
+                          label="Batch Admin"
+                          placeholder="Admin"
                         />
                       )}
                     />

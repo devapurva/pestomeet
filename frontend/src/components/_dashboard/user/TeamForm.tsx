@@ -377,7 +377,7 @@ export default function TeamForm({
                 )}
 
                 <FormLabel className={classes.legend} component="legend">
-                  Team Owner:
+                  Team Mentor:
                 </FormLabel>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
@@ -399,8 +399,8 @@ export default function TeamForm({
                           error={Boolean(touched.mentorName && errors.mentorName)}
                           helperText={touched.mentorName && errors.mentorName}
                           {...params}
-                          label="Team Owner"
-                          placeholder="Owner"
+                          label="Team Mentor"
+                          placeholder="Mentor"
                         />
                       )}
                     />
