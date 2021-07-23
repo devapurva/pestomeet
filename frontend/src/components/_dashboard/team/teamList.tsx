@@ -30,6 +30,7 @@ import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
 import SearchNotFound from '../../SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../user/batchList';
+import EmptyContent from '../../EmptyContent';
 
 // ----------------------------------------------------------------------
 
@@ -212,11 +213,11 @@ export default function TeamList({
                 </TableRow>
               )}
             </TableBody>
-            {isUserNotFound && (
+            {userList?.length === 0 && (
               <TableBody>
                 <TableRow>
                   <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                    <SearchNotFound searchQuery={filterName} />
+                    <EmptyContent title="No Data Found Yet" />
                   </TableCell>
                 </TableRow>
               </TableBody>

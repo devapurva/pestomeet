@@ -183,12 +183,8 @@ export default function BuddyPairing() {
     <Page title="Teams: List">
       <Container>
         <HeaderBreadcrumbs
-          heading="Teams List"
-          links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Buddy Pairing', href: PATH_DASHBOARD.batch },
-            { name: 'List' }
-          ]}
+          heading="Buddy Pairings"
+          links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Buddy Pairing' }]}
           action={
             <TeamModal
               isEdit={false}

@@ -103,7 +103,10 @@ export default function StudentList() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (refresh) dispatch(getUserList('inprogress', 'student'));
+    if (refresh) {
+      dispatch(getUserList('inprogress', 'student'));
+      setRefresh(false);
+    }
   }, [refresh]);
 
   const handleRequestSort = (property: string) => {
@@ -165,8 +168,7 @@ export default function StudentList() {
           heading="Student List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Student', href: PATH_DASHBOARD.student },
-            { name: 'List' }
+            { name: 'Student List', href: PATH_DASHBOARD.student }
           ]}
           action={<UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />}
         />

@@ -166,8 +166,7 @@ export default function MentorList() {
           heading="Mentor List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Mentor', href: PATH_DASHBOARD.mentor },
-            { name: 'List' }
+            { name: 'Mentor List', href: PATH_DASHBOARD.mentor }
           ]}
           action={<UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />}
         />

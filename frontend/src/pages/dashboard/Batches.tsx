@@ -188,8 +188,7 @@ export default function Batches() {
           heading="Batches List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Batches', href: PATH_DASHBOARD.batch },
-            { name: 'List' }
+            { name: 'Batches', href: PATH_DASHBOARD.batch }
           ]}
           action={
             <BatchModal
@@ -201,28 +200,26 @@ export default function Batches() {
             />
           }
         />
-        {batchList?.length > 0 && (
-          <BatchList
-            type="mentor"
-            handleRequestSort={handleRequestSort}
-            handleSelectAllClick={handleSelectAllClick}
-            handleClick={handleClick}
-            handleChangeRowsPerPage={handleChangeRowsPerPage}
-            handleFilterByName={handleFilterByName}
-            handleDeleteBatch={handleDeleteBatch}
-            page={page}
-            setPage={setPage}
-            order={order}
-            selected={selected}
-            orderBy={orderBy}
-            filterName={filterName}
-            rowsPerPage={rowsPerPage}
-            userList={batchList}
-            setRefresh={setRefresh}
-            admins={admins}
-            otherUsers={otherUsers}
-          />
-        )}
+        <BatchList
+          type="mentor"
+          handleRequestSort={handleRequestSort}
+          handleSelectAllClick={handleSelectAllClick}
+          handleClick={handleClick}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          handleFilterByName={handleFilterByName}
+          handleDeleteBatch={handleDeleteBatch}
+          page={page}
+          setPage={setPage}
+          order={order}
+          selected={selected}
+          orderBy={orderBy}
+          filterName={filterName}
+          rowsPerPage={rowsPerPage}
+          userList={batchList}
+          setRefresh={setRefresh}
+          admins={admins}
+          otherUsers={otherUsers}
+        />
       </Container>
     </Page>
   );

@@ -183,11 +183,10 @@ export default function MentorTeams() {
     <Page title="Teams: List">
       <Container>
         <HeaderBreadcrumbs
-          heading="Teams List"
+          heading="Mentor Teams"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Mentor Teams', href: PATH_DASHBOARD.batch },
-            { name: 'List' }
+            { name: 'Mentor Teams', href: PATH_DASHBOARD.mentorTeam }
           ]}
           action={
             <TeamModal
