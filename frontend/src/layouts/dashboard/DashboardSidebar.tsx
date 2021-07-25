@@ -15,7 +15,6 @@ import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
-import { DocIcon } from '../../assets';
 
 // ----------------------------------------------------------------------
 

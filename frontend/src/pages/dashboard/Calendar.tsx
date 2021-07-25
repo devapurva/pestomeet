@@ -21,6 +21,7 @@ import {
   selectEvent,
   selectRange
 } from '../../redux/slices/calendar';
+import { getBatchList } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -50,8 +51,10 @@ export default function Calendar() {
   const [view, setView] = useState<CalendarView>(isMobile ? 'listWeek' : 'dayGridMonth');
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
+  const { batchList } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
+    dispatch(getBatchList('ninja'));
     dispatch(getEvents());
   }, [dispatch]);
 
@@ -115,35 +118,35 @@ export default function Calendar() {
   };
 
   const handleResizeEvent = async ({ event }: EventResizeDoneArg) => {
-    try {
-      dispatch(
-        updateEvent(event.id, {
-          allDay: event.allDay,
-          start: event.start,
-          end: event.end
-        })
-      );
-      enqueueSnackbar('Update event success', { variant: 'success' });
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   dispatch(
+    //     updateEvent(event.id, {
+    //       allDay: event.allDay,
+    //       start: event.start,
+    //       end: event.end
+    //     })
+    //   );
+    //   enqueueSnackbar('Update event success', { variant: 'success' });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   const handleDropEvent = async ({ event }: EventDropArg) => {
-    try {
-      dispatch(
-        updateEvent(event.id, {
-          allDay: event.allDay,
-          start: event.start,
-          end: event.end
-        })
-      );
-      enqueueSnackbar('Update event success', {
-        variant: 'success'
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   dispatch(
+    //     updateEvent(event.id, {
+    //       allDay: event.allDay,
+    //       start: event.start,
+    //       end: event.end
+    //     })
+    //   );
+    //   enqueueSnackbar('Update event success', {
+    //     variant: 'success'
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   const handleAddEvent = () => {
@@ -219,6 +222,7 @@ export default function Calendar() {
             event={selectedEvent || {}}
             range={selectedRange}
             onCancel={handleCloseModal}
+            batchList={batchList}
           />
         </Dialog>
       </Container>

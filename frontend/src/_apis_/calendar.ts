@@ -2,8 +2,6 @@ import faker from 'faker';
 import { add, set, sub } from 'date-fns';
 import { map, assign, reject } from 'lodash';
 import { EventInput } from '@fullcalendar/common';
-// utils
-import mock from './mock';
 
 // ----------------------------------------------------------------------
 
@@ -73,69 +71,10 @@ const setColorAndTime = (index: number) => {
   };
 };
 
-let events: EventInput[] = [...Array(9)].map((_, index) => ({
+const events: EventInput[] = [...Array(9)].map((_, index) => ({
   id: faker.datatype.uuid(),
   title: faker.name.title(),
   description: faker.lorem.sentences(),
   allDay: faker.datatype.boolean(),
   ...setColorAndTime(index)
 }));
-
-// ----------------------------------------------------------------------
-
-mock.onGet('/api/calendar/events').reply(200, { events });
-
-// ----------------------------------------------------------------------
-
-mock.onPost('/api/calendar/events/new').reply((request) => {
-  try {
-    const { title, description, textColor, allDay, end, start } = JSON.parse(request.data);
-    const event = {
-      id: faker.datatype.uuid(),
-      title,
-      description,
-      textColor,
-      allDay,
-      end,
-      start
-    };
-    events = [...events, event];
-    return [200, { event }];
-  } catch (error) {
-    console.error(error);
-    return [500, { message: 'Internal server error' }];
-  }
-});
-
-// ----------------------------------------------------------------------
-
-mock.onPost('/api/calendar/events/update').reply((request) => {
-  try {
-    const { eventId, updateEvent } = JSON.parse(request.data);
-    let event = null;
-    events = map(events, (_event) => {
-      if (_event.id === eventId) {
-        assign(_event, { ...updateEvent });
-        event = _event;
-      }
-      return _event;
-    });
-    return [200, { event }];
-  } catch (error) {
-    console.error(error);
-    return [500, { message: 'Internal server error' }];
-  }
-});
-
-// ----------------------------------------------------------------------
-
-mock.onPost('/api/calendar/events/delete').reply((request) => {
-  try {
-    const { eventId } = JSON.parse(request.data);
-    events = reject(events, { id: eventId });
-    return [200, { eventId }];
-  } catch (error) {
-    console.error(error);
-    return [500, { message: 'Internal server error' }];
-  }
-});

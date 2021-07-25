@@ -107,8 +107,8 @@ export function getEvents() {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get('/api/calendar/events');
-      dispatch(slice.actions.getEventsSuccess(response.data.events));
+      const response = await HTTPClient.get('/list/event/masterclass');
+      dispatch(slice.actions.getEventsSuccess(response.data.result));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -121,7 +121,7 @@ export function createEvent(newEvent: Omit<EventInput, 'id'>) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.post('/api/calendar/events/new', newEvent);
+      const response = await HTTPClient.post('/create/event', newEvent);
       dispatch(slice.actions.createEventSuccess(response.data.event));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -134,9 +134,16 @@ export function createEvent(newEvent: Omit<EventInput, 'id'>) {
 export function updateEvent(
   eventId: string,
   updateEvent: Partial<{
-    allDay: boolean;
-    start: Date | null;
-    end: Date | null;
+    eventName: string;
+    eventDescription: string;
+    eventType: string;
+    eventColor: string;
+    eventStart: Date;
+    eventEnd: Date;
+    organiserId: string;
+    organiserName: string;
+    hasAssignment: boolean;
+    attendees: never[];
   }>
 ) {
   return async () => {

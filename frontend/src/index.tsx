@@ -7,25 +7,6 @@ import './locales/i18n';
 // highlight
 import './utils/highlight';
 
-// scroll bar
-import 'simplebar/src/simplebar.css';
-
-// map
-import 'mapbox-gl/dist/mapbox-gl.css';
-
-// lightbox
-import 'react-image-lightbox/style.css';
-
-// editor
-import 'react-quill/dist/quill.snow.css';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
-// lazy image
-import 'lazysizes';
-import 'lazysizes/plugins/attrchange/ls.attrchange';
-import 'lazysizes/plugins/object-fit/ls.object-fit';
-import 'lazysizes/plugins/parent-fit/ls.parent-fit';
-
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
