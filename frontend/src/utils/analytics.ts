@@ -1,5 +1,3 @@
-import { googleAnalyticsConfig } from '../config';
-
 // ----------------------------------------------------------------------
 
 const setup = (
@@ -30,7 +28,7 @@ const setupEvent = (
 
 const track = {
   pageview: (props?: Gtag.CustomParams | Gtag.ControlParams | Gtag.EventParams) => {
-    setup(googleAnalyticsConfig || '', props);
+    setup('', props);
   },
   event: (type: string, props?: Gtag.CustomParams | Gtag.ControlParams | Gtag.EventParams) => {
     setupEvent(type, props);

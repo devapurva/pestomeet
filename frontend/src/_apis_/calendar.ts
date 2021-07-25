@@ -1,7 +1,4 @@
-import faker from 'faker';
 import { add, set, sub } from 'date-fns';
-import { map, assign, reject } from 'lodash';
-import { EventInput } from '@fullcalendar/common';
 
 // ----------------------------------------------------------------------
 
@@ -70,11 +67,3 @@ const setColorAndTime = (index: number) => {
     end: add(new Date(), { days: 2, hours: 4, minutes: 50 })
   };
 };
-
-const events: EventInput[] = [...Array(9)].map((_, index) => ({
-  id: faker.datatype.uuid(),
-  title: faker.name.title(),
-  description: faker.lorem.sentences(),
-  allDay: faker.datatype.boolean(),
-  ...setColorAndTime(index)
-}));

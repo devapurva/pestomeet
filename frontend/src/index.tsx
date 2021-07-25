@@ -4,9 +4,6 @@ import './_apis_';
 // i18n
 import './locales/i18n';
 
-// highlight
-import './utils/highlight';
-
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
