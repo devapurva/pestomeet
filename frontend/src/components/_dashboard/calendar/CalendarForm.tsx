@@ -14,7 +14,9 @@ import {
   IconButton,
   DialogContent,
   DialogActions,
-  FormControlLabel
+  FormControlLabel,
+  Autocomplete,
+  Checkbox
 } from '@material-ui/core';
 import { LoadingButton, MobileDateTimePicker } from '@material-ui/lab';
 import { EventInput } from '@fullcalendar/common';
@@ -23,6 +25,7 @@ import { useDispatch } from '../../../redux/store';
 import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
 //
 import ColorSinglePicker from '../../ColorSinglePicker';
+import { BatchManager } from '../../../@types/user';
 
 // ----------------------------------------------------------------------
 
@@ -39,12 +42,16 @@ const COLOR_OPTIONS = [
 const getInitialValues = (event: EventInput, range: { start: Date; end: Date } | null) => {
   // eslint-disable-next-line no-underscore-dangle
   const _event = {
-    title: '',
-    description: '',
-    textColor: '#1890FF',
-    allDay: false,
-    start: range ? new Date(range.start) : new Date(),
-    end: range ? new Date(range.end) : new Date()
+    eventName: '',
+    eventDescription: '',
+    eventType: 'masterclass',
+    eventColor: '#1890FF',
+    eventStart: range ? new Date(range.start) : new Date(),
+    eventEnd: range ? new Date(range.end) : new Date(),
+    organiserId: '',
+    organiserName: '',
+    hasAssignment: false,
+    attendees: []
   };
 
   if (event || range) {
@@ -63,16 +70,17 @@ type CalendarFormProps = {
     end: Date;
   } | null;
   onCancel: VoidFunction;
+  batchList: BatchManager[];
 };
 
-export default function CalendarForm({ event, range, onCancel }: CalendarFormProps) {
+export default function CalendarForm({ event, range, onCancel, batchList }: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const isCreating = !event;
 
   const EventSchema = Yup.object().shape({
-    title: Yup.string().max(255).required('Title is required'),
-    description: Yup.string().max(5000)
+    eventName: Yup.string().max(255).required('Event Name is required'),
+    eventDescription: Yup.string().max(5000)
   });
 
   const formik = useFormik({
@@ -80,18 +88,12 @@ export default function CalendarForm({ event, range, onCancel }: CalendarFormPro
     validationSchema: EventSchema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
-        const newEvent = {
-          title: values.title,
-          description: values.description,
-          textColor: values.textColor,
-          allDay: values.allDay,
-          start: values.start,
-          end: values.end
-        };
+        const newEvent = { ...values };
         if (event.id) {
           dispatch(updateEvent(event.id, newEvent));
           enqueueSnackbar('Update event success', { variant: 'success' });
         } else {
+          console.log('inside create');
           dispatch(createEvent(newEvent));
           enqueueSnackbar('Create event success', { variant: 'success' });
         }
@@ -118,7 +120,17 @@ export default function CalendarForm({ event, range, onCancel }: CalendarFormPro
     }
   };
 
-  const isDateError = isBefore(new Date(values.end), new Date(values.start));
+  const isDateError = isBefore(new Date(values.eventEnd), new Date(values.eventStart));
+
+  const setAttendees = (values: BatchManager[], setFieldValue: any) => {
+    const finalList = values.map((element) => {
+      const obj = {
+        batchId: element.batchId
+      };
+      return obj;
+    });
+    setFieldValue('attendees', finalList?.length > 0 ? finalList : []);
+  };
 
   return (
     <FormikProvider value={formik}>
@@ -127,9 +139,9 @@ export default function CalendarForm({ event, range, onCancel }: CalendarFormPro
           <TextField
             fullWidth
             label="Title"
-            {...getFieldProps('title')}
-            error={Boolean(touched.title && errors.title)}
-            helperText={touched.title && errors.title}
+            {...getFieldProps('eventName')}
+            error={Boolean(touched.eventName && errors.eventName)}
+            helperText={touched.eventName && errors.eventName}
             sx={{ mb: 3 }}
           />
 
@@ -138,31 +150,31 @@ export default function CalendarForm({ event, range, onCancel }: CalendarFormPro
             multiline
             maxRows={4}
             label="Description"
-            {...getFieldProps('description')}
-            error={Boolean(touched.description && errors.description)}
-            helperText={touched.description && errors.description}
+            {...getFieldProps('eventDescription')}
+            error={Boolean(touched.eventDescription && errors.eventDescription)}
+            helperText={touched.eventDescription && errors.eventDescription}
             sx={{ mb: 3 }}
           />
 
           <FormControlLabel
-            control={<Switch checked={values.allDay} {...getFieldProps('allDay')} />}
-            label="All day"
+            control={<Switch checked={values.hasAssignment} {...getFieldProps('hasAssignment')} />}
+            label="Assignment"
             sx={{ mb: 3 }}
           />
 
           <MobileDateTimePicker
             label="Start date"
-            value={values.start}
+            value={values.eventStart}
             inputFormat="dd/MM/yyyy hh:mm a"
-            onChange={(date) => setFieldValue('start', date)}
+            onChange={(date) => setFieldValue('eventStart', date)}
             renderInput={(params) => <TextField {...params} fullWidth sx={{ mb: 3 }} />}
           />
 
           <MobileDateTimePicker
             label="End date"
-            value={values.end}
+            value={values.eventEnd}
             inputFormat="dd/MM/yyyy hh:mm a"
-            onChange={(date) => setFieldValue('end', date)}
+            onChange={(date) => setFieldValue('eventEnd', date)}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -174,7 +186,37 @@ export default function CalendarForm({ event, range, onCancel }: CalendarFormPro
             )}
           />
 
-          <ColorSinglePicker {...getFieldProps('textColor')} colors={COLOR_OPTIONS} />
+          {batchList && (
+            <Autocomplete
+              fullWidth
+              multiple
+              options={batchList}
+              onChange={(event, value) => setAttendees(value, setFieldValue)}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.batchName}
+              renderOption={(props, option, { selected }) => (
+                <li key={option.batchId} {...props}>
+                  <Checkbox checked={selected} />
+                  {option.batchName}
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  error={Boolean(touched.attendees && errors.attendees)}
+                  helperText={touched.attendees && errors.attendees}
+                  {...params}
+                  label="Team Members"
+                  placeholder="Members"
+                />
+              )}
+            />
+          )}
+
+          <ColorSinglePicker
+            style={{ marginTop: 20 }}
+            {...getFieldProps('eventColor')}
+            colors={COLOR_OPTIONS}
+          />
         </DialogContent>
 
         <DialogActions>

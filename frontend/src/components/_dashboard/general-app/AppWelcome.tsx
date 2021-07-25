@@ -1,10 +1,16 @@
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import peopleOutline from '@iconify/icons-eva/people-outline';
-// material
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Typography, Button, Card, CardContent, CardProps } from '@material-ui/core';
+// components
 import UserCreateModal from 'pages/dashboard/UserCreateModal';
+import BatchModal from 'pages/dashboard//CreateBatchModal';
+// redux
+import { RootState, useDispatch, useSelector } from '../../../redux/store';
+import { getAllUserList } from '../../../redux/slices/user';
+// material
 import { SeoIllustration } from '../../../assets';
 
 // ----------------------------------------------------------------------
@@ -29,6 +35,19 @@ interface AppWelcomeProps extends CardProps {
 }
 
 export default function AppWelcome({ displayName }: AppWelcomeProps) {
+  const [refresh, setRefresh] = useState(false);
+  const dispatch = useDispatch();
+  const { userList } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    dispatch(getAllUserList());
+  }, [dispatch]);
+
+  const admins = userList.filter((users) => users.role === 'admin');
+  const otherUsers = userList.filter(
+    (users) => users.role === 'mentor' || users.role === 'student'
+  );
+
   return (
     <RootStyle>
       <CardContent
@@ -48,15 +67,17 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
         </Typography>
 
         <div style={{ display: 'flex' }}>
-          <UserCreateModal />
+          <UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />
 
-          <Button
-            variant="contained"
-            startIcon={<Icon icon={peopleOutline} />}
-            style={{ marginLeft: 15 }}
-          >
-            New Batch
-          </Button>
+          <div style={{ marginLeft: 15 }}>
+            <BatchModal
+              isEdit={false}
+              currentBatch={null}
+              setRefresh={setRefresh}
+              admins={admins}
+              otherUsers={otherUsers}
+            />
+          </div>
         </div>
 
         {/* <Button variant="contained" to="#" component={RouterLink}>

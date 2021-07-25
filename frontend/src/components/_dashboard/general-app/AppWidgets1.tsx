@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import personFill from '@iconify/icons-eva/person-fill';
+import accountGroup from '@iconify/icons-mdi/account-group';
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
 import { Card, Typography, Box } from '@material-ui/core';
@@ -40,7 +40,7 @@ export default function AppWidgets1() {
           Total Students
         </Typography>
       </Box>
-      <IconStyle icon={personFill} />
+      <IconStyle icon={accountGroup} />
     </RootStyle>
   );
 }

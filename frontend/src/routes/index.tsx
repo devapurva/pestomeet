@@ -1,7 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Navigate, useRoutes, useLocation } from 'react-router-dom';
 // layouts
-import MainLayout from '../layouts/main';
 import DashboardLayout from '../layouts/dashboard';
 import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // guards
@@ -80,16 +79,24 @@ export default function Router() {
         { path: '/dashboard', element: <Navigate to="/dashboard/overview" replace /> },
         { path: '/dashboard/overview', element: <GeneralApp /> },
         {
-          path: '/dashboard/user',
-          children: [
-            { path: '/', element: <UserList /> }
-            // { path: 'profile', element: <UserProfile /> },
-            // { path: 'cards', element: <UserCards /> },
-            // { path: 'list', element: <UserList /> },
-            // { path: 'new', element: <UserCreate /> },
-            // { path: '/:name/edit', element: <UserCreate /> },
-            // { path: 'account', element: <UserAccount /> }
-          ]
+          path: '/dashboard/mentor',
+          children: [{ path: '/', element: <MentorList /> }]
+        },
+        {
+          path: '/dashboard/student',
+          children: [{ path: '/', element: <StudentList /> }]
+        },
+        {
+          path: '/dashboard/batch',
+          children: [{ path: '/', element: <Batches /> }]
+        },
+        {
+          path: '/dashboard/team-mentor',
+          children: [{ path: '/', element: <MentorTeams /> }]
+        },
+        {
+          path: '/dashboard/buddy-pairing',
+          children: [{ path: '/', element: <BuddyPairing /> }]
         },
         { path: '/dashboard/calendar', element: <Calendar /> }
       ]
@@ -100,7 +107,6 @@ export default function Router() {
       path: '*',
       element: <LogoOnlyLayout />,
       children: [
-        { path: 'coming-soon', element: <ComingSoon /> },
         { path: 'maintenance', element: <Maintenance /> },
         { path: '500', element: <Page500 /> },
         { path: '404', element: <NotFound /> },
@@ -120,14 +126,13 @@ const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetP
 const VerifyCode = Loadable(lazy(() => import('../pages/authentication/VerifyCode')));
 // Dashboard
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
-const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
-const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
-const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
-const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
-const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
+const StudentList = Loadable(lazy(() => import('../pages/dashboard/StudentList')));
+const MentorList = Loadable(lazy(() => import('../pages/dashboard/MentorList')));
+const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));
+const MentorTeams = Loadable(lazy(() => import('../pages/dashboard/MentorTeam')));
+const BuddyPairing = Loadable(lazy(() => import('../pages/dashboard/BuddyPairing')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 // Main
-const ComingSoon = Loadable(lazy(() => import('../pages/ComingSoon')));
 const Maintenance = Loadable(lazy(() => import('../pages/Maintenance')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));

@@ -10,7 +10,7 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { useState, useRef, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
-import { Card, Button, Container, DialogTitle, useMediaQuery } from '@material-ui/core';
+import { Card, Button, Container, Dialog, DialogTitle, useMediaQuery } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import {
@@ -21,11 +21,11 @@ import {
   selectEvent,
   selectRange
 } from '../../redux/slices/calendar';
+import { getBatchList } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import Page from '../../components/Page';
-import { DialogAnimate } from '../../components/animate';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { CalendarForm, CalendarStyle, CalendarToolbar } from '../../components/_dashboard/calendar';
 
@@ -51,8 +51,10 @@ export default function Calendar() {
   const [view, setView] = useState<CalendarView>(isMobile ? 'listWeek' : 'dayGridMonth');
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
+  const { batchList } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
+    dispatch(getBatchList('ninja'));
     dispatch(getEvents());
   }, [dispatch]);
 
@@ -116,35 +118,35 @@ export default function Calendar() {
   };
 
   const handleResizeEvent = async ({ event }: EventResizeDoneArg) => {
-    try {
-      dispatch(
-        updateEvent(event.id, {
-          allDay: event.allDay,
-          start: event.start,
-          end: event.end
-        })
-      );
-      enqueueSnackbar('Update event success', { variant: 'success' });
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   dispatch(
+    //     updateEvent(event.id, {
+    //       allDay: event.allDay,
+    //       start: event.start,
+    //       end: event.end
+    //     })
+    //   );
+    //   enqueueSnackbar('Update event success', { variant: 'success' });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   const handleDropEvent = async ({ event }: EventDropArg) => {
-    try {
-      dispatch(
-        updateEvent(event.id, {
-          allDay: event.allDay,
-          start: event.start,
-          end: event.end
-        })
-      );
-      enqueueSnackbar('Update event success', {
-        variant: 'success'
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   dispatch(
+    //     updateEvent(event.id, {
+    //       allDay: event.allDay,
+    //       start: event.start,
+    //       end: event.end
+    //     })
+    //   );
+    //   enqueueSnackbar('Update event success', {
+    //     variant: 'success'
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   const handleAddEvent = () => {
@@ -213,15 +215,16 @@ export default function Calendar() {
           </CalendarStyle>
         </Card>
 
-        <DialogAnimate open={isOpenModal} onClose={handleCloseModal}>
+        <Dialog open={isOpenModal} onClose={handleCloseModal}>
           <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
 
           <CalendarForm
             event={selectedEvent || {}}
             range={selectedRange}
             onCancel={handleCloseModal}
+            batchList={batchList}
           />
-        </DialogAnimate>
+        </Dialog>
       </Container>
     </Page>
   );

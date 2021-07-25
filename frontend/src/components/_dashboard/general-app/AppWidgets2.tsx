@@ -1,7 +1,5 @@
-import { merge } from 'lodash';
 import { Icon } from '@iconify/react';
-import ReactApexChart from 'react-apexcharts';
-import emailFill from '@iconify/icons-eva/email-fill';
+import accountTie from '@iconify/icons-mdi/account-tie';
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
 import { Card, Box, Typography } from '@material-ui/core';
@@ -42,7 +40,7 @@ export default function AppWidgets2() {
           Total Mentors
         </Typography>
       </Box>
-      <IconStyle icon={emailFill} />
+      <IconStyle icon={accountTie} />
     </RootStyle>
   );
 }

@@ -1,3 +1,15 @@
+import { Icon, InlineIcon } from '@iconify/react';
+import { experimentalStyled as styled } from '@material-ui/core/styles';
+import GroupIcon from '@material-ui/icons/Group';
+// for students
+import accountGroup from '@iconify/icons-mdi/account-group';
+// for mentors
+import accountTie from '@iconify/icons-mdi/account-tie';
+// for batches
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
+import accountChild from '@iconify/icons-mdi/account-child';
+import accountMultiplePlus from '@iconify/icons-mdi/account-multiple-plus';
+
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -9,10 +21,20 @@ const getIcon = (name: string) => (
   <SvgIconStyle src={`/static/icons/navbar/${name}.svg`} sx={{ width: '100%', height: '100%' }} />
 );
 
+const IconStyle = styled(Icon)(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+  color: theme.palette.grey[600]
+}));
+
 const ICONS = {
-  user: getIcon('ic_user'),
+  student: <IconStyle icon={accountGroup} />,
+  mentor: <IconStyle icon={accountTie} />,
+  batch: <IconStyle icon={googleClassroom} />,
   calendar: getIcon('ic_calendar'),
-  dashboard: getIcon('ic_dashboard')
+  dashboard: getIcon('ic_dashboard'),
+  mentorTeam: <IconStyle icon={accountChild} />,
+  buddyPairing: <IconStyle icon={accountMultiplePlus} />
 };
 
 const sidebarConfig = [
@@ -36,17 +58,29 @@ const sidebarConfig = [
     items: [
       // MANAGEMENT : USER
       {
-        title: 'user',
-        path: PATH_DASHBOARD.user,
-        icon: ICONS.user
-        // children: [
-        //   { title: 'profile', path: PATH_DASHBOARD.user.profile },
-        //   { title: 'cards', path: PATH_DASHBOARD.user.cards },
-        //   { title: 'list', path: PATH_DASHBOARD.user.list },
-        //   { title: 'create', path: PATH_DASHBOARD.user.newUser },
-        //   { title: 'edit', path: PATH_DASHBOARD.user.editById },
-        //   { title: 'account', path: PATH_DASHBOARD.user.account }
-        // ]
+        title: 'Students',
+        path: PATH_DASHBOARD.student,
+        icon: ICONS.student
+      },
+      {
+        title: 'Mentors',
+        path: PATH_DASHBOARD.mentor,
+        icon: ICONS.mentor
+      },
+      {
+        title: 'Batches',
+        path: PATH_DASHBOARD.batch,
+        icon: ICONS.batch
+      },
+      {
+        title: 'Mentor Team',
+        path: PATH_DASHBOARD.mentorTeam,
+        icon: ICONS.mentorTeam
+      },
+      {
+        title: 'Buddy Pairing',
+        path: PATH_DASHBOARD.buddyPairing,
+        icon: ICONS.buddyPairing
       }
     ]
   },

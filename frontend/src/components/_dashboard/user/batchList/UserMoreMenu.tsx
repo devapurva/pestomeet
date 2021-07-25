@@ -6,8 +6,8 @@ import checkAll from '@iconify/icons-mdi/check-all';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
-import UserCreateModal from '../../../../pages/dashboard/UserCreateModal';
-import { UserManager } from '../../../../@types/user';
+import BatchModal from '../../../../pages/dashboard/CreateBatchModal';
+import { BatchManager, UserManager } from '../../../../@types/user';
 
 // ----------------------------------------------------------------------
 
@@ -15,16 +15,18 @@ type UserMoreMenuProps = {
   onDelete: VoidFunction;
   userName: string;
   setRefresh?: any;
-  currentUser?: UserManager;
-  onApprove: VoidFunction;
+  currentBatch?: BatchManager;
+  admins: UserManager[];
+  otherUsers: UserManager[];
 };
 
 export default function UserMoreMenu({
   onDelete,
-  onApprove,
   userName,
-  currentUser,
-  setRefresh
+  currentBatch,
+  setRefresh,
+  admins,
+  otherUsers
 }: UserMoreMenuProps) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -51,19 +53,14 @@ export default function UserMoreMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem onClick={handleClickOpen} sx={{ color: 'text.secondary' }}>
-          <UserCreateModal
+          <BatchModal
             isEdit={true}
             setRefresh={setRefresh}
-            currentUser={currentUser}
+            currentBatch={currentBatch}
             openModal={open}
+            admins={admins}
+            otherUsers={otherUsers}
           />
-        </MenuItem>
-
-        <MenuItem onClick={onApprove} sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={checkAll} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Approve" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>

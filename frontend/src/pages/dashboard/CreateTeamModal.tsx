@@ -21,16 +21,18 @@ import Typography from '@material-ui/core/Typography';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
-import UserNewForm from '../../components/_dashboard/user/UserNewForm';
-import { UserManager } from '../../@types/user';
+import TeamForm from '../../components/_dashboard/user/TeamForm';
+import { TeamManager, UserManager } from '../../@types/user';
 
 // ----------------------------------------------------------------------
 
-type UserCreateModalProps = {
+type TeamModalProps = {
   isEdit: boolean;
-  currentUser?: UserManager | null;
+  currentTeam?: TeamManager | null;
   setRefresh: any;
   openModal?: boolean | undefined;
+  mentors: UserManager[];
+  students: UserManager[];
 };
 
 const styles = (theme: Theme) =>
@@ -67,12 +69,14 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-export default function UserCreateModal({
+export default function TeamModal({
   isEdit,
-  currentUser,
+  currentTeam,
   setRefresh,
-  openModal
-}: UserCreateModalProps) {
+  openModal,
+  mentors,
+  students
+}: TeamModalProps) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
@@ -95,7 +99,7 @@ export default function UserCreateModal({
     <div>
       {!isEdit ? (
         <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
-          New User
+          Create Team
         </Button>
       ) : (
         <div style={{ display: 'flex' }}>
@@ -117,14 +121,16 @@ export default function UserCreateModal({
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'Edit User' : 'Create New User'}
+          {isEdit ? 'Edit Team' : 'Create Team'}
         </DialogTitle>
         <DialogContent>
-          <UserNewForm
+          <TeamForm
             isEdit={isEdit}
-            currentUser={currentUser}
+            currentTeam={currentTeam}
             setRefresh={setRefresh}
             handleClose={handleClose}
+            mentors={mentors}
+            students={students}
           />
         </DialogContent>
       </Dialog>

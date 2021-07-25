@@ -3,6 +3,7 @@ import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 // material
 import {
   Button,
@@ -21,16 +22,18 @@ import Typography from '@material-ui/core/Typography';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
-import UserNewForm from '../../components/_dashboard/user/UserNewForm';
-import { UserManager } from '../../@types/user';
+import BatchForm from '../../components/_dashboard/user/BatchForm';
+import { BatchManager, UserManager } from '../../@types/user';
 
 // ----------------------------------------------------------------------
 
-type UserCreateModalProps = {
+type BatchModalProps = {
   isEdit: boolean;
-  currentUser?: UserManager | null;
+  currentBatch?: BatchManager | null;
   setRefresh: any;
   openModal?: boolean | undefined;
+  admins: UserManager[];
+  otherUsers: UserManager[];
 };
 
 const styles = (theme: Theme) =>
@@ -67,12 +70,14 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-export default function UserCreateModal({
+export default function BatchModal({
   isEdit,
-  currentUser,
+  currentBatch,
   setRefresh,
-  openModal
-}: UserCreateModalProps) {
+  openModal,
+  admins,
+  otherUsers
+}: BatchModalProps) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
@@ -94,8 +99,12 @@ export default function UserCreateModal({
   return (
     <div>
       {!isEdit ? (
-        <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
-          New User
+        <Button
+          variant="contained"
+          onClick={handleClickOpen}
+          startIcon={<Icon icon={googleClassroom} />}
+        >
+          Create Batch
         </Button>
       ) : (
         <div style={{ display: 'flex' }}>
@@ -117,14 +126,16 @@ export default function UserCreateModal({
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'Edit User' : 'Create New User'}
+          {isEdit ? 'Edit Batch' : 'Create Batch'}
         </DialogTitle>
         <DialogContent>
-          <UserNewForm
+          <BatchForm
             isEdit={isEdit}
-            currentUser={currentUser}
+            currentBatch={currentBatch}
             setRefresh={setRefresh}
             handleClose={handleClose}
+            admins={admins}
+            otherUsers={otherUsers}
           />
         </DialogContent>
       </Dialog>

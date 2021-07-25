@@ -13,29 +13,19 @@ import {
   CreditCard,
   UserInvoice,
   UserManager,
-  BatchManager,
   UserAddressBook,
-  NotificationSettings,
-  TeamManager,
-  BatchMembers,
-  TeamMember
+  NotificationSettings
 } from '../../@types/user';
 
 // ----------------------------------------------------------------------
 
-type UserState = {
+type BatchState = {
   isLoading: boolean;
   error: boolean;
   myProfile: null | Profile;
   posts: UserPost[];
-  users: UserData[];
+  batches: [];
   userList: UserManager[];
-  studentList: UserManager[];
-  mentorList: UserManager[];
-  batchList: BatchManager[];
-  mentorTeamList: TeamManager[];
-  buddyList: TeamManager[];
-  teamList: TeamManager[];
   followers: Follower[];
   friends: Friend[];
   gallery: Gallery[];
@@ -45,19 +35,13 @@ type UserState = {
   notifications: NotificationSettings | null;
 };
 
-const initialState: UserState = {
+const initialState: BatchState = {
   isLoading: false,
   error: false,
   myProfile: null,
   posts: [],
-  users: [],
+  batches: [],
   userList: [],
-  studentList: [],
-  mentorList: [],
-  batchList: [],
-  mentorTeamList: [],
-  buddyList: [],
-  teamList: [],
   followers: [],
   friends: [],
   gallery: [],
@@ -68,16 +52,12 @@ const initialState: UserState = {
 };
 
 const slice = createSlice({
-  name: 'user',
+  name: 'batch',
   initialState,
   reducers: {
     // START LOADING
     startLoading(state) {
       state.isLoading = true;
-    },
-
-    emptyUserList(state) {
-      state.users = [];
     },
 
     // HAS ERROR
@@ -99,15 +79,15 @@ const slice = createSlice({
     },
 
     // GET USERS
-    getUsersSuccess(state, action) {
+    getBatchsSuccess(state, action) {
       state.isLoading = false;
-      state.users = action.payload;
+      state.batches = action.payload;
     },
 
     // DELETE USERS
-    deleteUser(state, action) {
-      const deleteUser = filter(state.userList, (user) => user.id !== action.payload);
-      state.userList = deleteUser;
+    deleteBatch(state, action) {
+      const deleteBatch = filter(state.userList, (user) => user.id !== action.payload);
+      state.userList = deleteBatch;
     },
 
     // GET FOLLOWERS
@@ -146,45 +126,9 @@ const slice = createSlice({
     },
 
     // GET MANAGE USERS
-    getUserListSuccess(state, action) {
-      state.isLoading = false;
-      state.userList = action.payload;
-    },
-
-    // GET STUDENT LIST
-    getStudentListSuccess(state, action) {
-      state.isLoading = false;
-      state.studentList = action.payload;
-    },
-
-    // GET MENTOR LIST
-    getMentorListSuccess(state, action) {
-      state.isLoading = false;
-      state.mentorList = action.payload;
-    },
-
-    // GET BATCH LIST
     getBatchListSuccess(state, action) {
       state.isLoading = false;
-      state.batchList = action.payload;
-    },
-
-    // GET MENTOR TEAM LIST
-    getMentorTeamListSuccess(state, action) {
-      state.isLoading = false;
-      state.mentorTeamList = action.payload;
-    },
-
-    // GET BUDDY PAIRING LIST
-    getBuddyListSuccess(state, action) {
-      state.isLoading = false;
-      state.buddyList = action.payload;
-    },
-
-    // GET TEAM LIST
-    getTeamListSuccess(state, action) {
-      state.isLoading = false;
-      state.teamList = action.payload;
+      state.userList = action.payload;
     },
 
     // GET CARDS
@@ -217,7 +161,7 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const { onToggleFollow, deleteUser } = slice.actions;
+export const { onToggleFollow, deleteBatch } = slice.actions;
 
 // ----------------------------------------------------------------------
 
@@ -291,85 +235,17 @@ export function getGallery() {
 
 // ----------------------------------------------------------------------
 
-export function getAllUserList() {
-  return async () => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await HTTPClient.get(`/list/user/all`);
-      dispatch(slice.actions.getUserListSuccess(response.data.result));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
-
-// ----------------------------------------------------------------------
-
-export function getUserList(approval: string, type: string) {
-  return async () => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await HTTPClient.get(`/list/user/${approval}/${type}`);
-      if (type === 'student') {
-        dispatch(slice.actions.getStudentListSuccess(response.data.result));
-      }
-      if (type === 'mentor') {
-        dispatch(slice.actions.getMentorListSuccess(response.data.result));
-      }
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
-
-// ----------------------------------------------------------------------
-
 export function getBatchList(type: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get(`/list/batch/${type}`);
+      const response = await HTTPClient.get(`/list/user/inprogress/${type}`);
       dispatch(slice.actions.getBatchListSuccess(response.data.result));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
   };
 }
-
-// ----------------------------------------------------------------------
-
-export const deleteBatch = async (id: string) => {
-  dispatch(slice.actions.startLoading());
-  const response = await HTTPClient.delete(`/delete/batch/${id}`);
-  return response;
-};
-
-// ----------------------------------------------------------------------
-
-export function getTeamList(type: string) {
-  return async () => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await HTTPClient.get(`/list/team/${type}`);
-      if (type === 'buddypairing') {
-        dispatch(slice.actions.getBuddyListSuccess(response.data.result));
-      }
-      if (type === 'mentor') {
-        dispatch(slice.actions.getMentorTeamListSuccess(response.data.result));
-      }
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
-
-// ----------------------------------------------------------------------
-
-export const deleteTeam = async (id: string) => {
-  dispatch(slice.actions.startLoading());
-  const response = await HTTPClient.delete(`/delete/team/${id}`);
-  return response;
-};
 
 // ----------------------------------------------------------------------
 
@@ -429,122 +305,14 @@ export function getNotifications() {
 
 // ----------------------------------------------------------------------
 
-export function getUsers() {
+export function getBatchs() {
   return async () => {
     dispatch(slice.actions.startLoading());
-    dispatch(slice.actions.emptyUserList());
     try {
       const response = await HTTPClient.get('/api/user/all');
-      dispatch(slice.actions.getUsersSuccess(response.data.users));
+      dispatch(slice.actions.getBatchsSuccess(response.data.batches));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
   };
 }
-
-// ----------------------------------------------------------------------
-
-export const addUser = async (
-  name: string,
-  role: string,
-  phone: string,
-  experience: string,
-  email: string,
-  password: string,
-  approval: string
-) => {
-  const response = await HTTPClient.post('/register', {
-    name,
-    role,
-    phone,
-    experience,
-    email,
-    password,
-    approval
-  });
-  if (response.data.statusCode) {
-    const user = {
-      name,
-      role,
-      phone,
-      experience,
-      email,
-      password,
-      approval
-    };
-  }
-  return response;
-};
-
-// ----------------------------------------------------------------------
-
-export const addAvatar = async (formData: FormData, id: string) => {
-  const response = await HTTPClient.post(`/avatar/upload/${id}`, formData);
-  return response;
-};
-
-// ----------------------------------------------------------------------
-
-export const editUser = async (
-  id: string | undefined,
-  name: string,
-  role: string,
-  phone: string,
-  experience: string,
-  email: string,
-  approval: string
-) => {
-  const response = await HTTPClient.patch(`/edit/user/${id}`, {
-    name,
-    role,
-    phone,
-    experience,
-    email,
-    approval
-  });
-  if (response.data.statusCode) {
-    const user = {
-      name,
-      role,
-      phone,
-      experience,
-      email,
-      approval
-    };
-  }
-  return response;
-};
-
-// ----------------------------------------------------------------------
-
-export const addBatch = async (
-  batchName: string,
-  batchType: string,
-  batchOwner: string,
-  batchMembers: BatchMembers[] | []
-) => {
-  const response = await HTTPClient.post('/create/batch', {
-    batchName,
-    batchType,
-    batchOwner,
-    batchMembers
-  });
-  return response;
-};
-
-// ----------------------------------------------------------------------
-
-export const addTeam = async (
-  teamName: string,
-  teamType: string,
-  mentorName: string,
-  teamMembers: TeamMember[] | []
-) => {
-  const response = await HTTPClient.post('/create/team', {
-    teamName,
-    teamType,
-    mentorName,
-    teamMembers
-  });
-  return response;
-};

@@ -6,10 +6,8 @@ import ThemeConfig from './theme';
 import useAuth from './hooks/useAuth';
 // components
 import Settings from './components/settings';
-import RtlLayout from './components/RtlLayout';
 import ScrollToTop from './components/ScrollToTop';
 import LoadingScreen from './components/LoadingScreen';
-import GoogleAnalytics from './components/GoogleAnalytics';
 import NotistackProvider from './components/NotistackProvider';
 import ThemePrimaryColor from './components/ThemePrimaryColor';
 
@@ -21,13 +19,10 @@ export default function App() {
   return (
     <ThemeConfig>
       <ThemePrimaryColor>
-        <RtlLayout>
-          <NotistackProvider>
-            <ScrollToTop />
-            <GoogleAnalytics />
-            {isInitialized ? <Router /> : <LoadingScreen />}
-          </NotistackProvider>
-        </RtlLayout>
+        <NotistackProvider>
+          <ScrollToTop />
+          {isInitialized ? <Router /> : <LoadingScreen />}
+        </NotistackProvider>
       </ThemePrimaryColor>
     </ThemeConfig>
   );

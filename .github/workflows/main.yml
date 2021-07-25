@@ -1,0 +1,21 @@
+name: Deploy PestoMeet to Heroku
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AkhileshNS/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: "72bd2b2e-e4fd-46aa-bddc-55ed02b460b5"
+          heroku_app_name: "pestomeet-frontend" #Must be unique in Heroku
+          heroku_email: "apurva.w17@gmail.com"
+          appdir: "frontend"

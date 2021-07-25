@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import peopleOutline from '@iconify/icons-eva/people-outline';
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
@@ -41,7 +41,7 @@ export default function AppWidgets2() {
           Total Batches
         </Typography>
       </Box>
-      <IconStyle icon={peopleOutline} />
+      <IconStyle icon={googleClassroom} />
     </RootStyle>
   );
 }

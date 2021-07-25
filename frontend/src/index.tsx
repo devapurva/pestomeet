@@ -1,34 +1,5 @@
-// mock api
-import './_apis_';
-
 // i18n
 import './locales/i18n';
-
-// highlight
-import './utils/highlight';
-
-// scroll bar
-import 'simplebar/src/simplebar.css';
-
-// map
-import 'mapbox-gl/dist/mapbox-gl.css';
-
-// lightbox
-import 'react-image-lightbox/style.css';
-
-// editor
-import 'react-quill/dist/quill.snow.css';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
-// slick-carousel
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-
-// lazy image
-import 'lazysizes';
-import 'lazysizes/plugins/attrchange/ls.attrchange';
-import 'lazysizes/plugins/object-fit/ls.object-fit';
-import 'lazysizes/plugins/parent-fit/ls.parent-fit';
 
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
@@ -44,9 +15,6 @@ import { store, persistor } from './redux/store';
 import { SettingsProvider } from './contexts/SettingsContext';
 // components
 import LoadingScreen from './components/LoadingScreen';
-
-// Check our docs
-// https://docs-minimals.vercel.app/authentication/ts-version
 
 import { AuthProvider } from './contexts/JWTContext';
 
