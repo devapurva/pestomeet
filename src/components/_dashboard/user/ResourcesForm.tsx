@@ -1,33 +1,44 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
+import eyeFill from '@iconify/icons-eva/eye-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
+import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { Icon } from '@iconify/react';
+import MIconButton from 'components/@material-extend/MIconButton';
 // material
 import { LoadingButton } from '@material-ui/lab';
+
 import {
   Box,
   Card,
   Grid,
   Stack,
+  Switch,
   TextField,
+  Typography,
   FormHelperText,
   FormControlLabel,
   Radio,
   RadioGroup,
   FormLabel,
+  InputAdornment,
+  IconButton,
   Autocomplete,
   Checkbox
 } from '@material-ui/core';
-import { addBatch } from '../../../redux/slices/user';
+import { addUser, addAvatar, editUser, addTeam } from '../../../redux/slices/user';
+// routes
+import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
-import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
+import { TeamManager, TeamMember, UserManager } from '../../../@types/user';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
-import MIconButton from '../../@material-extend/MIconButton';
+import Label from '../../Label';
+import { UploadAvatar } from '../../upload';
 
 // ----------------------------------------------------------------------
 
@@ -37,73 +48,72 @@ const useStyles = makeStyles({
   }
 });
 
-type BatchFormProps = {
+type TeamFormProps = {
   isEdit: boolean;
-  currentBatch?: BatchManager | null;
+  currentTeam?: TeamManager | null;
   setRefresh: any;
   handleClose?: any;
-  admins: UserManager[];
-  otherUsers: UserManager[];
+  mentors: UserManager[];
+  students: UserManager[];
 };
 
 type FormikValues = {
-  batchName: string;
-  batchType: string;
-  batchOwner: string;
-  batchMembers: BatchMembers[] | [];
+  teamName: string;
+  teamType: string;
+  mentorName: string;
+  teamMembers: TeamMember[] | [];
 };
 
 type FormikSetErrors = {
   (
     errors: FormikErrors<{
-      batchName: string;
-      batchType: string;
-      batchOwner: string;
-      batchMembers: BatchMembers[] | [];
+      teamName: string;
+      teamType: string;
+      mentorName: string;
+      teamMembers: TeamMember[] | [];
     }>
   ): void;
 };
 
-export default function BatchForm({
+export default function ResourcesForm({
   isEdit,
-  currentBatch,
+  currentTeam,
   setRefresh,
   handleClose,
-  admins,
-  otherUsers
-}: BatchFormProps) {
+  mentors,
+  students
+}: TeamFormProps) {
   const navigate = useNavigate();
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
-  const [showPassword, setShowPassword] = useState(false);
 
-  const NewBatchSchema = Yup.object().shape({
-    batchName: Yup.string()
-      .max(100, `Batch name cannot be more than ${100} characters`)
-      .required('Batch name is required'),
-    batchType: Yup.string().required('Batch Type is Required'),
-    batchOwner: Yup.string()
-      .max(50, `Batch Admin cannot be more than ${50} characters`)
-      .required(`Batch Admin Name is required`),
-    batchMembers: Yup.mixed()
+  const NewTeamSchema = Yup.object().shape({
+    teamName: Yup.string()
+      .max(100, `Team name cannot be more than ${100} characters`)
+      .required('Team name is required'),
+    teamType: Yup.string().required('Team Type is Required'),
+    mentorName: Yup.string()
+      .max(50, `Mentor's Name cannot be more than ${50} characters`)
+      .required(`Mentor's Name is required`),
+    teamMembers: Yup.mixed()
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      batchName: currentBatch?.batchName || '',
-      batchType: currentBatch?.batchType || '',
-      batchOwner: currentBatch?.batchOwner || '',
-      batchMembers: currentBatch?.batchMembers || []
+      teamName: currentTeam?.teamName || '',
+      teamType: currentTeam?.teamType || '',
+      mentorName: currentTeam?.mentorName || '',
+      teamMembers: currentTeam?.teamMembers || []
     },
-    validationSchema: NewBatchSchema,
+    validationSchema: NewTeamSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
         if (isEdit) {
-          handleEditBatch(values, { setErrors, setSubmitting });
+          handleEditTeam(values, { setErrors, setSubmitting });
         } else {
-          handleAddBatch(values, { setErrors, setSubmitting });
+          handleAddTeam(values, { setErrors, setSubmitting });
         }
       } catch (error) {
         handleError(error, setSubmitting, setErrors);
@@ -111,14 +121,14 @@ export default function BatchForm({
     }
   });
 
-  const handleAddBatch = async (
+  const handleAddTeam = async (
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
-    await addBatch(values.batchName, values.batchType, values.batchOwner, values.batchMembers).then(
+    await addTeam(values.teamName, values.teamType, values.mentorName, values.teamMembers).then(
       (response: any) => {
         if (response?.data?.statusCode) {
-          enqueueSnackbar('Batch added successfully', {
+          enqueueSnackbar('Mentor team added successfully', {
             variant: 'success',
             action: (key) => (
               <MIconButton size="small" onClick={() => closeSnackbar(key)}>
@@ -138,12 +148,12 @@ export default function BatchForm({
     );
   };
 
-  const handleEditBatch = async (
+  const handleEditTeam = async (
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
     // await editUser(
-    //   currentBatch?.batchId,
+    //   currentTeam?.id,
     //   values?.name,
     //   values?.role,
     //   values?.phone,
@@ -189,11 +199,24 @@ export default function BatchForm({
     handleChange
   } = formik;
 
-  const setBatchOwner = (value: any, setFieldValue: any) => {
-    setFieldValue('batchOwner', value ? value.name : null);
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setFieldValue('avatar', {
+          ...file,
+          preview: URL.createObjectURL(file)
+        });
+      }
+    },
+    [setFieldValue]
+  );
+
+  const setTeamOwner = (value: any, setFieldValue: any) => {
+    setFieldValue('mentorName', value ? value.name : null);
   };
 
-  const setBatchMembers = (values: UserManager[], setFieldValue: any) => {
+  const setTeamMembers = (values: UserManager[], setFieldValue: any) => {
     const finalList = values.map((element) => {
       const obj = {
         id: element.id,
@@ -201,10 +224,8 @@ export default function BatchForm({
       };
       return obj;
     });
-    setFieldValue('batchMembers', finalList?.length > 0 ? finalList : []);
+    setFieldValue('teamMembers', finalList?.length > 0 ? finalList : []);
   };
-
-  console.log(errors);
 
   return (
     <FormikProvider value={formik}>
@@ -216,76 +237,48 @@ export default function BatchForm({
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
-                    label="Batch Name"
-                    {...getFieldProps('batchName')}
-                    error={Boolean(touched.batchName && errors.batchName)}
-                    helperText={touched.batchName && errors.batchName}
+                    label="Team Name"
+                    {...getFieldProps('teamName')}
+                    error={Boolean(touched.teamName && errors.teamName)}
+                    helperText={touched.teamName && errors.teamName}
                   />
                 </Stack>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <FormLabel className={classes.legend} component="legend">
-                    Batch Type:
+                    Team Type:
                   </FormLabel>
                   <RadioGroup
                     row
-                    value={values?.batchType}
-                    aria-label="batchType"
-                    name="batchType"
-                    id="batchType"
+                    value={values?.teamType}
+                    aria-label="teamType"
+                    name="teamType"
+                    id="teamType"
                     onChange={handleChange}
                   >
-                    <FormControlLabel value="ninja" control={<Radio />} label="Ninja" />
-                    <FormControlLabel value="beginner" control={<Radio />} label="Beginner" />
+                    <FormControlLabel value="mentor" control={<Radio />} label="Mentor Team" />
+                    <FormControlLabel
+                      value="buddypairing"
+                      control={<Radio />}
+                      label="Buddy Pairing"
+                    />
                   </RadioGroup>
                 </Stack>
 
-                {touched.batchType && errors.batchType && (
-                  <FormHelperText error={true}>{errors.batchType}</FormHelperText>
+                {touched.teamType && errors.teamType && (
+                  <FormHelperText error={true}>{errors.teamType}</FormHelperText>
                 )}
 
                 <FormLabel className={classes.legend} component="legend">
-                  Batch Admin:
+                  Team Mentor:
                 </FormLabel>
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  {admins && (
+                  {mentors && (
                     <Autocomplete
                       fullWidth
-                      onChange={(event, value) => setBatchOwner(value, setFieldValue)}
-                      options={admins}
-                      disableCloseOnSelect
-                      getOptionLabel={(option) => option.name}
-                      renderOption={(props, option, { selected }) => (
-                        <li {...props}>
-                          <Checkbox checked={selected} />
-                          {option.name}
-                        </li>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          error={Boolean(touched.batchOwner && errors.batchOwner)}
-                          helperText={touched.batchOwner && errors.batchOwner}
-                          {...params}
-                          label="Batch Admin"
-                          placeholder="Admin"
-                        />
-                      )}
-                    />
-                  )}
-                </Stack>
-
-                <FormLabel className={classes.legend} component="legend">
-                  Batch Member:
-                </FormLabel>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  {otherUsers && (
-                    <Autocomplete
-                      fullWidth
-                      onChange={(event, value) => setBatchMembers(value, setFieldValue)}
-                      multiple
-                      options={otherUsers}
+                      options={mentors}
+                      onChange={(event, value) => setTeamOwner(value, setFieldValue)}
                       disableCloseOnSelect
                       getOptionLabel={(option) => option.name}
                       renderOption={(props, option, { selected }) => (
@@ -296,10 +289,42 @@ export default function BatchForm({
                       )}
                       renderInput={(params) => (
                         <TextField
-                          error={Boolean(touched.batchMembers && errors.batchMembers)}
-                          helperText={touched.batchMembers && errors.batchMembers}
+                          error={Boolean(touched.mentorName && errors.mentorName)}
+                          helperText={touched.mentorName && errors.mentorName}
                           {...params}
-                          label="Batch Members"
+                          label="Team Mentor"
+                          placeholder="Mentor"
+                        />
+                      )}
+                    />
+                  )}
+                </Stack>
+
+                <FormLabel className={classes.legend} component="legend">
+                  Team Members:
+                </FormLabel>
+
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  {students && (
+                    <Autocomplete
+                      fullWidth
+                      multiple
+                      options={students}
+                      onChange={(event, value) => setTeamMembers(value, setFieldValue)}
+                      disableCloseOnSelect
+                      getOptionLabel={(option) => option.name}
+                      renderOption={(props, option, { selected }) => (
+                        <li key={option.id} {...props}>
+                          <Checkbox checked={selected} />
+                          {option.name}
+                        </li>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          error={Boolean(touched.teamMembers && errors.teamMembers)}
+                          helperText={touched.teamMembers && errors.teamMembers}
+                          {...params}
+                          label="Team Members"
                           placeholder="Members"
                         />
                       )}
@@ -309,7 +334,7 @@ export default function BatchForm({
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                   <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                    {!isEdit ? 'Create Batch' : 'Save Changes'}
+                    {!isEdit ? 'Create Team' : 'Save Changes'}
                   </LoadingButton>
                 </Box>
               </Stack>

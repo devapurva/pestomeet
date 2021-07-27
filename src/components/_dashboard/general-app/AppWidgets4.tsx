@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import googleClassroom from '@iconify/icons-mdi/google-classroom';
+import accountChild from '@iconify/icons-mdi/account-child';
 
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
@@ -14,7 +14,7 @@ const RootStyle = styled(Card)(({ theme }) => ({
   position: 'relative',
   alignItems: 'center',
   padding: theme.spacing(4),
-  backgroundColor: theme.palette.error.light
+  backgroundColor: theme.palette.primary.light
 }));
 
 const IconStyle = styled(Icon)(({ theme }) => ({
@@ -28,22 +28,22 @@ const IconStyle = styled(Icon)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-interface AppWidgets3Props extends CardProps {
-  batchCount: number;
+interface AppWidgets4Props extends CardProps {
+  teamCount: number;
 }
 
-export default function AppWidgets3({ batchCount }: AppWidgets3Props) {
+export default function AppWidgets4({ teamCount }: AppWidgets4Props) {
   const theme = useTheme();
 
   return (
     <RootStyle>
       <Box sx={{ ml: 3, color: 'grey.800' }}>
-        <Typography variant="h4"> {fNumber(batchCount)}</Typography>
+        <Typography variant="h4"> {fNumber(teamCount)}</Typography>
         <Typography variant="body2" sx={{ opacity: 0.72 }}>
-          Total Batches
+          Total Teams
         </Typography>
       </Box>
-      <IconStyle icon={googleClassroom} />
+      <IconStyle icon={accountChild} />
     </RootStyle>
   );
 }

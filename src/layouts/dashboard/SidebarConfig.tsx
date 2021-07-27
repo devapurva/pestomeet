@@ -9,6 +9,7 @@ import accountTie from '@iconify/icons-mdi/account-tie';
 import googleClassroom from '@iconify/icons-mdi/google-classroom';
 import accountChild from '@iconify/icons-mdi/account-child';
 import accountMultiplePlus from '@iconify/icons-mdi/account-multiple-plus';
+import newspaperVariantMultipleOutline from '@iconify/icons-mdi/newspaper-variant-multiple-outline';
 
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -34,7 +35,8 @@ const ICONS = {
   calendar: getIcon('ic_calendar'),
   dashboard: getIcon('ic_dashboard'),
   mentorTeam: <IconStyle icon={accountChild} />,
-  buddyPairing: <IconStyle icon={accountMultiplePlus} />
+  buddyPairing: <IconStyle icon={accountMultiplePlus} />,
+  resources: <IconStyle icon={newspaperVariantMultipleOutline} />
 };
 
 const sidebarConfig = [
@@ -81,6 +83,11 @@ const sidebarConfig = [
         title: 'Buddy Pairing',
         path: PATH_DASHBOARD.buddyPairing,
         icon: ICONS.buddyPairing
+      },
+      {
+        title: 'Resources',
+        path: PATH_DASHBOARD.resources,
+        icon: ICONS.resources
       }
     ]
   },

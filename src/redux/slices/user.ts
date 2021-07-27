@@ -36,6 +36,7 @@ type UserState = {
   mentorTeamList: TeamManager[];
   buddyList: TeamManager[];
   teamList: TeamManager[];
+  resourceList: any[];
   followers: Follower[];
   friends: Friend[];
   gallery: Gallery[];
@@ -43,6 +44,11 @@ type UserState = {
   addressBook: UserAddressBook[];
   invoices: UserInvoice[];
   notifications: NotificationSettings | null;
+  metrics: {
+    batchCount: number;
+    studentCount: number;
+    teamCount: number;
+  };
 };
 
 const initialState: UserState = {
@@ -58,13 +64,19 @@ const initialState: UserState = {
   mentorTeamList: [],
   buddyList: [],
   teamList: [],
+  resourceList: [],
   followers: [],
   friends: [],
   gallery: [],
   cards: null,
   addressBook: [],
   invoices: [],
-  notifications: null
+  notifications: null,
+  metrics: {
+    batchCount: 0,
+    studentCount: 0,
+    teamCount: 0
+  }
 };
 
 const slice = createSlice({
@@ -145,6 +157,12 @@ const slice = createSlice({
       state.gallery = action.payload;
     },
 
+    // GET METRICS
+    getMetricsSuccess(state, action) {
+      state.isLoading = false;
+      state.metrics = action.payload;
+    },
+
     // GET MANAGE USERS
     getUserListSuccess(state, action) {
       state.isLoading = false;
@@ -185,6 +203,12 @@ const slice = createSlice({
     getTeamListSuccess(state, action) {
       state.isLoading = false;
       state.teamList = action.payload;
+    },
+
+    // GET RESOURCE LIST
+    getResourceListSuccess(state, action) {
+      state.isLoading = false;
+      state.resourceList = action.payload;
     },
 
     // GET CARDS
@@ -283,6 +307,20 @@ export function getGallery() {
     try {
       const response = await HTTPClient.get('/api/user/social/gallery');
       dispatch(slice.actions.getGallerySuccess(response.data.gallery));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function getHomeMetrics(id: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/count/myassets/${id}`);
+      dispatch(slice.actions.getMetricsSuccess(response.data.result));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -548,3 +586,17 @@ export const addTeam = async (
   });
   return response;
 };
+
+// ----------------------------------------------------------------------
+
+export function getResourceList() {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/resource/list`);
+      dispatch(slice.actions.getResourceListSuccess(response.data.result));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}

@@ -108,7 +108,21 @@ export function getEvents() {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.get('/list/event/masterclass');
-      dispatch(slice.actions.getEventsSuccess(response.data.result));
+      if (response?.data?.statusCode) {
+        const events = response?.data?.result?.map((element: any) => {
+          const obj = {
+            ...element,
+            id: element.eventId,
+            title: element.eventName,
+            description: element?.eventDescription,
+            start: element.eventStart,
+            end: element.eventEnd,
+            textColor: element.eventColor
+          };
+          return obj;
+        });
+        dispatch(slice.actions.getEventsSuccess(events));
+      }
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -138,12 +152,12 @@ export function updateEvent(
     eventDescription: string;
     eventType: string;
     eventColor: string;
-    eventStart: Date;
-    eventEnd: Date;
+    eventStart: Date | string;
+    eventEnd: Date | string;
     organiserId: string;
     organiserName: string;
     hasAssignment: boolean;
-    attendees: never[];
+    attendees: any[];
   }>
 ) {
   return async () => {

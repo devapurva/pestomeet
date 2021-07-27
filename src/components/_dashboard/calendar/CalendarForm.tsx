@@ -20,6 +20,8 @@ import {
 } from '@material-ui/core';
 import { LoadingButton, MobileDateTimePicker } from '@material-ui/lab';
 import { EventInput } from '@fullcalendar/common';
+// hooks
+import useAuth from '../../../hooks/useAuth';
 // redux
 import { useDispatch } from '../../../redux/store';
 import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
@@ -42,12 +44,13 @@ const COLOR_OPTIONS = [
 const getInitialValues = (event: EventInput, range: { start: Date; end: Date } | null) => {
   // eslint-disable-next-line no-underscore-dangle
   const _event = {
-    eventName: '',
-    eventDescription: '',
+    title: '',
+    description: '',
+    textColor: '#1890FF',
+    allDay: false,
+    start: range ? new Date(range.start) : new Date(),
+    end: range ? new Date(range.end) : new Date(),
     eventType: 'masterclass',
-    eventColor: '#1890FF',
-    eventStart: range ? new Date(range.start) : new Date(),
-    eventEnd: range ? new Date(range.end) : new Date(),
     organiserId: '',
     organiserName: '',
     hasAssignment: false,
@@ -76,11 +79,16 @@ type CalendarFormProps = {
 export default function CalendarForm({ event, range, onCancel, batchList }: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+  const { user } = useAuth();
   const isCreating = !event;
 
   const EventSchema = Yup.object().shape({
-    eventName: Yup.string().max(255).required('Event Name is required'),
-    eventDescription: Yup.string().max(5000)
+    title: Yup.string().max(255).required('Event Name is required'),
+    description: Yup.string().max(5000),
+    attendees: Yup.mixed().required('Event Members is required'),
+    hasAssignment: Yup.boolean().required('Assignment is required'),
+    start: Yup.string().required('Start Date & Time is required'),
+    end: Yup.string().required('End Date & Time is required')
   });
 
   const formik = useFormik({
@@ -88,7 +96,18 @@ export default function CalendarForm({ event, range, onCancel, batchList }: Cale
     validationSchema: EventSchema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
-        const newEvent = { ...values };
+        const newEvent = {
+          eventName: values.title,
+          eventDescription: values.description,
+          eventType: values.eventType,
+          eventColor: values.textColor,
+          eventStart: values.start,
+          eventEnd: values.end,
+          organiserId: user?.id,
+          organiserName: user?.name,
+          hasAssignment: values.hasAssignment,
+          attendees: values.attendees
+        };
         if (event.id) {
           dispatch(updateEvent(event.id, newEvent));
           enqueueSnackbar('Update event success', { variant: 'success' });
@@ -120,7 +139,7 @@ export default function CalendarForm({ event, range, onCancel, batchList }: Cale
     }
   };
 
-  const isDateError = isBefore(new Date(values.eventEnd), new Date(values.eventStart));
+  const isDateError = isBefore(new Date(values.end), new Date(values.start));
 
   const setAttendees = (values: BatchManager[], setFieldValue: any) => {
     const finalList = values.map((element) => {
@@ -139,9 +158,9 @@ export default function CalendarForm({ event, range, onCancel, batchList }: Cale
           <TextField
             fullWidth
             label="Title"
-            {...getFieldProps('eventName')}
-            error={Boolean(touched.eventName && errors.eventName)}
-            helperText={touched.eventName && errors.eventName}
+            {...getFieldProps('title')}
+            error={Boolean(touched.title && errors.title)}
+            helperText={touched.title && errors.title}
             sx={{ mb: 3 }}
           />
 
@@ -150,9 +169,9 @@ export default function CalendarForm({ event, range, onCancel, batchList }: Cale
             multiline
             maxRows={4}
             label="Description"
-            {...getFieldProps('eventDescription')}
-            error={Boolean(touched.eventDescription && errors.eventDescription)}
-            helperText={touched.eventDescription && errors.eventDescription}
+            {...getFieldProps('description')}
+            error={Boolean(touched.description && errors.description)}
+            helperText={touched.description && errors.description}
             sx={{ mb: 3 }}
           />
 
@@ -164,17 +183,17 @@ export default function CalendarForm({ event, range, onCancel, batchList }: Cale
 
           <MobileDateTimePicker
             label="Start date"
-            value={values.eventStart}
+            value={values.start}
             inputFormat="dd/MM/yyyy hh:mm a"
-            onChange={(date) => setFieldValue('eventStart', date)}
+            onChange={(date) => setFieldValue('start', date)}
             renderInput={(params) => <TextField {...params} fullWidth sx={{ mb: 3 }} />}
           />
 
           <MobileDateTimePicker
             label="End date"
-            value={values.eventEnd}
+            value={values.end}
             inputFormat="dd/MM/yyyy hh:mm a"
-            onChange={(date) => setFieldValue('eventEnd', date)}
+            onChange={(date) => setFieldValue('end', date)}
             renderInput={(params) => (
               <TextField
                 {...params}

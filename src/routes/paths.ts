@@ -37,5 +37,6 @@ export const PATH_DASHBOARD = {
   student: path(ROOTS_DASHBOARD, '/student'),
   batch: path(ROOTS_DASHBOARD, '/batch'),
   mentorTeam: path(ROOTS_DASHBOARD, '/team-mentor'),
-  buddyPairing: path(ROOTS_DASHBOARD, '/buddy-pairing')
+  buddyPairing: path(ROOTS_DASHBOARD, '/buddy-pairing'),
+  resources: path(ROOTS_DASHBOARD, '/resources')
 };

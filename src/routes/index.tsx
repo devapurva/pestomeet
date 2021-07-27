@@ -94,7 +94,8 @@ export default function Router() {
           path: '/dashboard/buddy-pairing',
           children: [{ path: '/', element: <BuddyPairing /> }]
         },
-        { path: '/dashboard/calendar', element: <Calendar /> }
+        { path: '/dashboard/calendar', element: <Calendar /> },
+        { path: '/dashboard/resources', element: <Resources /> }
       ]
     },
 
@@ -126,6 +127,7 @@ const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));
 const MentorTeams = Loadable(lazy(() => import('../pages/dashboard/MentorTeam')));
 const BuddyPairing = Loadable(lazy(() => import('../pages/dashboard/BuddyPairing')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
+const Resources = Loadable(lazy(() => import('../pages/dashboard/Resources')));
 // Main
 const Maintenance = Loadable(lazy(() => import('../pages/Maintenance')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));

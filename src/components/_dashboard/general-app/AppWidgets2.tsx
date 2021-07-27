@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import accountTie from '@iconify/icons-mdi/account-tie';
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
-import { Card, Box, Typography } from '@material-ui/core';
+import { Card, Box, Typography, CardProps } from '@material-ui/core';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
 
@@ -26,16 +26,17 @@ const IconStyle = styled(Icon)(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
+interface AppWidgets2Props extends CardProps {
+  mentorCount: number;
+}
 
-const TOTAL = 44;
-
-export default function AppWidgets2() {
+export default function AppWidgets2({ mentorCount }: AppWidgets2Props) {
   const theme = useTheme();
 
   return (
     <RootStyle>
       <Box sx={{ ml: 3, color: 'grey.800' }}>
-        <Typography variant="h4"> {fNumber(TOTAL)}</Typography>
+        <Typography variant="h4"> {fNumber(mentorCount)}</Typography>
         <Typography variant="body2" sx={{ opacity: 0.72 }}>
           Total Mentors
         </Typography>

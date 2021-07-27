@@ -118,12 +118,13 @@ export default function Calendar() {
   };
 
   const handleResizeEvent = async ({ event }: EventResizeDoneArg) => {
+    console.log('handleResizeEvent', event);
     // try {
     //   dispatch(
     //     updateEvent(event.id, {
-    //       allDay: event.allDay,
-    //       start: event.start,
-    //       end: event.end
+    //       ...event,
+    //       eventStart: new Date(event?.start),
+    //       eventEnd: event.end
     //     })
     //   );
     //   enqueueSnackbar('Update event success', { variant: 'success' });
@@ -133,20 +134,21 @@ export default function Calendar() {
   };
 
   const handleDropEvent = async ({ event }: EventDropArg) => {
-    // try {
-    //   dispatch(
-    //     updateEvent(event.id, {
-    //       allDay: event.allDay,
-    //       start: event.start,
-    //       end: event.end
-    //     })
-    //   );
-    //   enqueueSnackbar('Update event success', {
-    //     variant: 'success'
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    console.log('handleDropEvent', event);
+    try {
+      dispatch(
+        updateEvent(event.id, {
+          ...event,
+          eventStart: event.startStr,
+          eventEnd: event.endStr
+        })
+      );
+      enqueueSnackbar('Update event success', {
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleAddEvent = () => {
