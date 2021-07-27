@@ -63,7 +63,7 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
         </Typography>
 
         <Typography variant="body2" sx={{ pb: { xs: 3, xl: 5 }, maxWidth: 480, mx: 'auto' }}>
-          If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything
+          Here are few actions and metrics to get you started!
         </Typography>
 
         <div style={{ display: 'flex' }}>
