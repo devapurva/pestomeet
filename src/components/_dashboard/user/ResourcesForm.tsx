@@ -30,7 +30,7 @@ import {
   Autocomplete,
   Checkbox
 } from '@material-ui/core';
-import { addUser, addAvatar, editUser, addTeam } from '../../../redux/slices/user';
+import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
@@ -125,27 +125,27 @@ export default function ResourcesForm({
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
-    await addTeam(values.teamName, values.teamType, values.mentorName, values.teamMembers).then(
-      (response: any) => {
-        if (response?.data?.statusCode) {
-          enqueueSnackbar('Mentor team added successfully', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-          if (isMountedRef.current) {
-            setSubmitting(false);
-          }
-          if (setRefresh) setRefresh(true);
-          if (handleClose) handleClose();
-        } else {
-          handleError(response?.data, setSubmitting, setErrors);
-        }
-      }
-    );
+    // await addTeam(values.teamName, values.teamType, values.mentorName, values.teamMembers).then(
+    //   (response: any) => {
+    //     if (response?.data?.statusCode) {
+    //       enqueueSnackbar('Mentor team added successfully', {
+    //         variant: 'success',
+    //         action: (key) => (
+    //           <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+    //             <Icon icon={closeFill} />
+    //           </MIconButton>
+    //         )
+    //       });
+    //       if (isMountedRef.current) {
+    //         setSubmitting(false);
+    //       }
+    //       if (setRefresh) setRefresh(true);
+    //       if (handleClose) handleClose();
+    //     } else {
+    //       handleError(response?.data, setSubmitting, setErrors);
+    //     }
+    //   }
+    // );
   };
 
   const handleEditTeam = async (

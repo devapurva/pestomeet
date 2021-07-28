@@ -1,8 +1,11 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState, useEffect } from 'react';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import googleClassroom from '@iconify/icons-mdi/google-classroom';
 // material
 import {
   Button,
@@ -30,9 +33,8 @@ type TeamModalProps = {
   isEdit: boolean;
   currentTeam?: TeamManager | null;
   setRefresh: any;
-  openModal?: boolean | undefined;
-  mentors: UserManager[];
-  students: UserManager[];
+  admins: UserManager[];
+  otherUsers: UserManager[];
 };
 
 const styles = (theme: Theme) =>
@@ -73,9 +75,8 @@ export default function TeamModal({
   isEdit,
   currentTeam,
   setRefresh,
-  openModal,
-  mentors,
-  students
+  admins,
+  otherUsers
 }: TeamModalProps) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -91,18 +92,18 @@ export default function TeamModal({
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (openModal !== undefined) setOpen(openModal);
-  }, [openModal]);
-
   return (
     <div>
       {!isEdit ? (
-        <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
+        <Button
+          variant="contained"
+          onClick={handleClickOpen}
+          startIcon={<Icon icon={googleClassroom} />}
+        >
           Create Team
         </Button>
       ) : (
-        <div style={{ display: 'flex' }}>
+        <div onClick={handleClickOpen} style={{ display: 'flex' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
@@ -129,8 +130,8 @@ export default function TeamModal({
             currentTeam={currentTeam}
             setRefresh={setRefresh}
             handleClose={handleClose}
-            mentors={mentors}
-            students={students}
+            admins={admins}
+            otherUsers={otherUsers}
           />
         </DialogContent>
       </Dialog>

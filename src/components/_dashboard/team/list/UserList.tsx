@@ -1,6 +1,9 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
+import { useSnackbar } from 'notistack';
+import closeFill from '@iconify/icons-eva/close-fill';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -18,27 +21,28 @@ import {
   TableContainer,
   TablePagination
 } from '@material-ui/core';
+import MIconButton from 'components/@material-extend/MIconButton';
 // redux
-import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { deleteUser } from '../../../redux/slices/user';
+import { RootState, useDispatch, useSelector } from '../../../../redux/store';
+import { deleteUser, editUser } from '../../../../redux/slices/user';
 // routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
+import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
-import { TeamManager, TeamMember, UserManager } from '../../../@types/user';
+import { TeamManager, TeamMember, UserManager } from '../../../../@types/user';
 // components
-import Label from '../../Label';
-import Scrollbar from '../../Scrollbar';
-import SearchNotFound from '../../SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from './list';
-import EmptyContent from '../../EmptyContent';
+import Label from '../../../Label';
+import Scrollbar from '../../../Scrollbar';
+import SearchNotFound from '../../../SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from './index';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'teamName', label: 'Team Name', alignRight: false },
-  { id: 'mentorName', label: 'Team Mentor', alignRight: false },
-  { id: 'teamType', label: 'Team Type', alignRight: false },
-  { id: 'teamMembers', label: 'Team Members', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phone', label: 'Phone', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'approval', label: 'Approval Status', alignRight: false },
   { id: '', label: 'Actions', alignRight: false }
 ];
 
@@ -82,14 +86,14 @@ function applySortFilter(
   return stabilizedThis.map((el) => el[0]);
 }
 
-type TeamListProps = {
+type UserListProps = {
   type: string;
   handleRequestSort: any;
   handleSelectAllClick: any;
   handleClick: any;
   handleChangeRowsPerPage: any;
   handleFilterByName: any;
-  handleDeleteTeam: any;
+  handleDeleteUser: any;
   page: number;
   setPage: any;
   order: 'asc' | 'desc';
@@ -98,19 +102,19 @@ type TeamListProps = {
   filterName: string;
   rowsPerPage: number;
   userList: TeamManager[];
-  setRefresh: any;
+  setRefresh?: any;
   admins: UserManager[];
   otherUsers: UserManager[];
 };
 
-export default function TeamList({
+export default function UserList({
   type,
   handleRequestSort,
   handleSelectAllClick,
   handleClick,
   handleChangeRowsPerPage,
   handleFilterByName,
-  handleDeleteTeam,
+  handleDeleteUser,
   page,
   setPage,
   order,
@@ -122,7 +126,7 @@ export default function TeamList({
   setRefresh,
   admins,
   otherUsers
-}: TeamListProps) {
+}: UserListProps) {
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -136,18 +140,18 @@ export default function TeamList({
 
   const isUserNotFound = filteredUsers.length === 0;
 
-  const getMembersName = (teamMembers: TeamMember[]) => {
-    const names = teamMembers.map((element) => element.name);
+  const getMembersName = (TeamMembers: TeamMember[]) => {
+    const names = TeamMembers.map((element) => element.name);
     return names.toString();
   };
 
   return (
-    <Card style={{ paddingTop: 25 }}>
-      {/* <UserListToolbar
+    <Card>
+      <UserListToolbar
         numSelected={selected.length}
         filterName={filterName}
         onFilterName={handleFilterByName}
-      /> */}
+      />
 
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800 }}>
@@ -182,9 +186,9 @@ export default function TeamList({
                       <TableCell align="left">
                         <Label
                           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(teamType === 'mentor' && 'success') || 'info'}
+                          color={(teamType === 'ninja' && 'success') || 'info'}
                         >
-                          {teamType === 'buddypairing' ? 'Buddy Pairing' : 'Mentor Team'}
+                          {sentenceCase(teamType)}
                         </Label>
                       </TableCell>
                       <TableCell align="left">{getMembersName(teamMembers)}</TableCell>
@@ -198,15 +202,15 @@ export default function TeamList({
                         </Label>
                       </TableCell> */}
 
-                      <TableCell align="left">
-                        {/* <UserMoreMenu
+                      <TableCell align="right">
+                        <UserMoreMenu
                           setRefresh={setRefresh}
                           currentTeam={row}
-                          onDelete={() => handleDeleteTeam(teamId)}
+                          onDelete={() => handleDeleteUser(teamId)}
                           userName={teamName}
                           admins={admins}
                           otherUsers={otherUsers}
-                        /> */}
+                        />
                       </TableCell>
                     </TableRow>
                   );
@@ -217,11 +221,11 @@ export default function TeamList({
                 </TableRow>
               )}
             </TableBody>
-            {userList?.length === 0 && (
+            {isUserNotFound && (
               <TableBody>
                 <TableRow>
                   <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                    <EmptyContent title="No Data Found Yet" />
+                    <SearchNotFound searchQuery={filterName} />
                   </TableCell>
                 </TableRow>
               </TableBody>

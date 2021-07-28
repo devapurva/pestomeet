@@ -193,8 +193,8 @@ export default function MentorTeams() {
               isEdit={false}
               currentTeam={null}
               setRefresh={setRefresh}
-              mentors={mentors}
-              students={students}
+              admins={mentors}
+              otherUsers={students}
             />
           }
         />
@@ -215,6 +215,8 @@ export default function MentorTeams() {
           rowsPerPage={rowsPerPage}
           userList={mentorTeamList}
           setRefresh={setRefresh}
+          admins={mentors}
+          otherUsers={students}
         />
       </Container>
     </Page>

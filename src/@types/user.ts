@@ -93,6 +93,9 @@ export type TeamManager = {
   teamName: string;
   teamType: string;
   mentorName: string;
+  mentorId: string;
+  batchId: string;
+  batchOwnerID: string;
   teamMembers: TeamMember[] | [];
 };
 

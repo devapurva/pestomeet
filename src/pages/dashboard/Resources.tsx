@@ -151,15 +151,15 @@ export default function Resources() {
         <HeaderBreadcrumbs
           heading="Resources"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Resources' }]}
-          action={
-            <TeamModal
-              isEdit={false}
-              currentTeam={null}
-              setRefresh={setRefresh}
-              mentors={mentors}
-              students={students}
-            />
-          }
+          // action={
+          //   <TeamModal
+          //     isEdit={false}
+          //     currentTeam={null}
+          //     setRefresh={setRefresh}
+          //     mentors={mentors}
+          //     students={students}
+          //   />
+          // }
         />
         <ResourcesList
           type="mentor"

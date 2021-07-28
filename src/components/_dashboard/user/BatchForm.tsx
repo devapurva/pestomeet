@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import { addBatch, editBatch } from '../../../redux/slices/user';
 // @types
-import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
+import { BatchManager, BatchMembers, TeamManager, UserManager } from '../../../@types/user';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import useAuth from '../../../hooks/useAuth';

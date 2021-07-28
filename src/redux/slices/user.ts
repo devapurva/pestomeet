@@ -660,12 +660,42 @@ export const addTeam = async (
   teamName: string,
   teamType: string,
   mentorName: string,
+  mentorId: string,
+  batchId: string,
+  batchOwnerID: string,
   teamMembers: TeamMember[] | []
 ) => {
   const response = await HTTPClient.post('/create/team', {
     teamName,
     teamType,
     mentorName,
+    mentorId,
+    batchId,
+    batchOwnerID,
+    teamMembers
+  });
+  return response;
+};
+
+// ----------------------------------------------------------------------
+
+export const editTeam = async (
+  teamId: string,
+  teamName: string,
+  teamType: string,
+  mentorName: string,
+  mentorId: string,
+  batchId: string,
+  batchOwnerID: string,
+  teamMembers: TeamMember[] | []
+) => {
+  const response = await HTTPClient.patch(`/edit/team/${teamId}`, {
+    teamName,
+    teamType,
+    mentorName,
+    mentorId,
+    batchId,
+    batchOwnerID,
     teamMembers
   });
   return response;
