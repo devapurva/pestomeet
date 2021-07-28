@@ -7,6 +7,8 @@ import { Typography, Button, Card, CardContent, CardProps } from '@material-ui/c
 // components
 import UserCreateModal from 'pages/dashboard/UserCreateModal';
 import BatchModal from 'pages/dashboard//CreateBatchModal';
+// types
+import { UserManager } from '../../../@types/user';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
 import { getAllUserList } from '../../../redux/slices/user';
@@ -38,15 +40,19 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
   const { userList } = useSelector((state: RootState) => state.user);
+  const [admins, setAdmins] = useState<UserManager[]>([]);
+  const [otherUsers, setOtherUsers] = useState<UserManager[]>([]);
 
   useEffect(() => {
     dispatch(getAllUserList());
   }, [dispatch]);
 
-  const admins = userList.filter((users) => users.role === 'admin');
-  const otherUsers = userList.filter(
-    (users) => users.role === 'mentor' || users.role === 'student'
-  );
+  useEffect(() => {
+    const adminList = userList?.filter((users) => users.role === 'admin');
+    const otherList = userList?.filter((users) => users.role !== 'admin');
+    setAdmins(adminList);
+    setOtherUsers(otherList);
+  }, [userList]);
 
   return (
     <RootStyle>

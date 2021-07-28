@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 // material
-import { useTheme } from '@material-ui/core/styles';
 import { Container, Tab } from '@material-ui/core';
 import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
@@ -16,18 +15,9 @@ import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import { UserList } from '../../components/_dashboard/user/list';
 import UserCreateModal from './UserCreateModal';
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
-  };
-}
-
 export default function StudentList() {
-  const theme = useTheme();
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState(false);
-  const { userList } = useSelector((state: RootState) => state.user);
   const { studentApprovedList, studentInProgressList } = useSelector(
     (state: RootState) => state.user
   );

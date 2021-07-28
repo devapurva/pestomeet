@@ -207,7 +207,7 @@ export default function UserList({
                       <TableCell align="left">
                         <Label
                           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(role === 'mentor' && 'warning') || 'info'}
+                          color={(role === 'mentor' && 'info') || 'secondary'}
                         >
                           {getRoleText(role)}
                         </Label>

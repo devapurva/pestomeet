@@ -33,6 +33,8 @@ type UserState = {
   studentInProgressList: UserManager[];
   studentApprovedList: UserManager[];
   mentorList: UserManager[];
+  mentorInProgressList: UserManager[];
+  mentorApprovedList: UserManager[];
   batchList: BatchManager[];
   mentorTeamList: TeamManager[];
   buddyList: TeamManager[];
@@ -61,6 +63,8 @@ const initialState: UserState = {
   userList: [],
   studentInProgressList: [],
   studentApprovedList: [],
+  mentorInProgressList: [],
+  mentorApprovedList: [],
   mentorList: [],
   batchList: [],
   mentorTeamList: [],
@@ -183,10 +187,16 @@ const slice = createSlice({
       state.studentApprovedList = action.payload;
     },
 
-    // GET MENTOR LIST
-    getMentorListSuccess(state, action) {
+    // GET MENTOR IN PROGRESS LIST
+    getMentorInProgressListSuccess(state, action) {
       state.isLoading = false;
-      state.mentorList = action.payload;
+      state.mentorInProgressList = action.payload;
+    },
+
+    // GET MENTOR APPROVED LIST
+    getMentorApprovedListSuccess(state, action) {
+      state.isLoading = false;
+      state.mentorApprovedList = action.payload;
     },
 
     // GET BATCH LIST
@@ -365,7 +375,12 @@ export function getUserList(approval: string, type: string) {
         }
       }
       if (type === 'mentor') {
-        dispatch(slice.actions.getMentorListSuccess(response.data.result));
+        if (approval === 'inprogress') {
+          dispatch(slice.actions.getMentorInProgressListSuccess(response.data.result));
+        }
+        if (approval === 'approved') {
+          dispatch(slice.actions.getMentorApprovedListSuccess(response.data.result));
+        }
       }
     } catch (error) {
       dispatch(slice.actions.hasError(error));
