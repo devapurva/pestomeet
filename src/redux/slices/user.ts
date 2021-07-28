@@ -123,10 +123,10 @@ const slice = createSlice({
     },
 
     // DELETE USERS
-    deleteUser(state, action) {
-      const deleteUser = filter(state.userList, (user) => user.id !== action.payload);
-      state.userList = deleteUser;
-    },
+    // deleteUser(state, action) {
+    //   const deleteUser = filter(state.userList, (user) => user.id !== action.payload);
+    //   state.userList = deleteUser;
+    // },
 
     // GET FOLLOWERS
     getFollowersSuccess(state, action) {
@@ -259,7 +259,7 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const { onToggleFollow, deleteUser } = slice.actions;
+export const { onToggleFollow } = slice.actions;
 
 // ----------------------------------------------------------------------
 
@@ -352,7 +352,7 @@ export function getAllUserList() {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.get(`/list/user/all`);
-      dispatch(slice.actions.getUserListSuccess(response.data.result));
+      dispatch(slice.actions.getUserListSuccess(response.data.result ? response.data.result : []));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -368,22 +368,52 @@ export function getUserList(approval: string, type: string) {
       const response = await HTTPClient.get(`/list/user/${approval}/${type}`);
       if (type === 'student') {
         if (approval === 'inprogress') {
-          dispatch(slice.actions.getStudentInProgressListSuccess(response.data.result));
+          dispatch(
+            slice.actions.getStudentInProgressListSuccess(
+              response.data.result ? response.data.result : []
+            )
+          );
         }
         if (approval === 'approved') {
-          dispatch(slice.actions.getStudentApprovedListSuccess(response.data.result));
+          dispatch(
+            slice.actions.getStudentApprovedListSuccess(
+              response.data.result ? response.data.result : []
+            )
+          );
         }
       }
       if (type === 'mentor') {
         if (approval === 'inprogress') {
-          dispatch(slice.actions.getMentorInProgressListSuccess(response.data.result));
+          dispatch(
+            slice.actions.getMentorInProgressListSuccess(
+              response.data.result ? response.data.result : []
+            )
+          );
         }
         if (approval === 'approved') {
-          dispatch(slice.actions.getMentorApprovedListSuccess(response.data.result));
+          dispatch(
+            slice.actions.getMentorApprovedListSuccess(
+              response.data.result ? response.data.result : []
+            )
+          );
         }
       }
     } catch (error) {
       dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function deleteUser(id: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.delete(`/delete/user/${id}`);
+      return response;
+    } catch (error) {
+      return error;
     }
   };
 }
@@ -395,7 +425,7 @@ export function getBatchList(id: string) {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.get(`/list/mybatch/${id}`);
-      dispatch(slice.actions.getBatchListSuccess(response.data.result));
+      dispatch(slice.actions.getBatchListSuccess(response.data.result ? response.data.result : []));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }
@@ -418,10 +448,14 @@ export function getTeamList(type: string) {
     try {
       const response = await HTTPClient.get(`/list/team/${type}`);
       if (type === 'buddypairing') {
-        dispatch(slice.actions.getBuddyListSuccess(response.data.result));
+        dispatch(
+          slice.actions.getBuddyListSuccess(response.data.result ? response.data.result : [])
+        );
       }
       if (type === 'mentor') {
-        dispatch(slice.actions.getMentorTeamListSuccess(response.data.result));
+        dispatch(
+          slice.actions.getMentorTeamListSuccess(response.data.result ? response.data.result : [])
+        );
       }
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -644,7 +678,9 @@ export function getResourceList() {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.get(`/resource/list`);
-      dispatch(slice.actions.getResourceListSuccess(response.data.result));
+      dispatch(
+        slice.actions.getResourceListSuccess(response.data.result ? response.data.result : [])
+      );
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

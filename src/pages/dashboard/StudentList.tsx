@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
+import { useSnackbar } from 'notistack';
+// icons
+import closeFill from '@iconify/icons-eva/close-fill';
 // material
 import { Container, Tab } from '@material-ui/core';
 import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import TabPanel from '@material-ui/lab/TabPanel';
+import MIconButton from 'components/@material-extend/MIconButton';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import { deleteUser, getUserList } from '../../redux/slices/user';
@@ -16,6 +21,7 @@ import { UserList } from '../../components/_dashboard/user/list';
 import UserCreateModal from './UserCreateModal';
 
 export default function StudentList() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState(false);
   const { studentApprovedList, studentInProgressList } = useSelector(
@@ -36,15 +42,13 @@ export default function StudentList() {
   useEffect(() => {
     dispatch(getUserList('inprogress', 'student'));
     dispatch(getUserList('approved', 'student'));
-  }, [dispatch]);
 
-  useEffect(() => {
     if (refresh) {
       dispatch(getUserList('inprogress', 'student'));
       dispatch(getUserList('approved', 'student'));
       setRefresh(false);
     }
-  }, [refresh]);
+  }, [dispatch, refresh]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -80,7 +84,19 @@ export default function StudentList() {
   };
 
   const handleDeleteUser = (userId: string) => {
-    dispatch(deleteUser(userId));
+    dispatch(deleteUser(userId)).then((response) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('User deleted successfully', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+        setRefresh(true);
+      }
+    });
   };
 
   return (

@@ -14,8 +14,8 @@ export function applySortFilter(
   comparator: (a: any, b: any) => number,
   query: string
 ) {
-  const stabilizedThis = array.map((el, index) => [el, index] as const);
-  stabilizedThis.sort((a, b) => {
+  const stabilizedThis = array?.map((el, index) => [el, index] as const);
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
@@ -23,7 +23,7 @@ export function applySortFilter(
   if (query) {
     return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis?.map((el) => el[0]);
 }
 
 export function descendingComparator(a: Anonymous, b: Anonymous, orderBy: string) {
