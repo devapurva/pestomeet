@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState, useEffect } from 'react';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { paramCase } from 'change-case';
@@ -31,7 +33,6 @@ type BatchModalProps = {
   isEdit: boolean;
   currentBatch?: BatchManager | null;
   setRefresh: any;
-  openModal?: boolean | undefined;
   admins: UserManager[];
   otherUsers: UserManager[];
 };
@@ -74,7 +75,6 @@ export default function BatchModal({
   isEdit,
   currentBatch,
   setRefresh,
-  openModal,
   admins,
   otherUsers
 }: BatchModalProps) {
@@ -92,10 +92,6 @@ export default function BatchModal({
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (openModal !== undefined) setOpen(openModal);
-  }, [openModal]);
-
   return (
     <div>
       {!isEdit ? (
@@ -107,7 +103,7 @@ export default function BatchModal({
           Create Batch
         </Button>
       ) : (
-        <div style={{ display: 'flex' }}>
+        <div onClick={handleClickOpen} style={{ display: 'flex' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>

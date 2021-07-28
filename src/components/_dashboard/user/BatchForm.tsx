@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
 // material
-import { LoadingButton } from '@material-ui/lab';
+import { LoadingButton, Autocomplete } from '@material-ui/lab';
 import {
   Box,
   Card,
@@ -19,14 +19,14 @@ import {
   Radio,
   RadioGroup,
   FormLabel,
-  Autocomplete,
   Checkbox
 } from '@material-ui/core';
-import { addBatch } from '../../../redux/slices/user';
+import { addBatch, editBatch } from '../../../redux/slices/user';
 // @types
 import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
+import useAuth from '../../../hooks/useAuth';
 import MIconButton from '../../@material-extend/MIconButton';
 
 // ----------------------------------------------------------------------
@@ -50,6 +50,7 @@ type FormikValues = {
   batchName: string;
   batchType: string;
   batchOwner: string;
+  batchOwnerID: string;
   batchMembers: BatchMembers[] | [];
 };
 
@@ -72,11 +73,10 @@ export default function BatchForm({
   admins,
   otherUsers
 }: BatchFormProps) {
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
-  const [showPassword, setShowPassword] = useState(false);
 
   const NewBatchSchema = Yup.object().shape({
     batchName: Yup.string()
@@ -95,7 +95,8 @@ export default function BatchForm({
       batchName: currentBatch?.batchName || '',
       batchType: currentBatch?.batchType || '',
       batchOwner: currentBatch?.batchOwner || '',
-      batchMembers: currentBatch?.batchMembers || []
+      batchMembers: currentBatch?.batchMembers || [],
+      batchOwnerID: currentBatch?.batchOwnerID || user?.id
     },
     validationSchema: NewBatchSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
@@ -115,60 +116,63 @@ export default function BatchForm({
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
-    await addBatch(values.batchName, values.batchType, values.batchOwner, values.batchMembers).then(
-      (response: any) => {
-        if (response?.data?.statusCode) {
-          enqueueSnackbar('Batch added successfully', {
-            variant: 'success',
-            action: (key) => (
-              <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                <Icon icon={closeFill} />
-              </MIconButton>
-            )
-          });
-          if (isMountedRef.current) {
-            setSubmitting(false);
-          }
-          if (setRefresh) setRefresh(true);
-          if (handleClose) handleClose();
-        } else {
-          handleError(response?.data, setSubmitting, setErrors);
+    await addBatch(
+      values.batchName,
+      values.batchType,
+      values.batchOwner,
+      values.batchOwnerID ? values.batchOwnerID : user?.id,
+      values.batchMembers
+    ).then((response: any) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('Batch added successfully', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+        if (isMountedRef.current) {
+          setSubmitting(false);
         }
+        if (setRefresh) setRefresh(true);
+        if (handleClose) handleClose();
+      } else {
+        handleError(response?.data, setSubmitting, setErrors);
       }
-    );
+    });
   };
 
   const handleEditBatch = async (
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
-    // await editUser(
-    //   currentBatch?.batchId,
-    //   values?.name,
-    //   values?.role,
-    //   values?.phone,
-    //   values?.role === 'student' ? values?.experience : 'not_applicable',
-    //   values?.email,
-    //   'inprogress'
-    // ).then((response: any) => {
-    //   if (response?.data?.statusCode) {
-    //     enqueueSnackbar('User updated successfully', {
-    //       variant: 'success',
-    //       action: (key) => (
-    //         <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-    //           <Icon icon={closeFill} />
-    //         </MIconButton>
-    //       )
-    //     });
-    //     if (isMountedRef.current) {
-    //       setSubmitting(false);
-    //     }
-    //     if (setRefresh) setRefresh(true);
-    //     if (handleClose) handleClose();
-    //   } else {
-    //     handleError(response?.data, setSubmitting, setErrors);
-    //   }
-    // });
+    await editBatch(
+      currentBatch?.batchId ? currentBatch?.batchId : '',
+      values.batchName,
+      values.batchType,
+      values.batchOwner,
+      values.batchOwnerID,
+      values.batchMembers
+    ).then((response: any) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('Batch updated successfully', {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+        if (isMountedRef.current) {
+          setSubmitting(false);
+        }
+        if (setRefresh) setRefresh(true);
+        if (handleClose) handleClose();
+      } else {
+        handleError(response?.data, setSubmitting, setErrors);
+      }
+    });
   };
 
   const handleError = (error: any, setSubmitting: any, setErrors: any) => {
@@ -189,22 +193,27 @@ export default function BatchForm({
     handleChange
   } = formik;
 
-  const setBatchOwner = (value: any, setFieldValue: any) => {
+  const setBatchOwnerValues = (value: any, setFieldValue: any) => {
     setFieldValue('batchOwner', value ? value.name : null);
+    setFieldValue('batchOwnerID', value ? value.id : null);
   };
 
-  const setBatchMembers = (values: UserManager[], setFieldValue: any) => {
-    const finalList = values.map((element) => {
+  const setBatchMembers = (values: any, setFieldValue: any) => {
+    const finalList = values.map((element: any) => {
       const obj = {
-        id: element.id,
-        name: element.name
+        id: element?.id,
+        name: element?.name
       };
       return obj;
     });
     setFieldValue('batchMembers', finalList?.length > 0 ? finalList : []);
   };
 
-  console.log(errors);
+  const defaultProps = {
+    options: otherUsers,
+    getOptionLabel: (option: any) => option?.name,
+    fullWidth: true
+  };
 
   return (
     <FormikProvider value={formik}>
@@ -252,13 +261,13 @@ export default function BatchForm({
                   {admins && (
                     <Autocomplete
                       fullWidth
-                      onChange={(event, value) => setBatchOwner(value, setFieldValue)}
+                      inputValue={values.batchOwner}
+                      onChange={(event, value) => setBatchOwnerValues(value, setFieldValue)}
                       options={admins}
                       disableCloseOnSelect
                       getOptionLabel={(option) => option.name}
                       renderOption={(props, option, { selected }) => (
-                        <li {...props}>
-                          <Checkbox checked={selected} />
+                        <li key={option.id} {...props}>
                           {option.name}
                         </li>
                       )}
@@ -282,12 +291,13 @@ export default function BatchForm({
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   {otherUsers && (
                     <Autocomplete
+                      {...defaultProps}
                       fullWidth
                       onChange={(event, value) => setBatchMembers(value, setFieldValue)}
                       multiple
-                      options={otherUsers}
+                      value={values.batchMembers}
+                      isOptionEqualToValue={(option: any, value: any) => option?.id === value?.id}
                       disableCloseOnSelect
-                      getOptionLabel={(option) => option.name}
                       renderOption={(props, option, { selected }) => (
                         <li key={option.id} {...props}>
                           <Checkbox checked={selected} />

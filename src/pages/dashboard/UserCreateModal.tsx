@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { useState } from 'react';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
-import { paramCase } from 'change-case';
-import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 // material
 import {
@@ -18,8 +18,6 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-// redux
-import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
 import UserNewForm from '../../components/_dashboard/user/UserNewForm';
 import { UserManager } from '../../@types/user';
@@ -30,7 +28,6 @@ type UserCreateModalProps = {
   isEdit: boolean;
   currentUser?: UserManager | null;
   setRefresh: any;
-  openModal?: boolean | undefined;
 };
 
 const styles = (theme: Theme) =>
@@ -67,16 +64,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-export default function UserCreateModal({
-  isEdit,
-  currentUser,
-  setRefresh,
-  openModal
-}: UserCreateModalProps) {
-  const dispatch = useDispatch();
-  const { pathname } = useLocation();
-  const { name } = useParams();
-  const { userList } = useSelector((state: RootState) => state.user);
+export default function UserCreateModal({ isEdit, currentUser, setRefresh }: UserCreateModalProps) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -87,10 +75,6 @@ export default function UserCreateModal({
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (openModal !== undefined) setOpen(openModal);
-  }, [openModal]);
-
   return (
     <div>
       {!isEdit ? (
@@ -98,7 +82,7 @@ export default function UserCreateModal({
           New User
         </Button>
       ) : (
-        <div style={{ display: 'flex' }}>
+        <div onClick={handleClickOpen} style={{ display: 'flex' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>

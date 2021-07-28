@@ -173,7 +173,6 @@ export default function MentorList() {
         <UserList
           type="mentor"
           handleRequestSort={handleRequestSort}
-          handleSelectAllClick={handleSelectAllClick}
           handleClick={handleClick}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           handleFilterByName={handleFilterByName}

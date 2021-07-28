@@ -27,6 +27,7 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core';
+import useAuth from '../../../hooks/useAuth';
 import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -84,7 +85,7 @@ export default function UserNewForm({
   setRefresh,
   handleClose
 }: UserNewFormProps) {
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
@@ -375,10 +376,22 @@ export default function UserNewForm({
                     id="role"
                     onChange={handleChange}
                   >
-                    <FormControlLabel value="student" control={<Radio />} label="Student" />
-                    <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
-                    <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                    <FormControlLabel value="superadmin" control={<Radio />} label="Super Admin" />
+                    {user?.role === 'Admin' && (
+                      <FormControlLabel value="student" control={<Radio />} label="Student" />
+                    )}
+                    {user?.role === 'Admin' && (
+                      <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                    )}
+                    {user?.role === 'SuperAdmin' && (
+                      <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                    )}
+                    {user?.role === 'SuperAdmin' && (
+                      <FormControlLabel
+                        value="superadmin"
+                        control={<Radio />}
+                        label="Super Admin"
+                      />
+                    )}
                   </RadioGroup>
                 </Stack>
 

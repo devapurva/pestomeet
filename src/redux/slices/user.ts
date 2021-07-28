@@ -30,7 +30,8 @@ type UserState = {
   posts: UserPost[];
   users: UserData[];
   userList: UserManager[];
-  studentList: UserManager[];
+  studentInProgressList: UserManager[];
+  studentApprovedList: UserManager[];
   mentorList: UserManager[];
   batchList: BatchManager[];
   mentorTeamList: TeamManager[];
@@ -58,7 +59,8 @@ const initialState: UserState = {
   posts: [],
   users: [],
   userList: [],
-  studentList: [],
+  studentInProgressList: [],
+  studentApprovedList: [],
   mentorList: [],
   batchList: [],
   mentorTeamList: [],
@@ -169,10 +171,16 @@ const slice = createSlice({
       state.userList = action.payload;
     },
 
-    // GET STUDENT LIST
-    getStudentListSuccess(state, action) {
+    // GET STUDENT IN PROGRESS LIST
+    getStudentInProgressListSuccess(state, action) {
       state.isLoading = false;
-      state.studentList = action.payload;
+      state.studentInProgressList = action.payload;
+    },
+
+    // GET STUDENT APPROVED LIST
+    getStudentApprovedListSuccess(state, action) {
+      state.isLoading = false;
+      state.studentApprovedList = action.payload;
     },
 
     // GET MENTOR LIST
@@ -349,7 +357,12 @@ export function getUserList(approval: string, type: string) {
     try {
       const response = await HTTPClient.get(`/list/user/${approval}/${type}`);
       if (type === 'student') {
-        dispatch(slice.actions.getStudentListSuccess(response.data.result));
+        if (approval === 'inprogress') {
+          dispatch(slice.actions.getStudentInProgressListSuccess(response.data.result));
+        }
+        if (approval === 'approved') {
+          dispatch(slice.actions.getStudentApprovedListSuccess(response.data.result));
+        }
       }
       if (type === 'mentor') {
         dispatch(slice.actions.getMentorListSuccess(response.data.result));
@@ -362,11 +375,11 @@ export function getUserList(approval: string, type: string) {
 
 // ----------------------------------------------------------------------
 
-export function getBatchList(type: string) {
+export function getBatchList(id: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get(`/list/batch/${type}`);
+      const response = await HTTPClient.get(`/list/mybatch/${id}`);
       dispatch(slice.actions.getBatchListSuccess(response.data.result));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -559,12 +572,34 @@ export const addBatch = async (
   batchName: string,
   batchType: string,
   batchOwner: string,
+  batchOwnerID: string,
   batchMembers: BatchMembers[] | []
 ) => {
   const response = await HTTPClient.post('/create/batch', {
     batchName,
     batchType,
     batchOwner,
+    batchOwnerID,
+    batchMembers
+  });
+  return response;
+};
+
+// ----------------------------------------------------------------------
+
+export const editBatch = async (
+  batchId: string,
+  batchName: string,
+  batchType: string,
+  batchOwner: string,
+  batchOwnerID: string,
+  batchMembers: BatchMembers[] | []
+) => {
+  const response = await HTTPClient.patch(`/edit/batch/${batchId}`, {
+    batchName,
+    batchType,
+    batchOwner,
+    batchOwnerID,
     batchMembers
   });
   return response;

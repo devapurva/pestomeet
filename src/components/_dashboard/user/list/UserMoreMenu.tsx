@@ -1,5 +1,5 @@
+import React, { useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
-import { useRef, useState } from 'react';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 import checkAll from '@iconify/icons-mdi/check-all';
@@ -27,44 +27,46 @@ export default function UserMoreMenu({
   setRefresh
 }: UserMoreMenuProps) {
   const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleClickOpen = () => {
-    setOpen(!open);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
     <>
-      <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+      <IconButton ref={ref} onClick={handleClick}>
         <Icon icon={moreVerticalFill} width={20} height={20} />
       </IconButton>
 
       <Menu
-        open={isOpen}
-        anchorEl={ref.current}
-        onClose={() => setIsOpen(false)}
+        id="user-list-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
         PaperProps={{
           sx: { width: 200, maxWidth: '100%' }
         }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleClickOpen} sx={{ color: 'text.secondary' }}>
-          <UserCreateModal
-            isEdit={true}
-            setRefresh={setRefresh}
-            currentUser={currentUser}
-            openModal={open}
-          />
+        <MenuItem sx={{ color: 'text.secondary' }}>
+          <UserCreateModal isEdit={true} setRefresh={setRefresh} currentUser={currentUser} />
         </MenuItem>
 
-        <MenuItem onClick={onApprove} sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={checkAll} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Approve" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
+        {currentUser?.approval === 'inprogress' && (
+          <MenuItem onClick={onApprove} sx={{ color: 'text.secondary' }}>
+            <ListItemIcon>
+              <Icon icon={checkAll} width={24} height={24} />
+            </ListItemIcon>
+            <ListItemText primary="Approve" primaryTypographyProps={{ variant: 'body2' }} />
+          </MenuItem>
+        )}
 
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>

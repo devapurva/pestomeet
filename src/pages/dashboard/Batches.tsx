@@ -24,6 +24,7 @@ import {
   responsiveFontSizes
 } from '@material-ui/core';
 // redux
+import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import { deleteBatch, getBatchList, getAllUserList } from '../../redux/slices/user';
 // routes
@@ -96,6 +97,7 @@ export default function Batches() {
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
   const { batchList, userList } = useSelector((state: RootState) => state.user);
+  const { user } = useAuth();
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
@@ -105,13 +107,13 @@ export default function Batches() {
 
   useEffect(() => {
     dispatch(getAllUserList());
-    dispatch(getBatchList('ninja'));
-  }, [dispatch]);
+    dispatch(getBatchList(user?.id));
+  }, [dispatch, user?.id]);
 
   useEffect(() => {
     if (refresh) {
       dispatch(getAllUserList());
-      dispatch(getBatchList('ninja'));
+      dispatch(getBatchList(user?.id));
       setRefresh(false);
     }
   }, [refresh]);

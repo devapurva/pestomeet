@@ -79,6 +79,7 @@ export type BatchManager = {
   batchName: string;
   batchType: string;
   batchOwner: string;
+  batchOwnerID: string;
   batchMembers: BatchMembers[] | [];
 };
 
