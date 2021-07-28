@@ -143,12 +143,6 @@ export default function UserList({
 
   return (
     <Card style={{ paddingTop: 25 }}>
-      {/* <UserListToolbar
-        numSelected={selected.length}
-        filterName={filterName}
-        onFilterName={handleFilterByName}
-      /> */}
-
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800 }}>
           <Table>

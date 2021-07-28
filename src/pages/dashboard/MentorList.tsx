@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSnackbar } from 'notistack';
 // material
 import { Container, Tab } from '@material-ui/core';
 import TabContext from '@material-ui/lab/TabContext';
@@ -16,6 +17,7 @@ import { UserList } from '../../components/_dashboard/user/list';
 import UserCreateModal from './UserCreateModal';
 
 export default function MentorList() {
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState(false);
   const { mentorInProgressList, mentorApprovedList } = useSelector(
@@ -36,15 +38,8 @@ export default function MentorList() {
   useEffect(() => {
     dispatch(getUserList('inprogress', 'mentor'));
     dispatch(getUserList('approved', 'mentor'));
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (refresh) {
-      dispatch(getUserList('inprogress', 'mentor'));
-      dispatch(getUserList('approved', 'mentor'));
-      setRefresh(false);
-    }
-  }, [refresh]);
+    setRefresh(false);
+  }, [dispatch, refresh]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -80,7 +75,14 @@ export default function MentorList() {
   };
 
   const handleDeleteUser = (userId: string) => {
-    dispatch(deleteUser(userId));
+    dispatch(deleteUser(userId)).then((response) => {
+      if (response?.data?.statusCode) {
+        enqueueSnackbar('Mentor deleted successfully', {
+          variant: 'success'
+        });
+        setRefresh(true);
+      }
+    });
   };
 
   return (

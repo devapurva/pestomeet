@@ -165,15 +165,8 @@ export default function Batches() {
     setFilterName(filterName);
   };
 
-  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - batchList.length) : 0;
-
-  // const filteredUsers = applySortFilter(batchList, getComparator(order, orderBy), filterName);
-
-  // const isUserNotFound = filteredUsers.length === 0;
-
   const handleDeleteBatch = async (id: string) => {
     await deleteBatch(id).then((response) => {
-      console.log(response);
       if (response?.data?.statusCode) {
         enqueueSnackbar('Batch deleted successfully', {
           variant: 'success'
@@ -203,7 +196,7 @@ export default function Batches() {
           }
         />
         <BatchList
-          type="mentor"
+          type="batch"
           handleRequestSort={handleRequestSort}
           handleSelectAllClick={handleSelectAllClick}
           handleClick={handleClick}
