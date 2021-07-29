@@ -99,8 +99,6 @@ type TeamListProps = {
   rowsPerPage: number;
   userList: TeamManager[];
   setRefresh: any;
-  admins: UserManager[];
-  otherUsers: UserManager[];
 };
 
 export default function TeamList({
@@ -119,9 +117,7 @@ export default function TeamList({
   filterName,
   rowsPerPage,
   userList,
-  setRefresh,
-  admins,
-  otherUsers
+  setRefresh
 }: TeamListProps) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -199,14 +195,12 @@ export default function TeamList({
                       </TableCell> */}
 
                       <TableCell align="left">
-                        {/* <UserMoreMenu
+                        <UserMoreMenu
                           setRefresh={setRefresh}
                           currentTeam={row}
                           onDelete={() => handleDeleteTeam(teamId)}
                           userName={teamName}
-                          admins={admins}
-                          otherUsers={otherUsers}
-                        /> */}
+                        />
                       </TableCell>
                     </TableRow>
                   );

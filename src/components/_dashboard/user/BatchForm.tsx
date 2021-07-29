@@ -199,14 +199,7 @@ export default function BatchForm({
   };
 
   const setBatchMembers = (values: any, setFieldValue: any) => {
-    const finalList = values.map((element: any) => {
-      const obj = {
-        id: element?.id,
-        name: element?.name
-      };
-      return obj;
-    });
-    setFieldValue('batchMembers', finalList?.length > 0 ? finalList : []);
+    setFieldValue('batchMembers', values?.length > 0 ? values : []);
   };
 
   const defaultProps = {

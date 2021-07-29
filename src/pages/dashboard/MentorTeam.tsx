@@ -104,20 +104,15 @@ export default function MentorTeams() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getAllUserList());
     dispatch(getTeamList('mentor'));
   }, [dispatch]);
 
   useEffect(() => {
     if (refresh) {
-      dispatch(getAllUserList());
       dispatch(getTeamList('mentor'));
       setRefresh(false);
     }
   }, [refresh]);
-
-  const mentors = userList.filter((users) => users.role === 'mentor');
-  const students = userList.filter((users) => users.role === 'student');
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -188,15 +183,7 @@ export default function MentorTeams() {
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Mentor Teams', href: PATH_DASHBOARD.mentorTeam }
           ]}
-          action={
-            <TeamModal
-              isEdit={false}
-              currentTeam={null}
-              setRefresh={setRefresh}
-              admins={mentors}
-              otherUsers={students}
-            />
-          }
+          action={<TeamModal isEdit={false} currentTeam={null} setRefresh={setRefresh} />}
         />
         <TeamList
           type="mentor"
@@ -215,8 +202,6 @@ export default function MentorTeams() {
           rowsPerPage={rowsPerPage}
           userList={mentorTeamList}
           setRefresh={setRefresh}
-          admins={mentors}
-          otherUsers={students}
         />
       </Container>
     </Page>

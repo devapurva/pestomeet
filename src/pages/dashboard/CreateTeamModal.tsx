@@ -33,8 +33,6 @@ type TeamModalProps = {
   isEdit: boolean;
   currentTeam?: TeamManager | null;
   setRefresh: any;
-  admins: UserManager[];
-  otherUsers: UserManager[];
 };
 
 const styles = (theme: Theme) =>
@@ -71,13 +69,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-export default function TeamModal({
-  isEdit,
-  currentTeam,
-  setRefresh,
-  admins,
-  otherUsers
-}: TeamModalProps) {
+export default function TeamModal({ isEdit, currentTeam, setRefresh }: TeamModalProps) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
@@ -130,8 +122,6 @@ export default function TeamModal({
             currentTeam={currentTeam}
             setRefresh={setRefresh}
             handleClose={handleClose}
-            admins={admins}
-            otherUsers={otherUsers}
           />
         </DialogContent>
       </Dialog>

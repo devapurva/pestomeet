@@ -16,21 +16,15 @@ type UserMoreMenuProps = {
   userName: string;
   setRefresh?: any;
   currentTeam?: TeamManager;
-  admins: UserManager[];
-  otherUsers: UserManager[];
 };
 
 export default function UserMoreMenu({
   onDelete,
   userName,
   currentTeam,
-  setRefresh,
-  admins,
-  otherUsers
+  setRefresh
 }: UserMoreMenuProps) {
   const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,10 +33,6 @@ export default function UserMoreMenu({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(!open);
   };
 
   return (
@@ -64,13 +54,7 @@ export default function UserMoreMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          {/* <TeamModal
-            isEdit={true}
-            setRefresh={setRefresh}
-            currentTeam={currentTeam}
-            admins={admins}
-            otherUsers={otherUsers}
-          /> */}
+          <TeamModal isEdit={true} setRefresh={setRefresh} currentTeam={currentTeam} />
         </MenuItem>
 
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>

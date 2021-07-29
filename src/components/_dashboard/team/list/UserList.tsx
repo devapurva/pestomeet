@@ -208,8 +208,8 @@ export default function UserList({
                           currentTeam={row}
                           onDelete={() => handleDeleteUser(teamId)}
                           userName={teamName}
-                          admins={admins}
-                          otherUsers={otherUsers}
+                          // admins={admins}
+                          // otherUsers={otherUsers}
                         />
                       </TableCell>
                     </TableRow>

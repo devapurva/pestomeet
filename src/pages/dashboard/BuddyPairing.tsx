@@ -185,15 +185,7 @@ export default function BuddyPairing() {
         <HeaderBreadcrumbs
           heading="Buddy Pairings"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Buddy Pairing' }]}
-          // action={
-          //   <TeamModal
-          //     isEdit={false}
-          //     currentTeam={null}
-          //     setRefresh={setRefresh}
-          //     mentors={mentors}
-          //     students={students}
-          //   />
-          // }
+          action={<TeamModal isEdit={false} currentTeam={null} setRefresh={setRefresh} />}
         />
         <TeamList
           type="mentor"
@@ -212,8 +204,6 @@ export default function BuddyPairing() {
           rowsPerPage={rowsPerPage}
           userList={buddyList}
           setRefresh={setRefresh}
-          admins={mentors}
-          otherUsers={students}
         />
       </Container>
     </Page>

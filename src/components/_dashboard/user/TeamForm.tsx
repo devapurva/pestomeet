@@ -43,8 +43,6 @@ type TeamFormProps = {
   currentTeam?: TeamManager | null;
   setRefresh: any;
   handleClose?: any;
-  admins: UserManager[];
-  otherUsers: UserManager[];
 };
 
 type FormikValues = {
@@ -72,14 +70,7 @@ type FormikSetErrors = {
   ): void;
 };
 
-export default function TeamForm({
-  isEdit,
-  currentTeam,
-  setRefresh,
-  handleClose,
-  admins,
-  otherUsers
-}: TeamFormProps) {
+export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose }: TeamFormProps) {
   const dispatch = useDispatch();
   const isMountedRef = useIsMountedRef();
   const classes = useStyles();
@@ -224,14 +215,7 @@ export default function TeamForm({
   };
 
   const setTeamMembers = (values: any, setFieldValue: any) => {
-    const finalList = values.map((element: any) => {
-      const obj = {
-        id: element?.id,
-        name: element?.name
-      };
-      return obj;
-    });
-    setFieldValue('teamMembers', finalList?.length > 0 ? finalList : []);
+    setFieldValue('teamMembers', values?.length > 0 ? values : []);
   };
 
   const defaultProps = {
