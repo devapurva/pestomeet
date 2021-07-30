@@ -140,7 +140,8 @@ export default function Router() {
           ]
         },
         { path: '/dashboard/calendar', element: <Calendar /> },
-        { path: '/dashboard/resources', element: <Resources /> }
+        { path: '/dashboard/resources', element: <Resources /> },
+        { path: '/dashboard/my-profile', element: <MyProfile /> }
       ]
     },
 
@@ -173,6 +174,7 @@ const MentorTeams = Loadable(lazy(() => import('../pages/dashboard/MentorTeam'))
 const BuddyPairing = Loadable(lazy(() => import('../pages/dashboard/BuddyPairing')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
 const Resources = Loadable(lazy(() => import('../pages/dashboard/Resources')));
+const MyProfile = Loadable(lazy(() => import('../pages/dashboard/MyProfile')));
 // Main
 const Maintenance = Loadable(lazy(() => import('../pages/Maintenance')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));

@@ -27,6 +27,7 @@ import useAuth from '../../../hooks/useAuth';
 import { addUser, addAvatar, editUser } from '../../../redux/slices/lists';
 // @types
 import { UserManager } from '../../../@types/user';
+import { AuthUser } from '../../../@types/authentication';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import { UploadAvatar } from '../../upload';
@@ -41,7 +42,7 @@ const useStyles = makeStyles({
 
 type UserNewFormProps = {
   isEdit: boolean;
-  currentUser?: UserManager | null;
+  currentUser?: UserManager | AuthUser | null;
   setRefresh?: any;
   handleClose?: any;
 };
