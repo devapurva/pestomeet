@@ -28,7 +28,12 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { CalendarForm, CalendarStyle, CalendarToolbar } from '../../components/_dashboard/calendar';
+import {
+  AdminCalendarForm,
+  CalendarStyle,
+  CalendarToolbar,
+  SlotsCalendarForm
+} from '../../components/_dashboard/calendar';
 
 import { CalendarView } from '../../@types/calendar';
 
@@ -219,16 +224,30 @@ export default function Calendar() {
           </CalendarStyle>
         </Card>
 
-        <Dialog open={isOpenModal} onClose={handleCloseModal}>
-          <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+        {user?.role === 'Admin' ||
+          (user?.role === 'Super Admin' && (
+            <Dialog open={isOpenModal} onClose={handleCloseModal}>
+              <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+              <AdminCalendarForm
+                event={selectedEvent || {}}
+                range={selectedRange}
+                onCancel={handleCloseModal}
+                batchList={batchList}
+              />
+            </Dialog>
+          ))}
 
-          <CalendarForm
-            event={selectedEvent || {}}
-            range={selectedRange}
-            onCancel={handleCloseModal}
-            batchList={batchList}
-          />
-        </Dialog>
+        {user?.role === 'Mentor' && (
+          <Dialog open={isOpenModal} onClose={handleCloseModal}>
+            <DialogTitle>{selectedEvent ? 'Add Slot' : 'Edit Slot'}</DialogTitle>
+            <SlotsCalendarForm
+              event={selectedEvent || {}}
+              range={selectedRange}
+              onCancel={handleCloseModal}
+              batchList={batchList}
+            />
+          </Dialog>
+        )}
       </Container>
     </Page>
   );
