@@ -196,6 +196,7 @@ export default function TeamList({
 
                       <TableCell align="left">
                         <UserMoreMenu
+                          type={type}
                           setRefresh={setRefresh}
                           currentTeam={row}
                           onDelete={() => handleDeleteTeam(teamId)}

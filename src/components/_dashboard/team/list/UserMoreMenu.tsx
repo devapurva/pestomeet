@@ -16,13 +16,15 @@ type UserMoreMenuProps = {
   userName: string;
   setRefresh?: any;
   currentTeam?: TeamManager;
+  type: string;
 };
 
 export default function UserMoreMenu({
   onDelete,
   userName,
   currentTeam,
-  setRefresh
+  setRefresh,
+  type
 }: UserMoreMenuProps) {
   const ref = useRef(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -54,7 +56,7 @@ export default function UserMoreMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <TeamModal isEdit={true} setRefresh={setRefresh} currentTeam={currentTeam} />
+          <TeamModal type={type} isEdit={true} setRefresh={setRefresh} currentTeam={currentTeam} />
         </MenuItem>
 
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>

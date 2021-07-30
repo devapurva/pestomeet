@@ -5,7 +5,7 @@ import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import googleClassroom from '@iconify/icons-mdi/google-classroom';
+import accountChild from '@iconify/icons-mdi/account-child';
 // material
 import {
   Button,
@@ -33,6 +33,7 @@ type TeamModalProps = {
   isEdit: boolean;
   currentTeam?: TeamManager | null;
   setRefresh: any;
+  type: string;
 };
 
 const styles = (theme: Theme) =>
@@ -69,7 +70,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   );
 });
 
-export default function TeamModal({ isEdit, currentTeam, setRefresh }: TeamModalProps) {
+export default function TeamModal({ isEdit, currentTeam, setRefresh, type }: TeamModalProps) {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
@@ -90,9 +91,9 @@ export default function TeamModal({ isEdit, currentTeam, setRefresh }: TeamModal
         <Button
           variant="contained"
           onClick={handleClickOpen}
-          startIcon={<Icon icon={googleClassroom} />}
+          startIcon={<Icon icon={accountChild} />}
         >
-          Create Team
+          Create Mentor Team
         </Button>
       ) : (
         <div onClick={handleClickOpen} style={{ display: 'flex' }}>
@@ -118,6 +119,7 @@ export default function TeamModal({ isEdit, currentTeam, setRefresh }: TeamModal
         </DialogTitle>
         <DialogContent>
           <TeamForm
+            type={type}
             isEdit={isEdit}
             currentTeam={currentTeam}
             setRefresh={setRefresh}

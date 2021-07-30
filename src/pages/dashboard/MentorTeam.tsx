@@ -183,7 +183,9 @@ export default function MentorTeams() {
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Mentor Teams', href: PATH_DASHBOARD.mentorTeam }
           ]}
-          action={<TeamModal isEdit={false} currentTeam={null} setRefresh={setRefresh} />}
+          action={
+            <TeamModal type="mentor" isEdit={false} currentTeam={null} setRefresh={setRefresh} />
+          }
         />
         <TeamList
           type="mentor"

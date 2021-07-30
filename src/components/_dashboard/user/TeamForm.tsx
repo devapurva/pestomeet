@@ -1,11 +1,8 @@
 import * as Yup from 'yup';
 import { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
-import closeFill from '@iconify/icons-eva/close-fill';
-import { Icon } from '@iconify/react';
 // material
 import { LoadingButton, Autocomplete } from '@material-ui/lab';
 import {
@@ -19,10 +16,11 @@ import {
   Radio,
   RadioGroup,
   FormLabel,
-  Checkbox
+  Checkbox,
+  CircularProgress
 } from '@material-ui/core';
 // @types
-import { TeamManager, TeamMember, UserManager } from '../../../@types/user';
+import { BatchManager, TeamManager, TeamMember, UserManager } from '../../../@types/user';
 // redux
 import useAuth from '../../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
@@ -35,6 +33,9 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 const useStyles = makeStyles({
   legend: {
     paddingTop: 8
+  },
+  loader: {
+    textAlign: 'center'
   }
 });
 
@@ -43,6 +44,7 @@ type TeamFormProps = {
   currentTeam?: TeamManager | null;
   setRefresh: any;
   handleClose?: any;
+  type: string;
 };
 
 type FormikValues = {
@@ -70,7 +72,13 @@ type FormikSetErrors = {
   ): void;
 };
 
-export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose }: TeamFormProps) {
+export default function TeamForm({
+  isEdit,
+  currentTeam,
+  setRefresh,
+  handleClose,
+  type
+}: TeamFormProps) {
   const dispatch = useDispatch();
   const isMountedRef = useIsMountedRef();
   const classes = useStyles();
@@ -79,15 +87,33 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
   const { batchList, userList } = useSelector((state: RootState) => state.user);
   const [mentors, setMentors] = useState<UserManager[]>([]);
   const [students, setStudents] = useState<UserManager[]>([]);
+  const [batchDetails, setBatchDetails] = useState<BatchManager>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     dispatch(getAllUserList());
     dispatch(getBatchList(user?.id));
   }, [dispatch, user?.id]);
 
-  // useEffect(() => {
-
-  // }, [batchList, userList]);
+  useEffect(() => {
+    if (currentTeam && batchList?.length > 0 && userList?.length > 0 && !batchDetails) {
+      setLoading(true);
+      const getBatch = batchList?.find((batch) => batch.batchId === currentTeam.batchId);
+      setBatchDetails(getBatch);
+      if (getBatch) {
+        getBatch?.batchMembers?.forEach((element: any) => {
+          const findUser = userList.find((user) => user.id === element.id);
+          if (findUser?.role === 'mentor') {
+            setMentors((mentors) => mentors.concat(findUser));
+          }
+          if (findUser?.role === 'student') {
+            setStudents((students) => students.concat(findUser));
+          }
+        });
+      }
+      setLoading(false);
+    }
+  }, [currentTeam, batchList, userList]);
 
   const NewTeamSchema = Yup.object().shape({
     teamName: Yup.string()
@@ -102,7 +128,7 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
     enableReinitialize: true,
     initialValues: {
       teamName: currentTeam?.teamName || '',
-      teamType: currentTeam?.teamType || '',
+      teamType: currentTeam?.teamType || type,
       mentorName: currentTeam?.mentorName || '',
       mentorId: currentTeam?.mentorId || '',
       batchId: currentTeam?.batchId || '',
@@ -199,7 +225,7 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
     setFieldValue('mentorId', value ? value.id : null);
   };
 
-  const setBatchDetails = (value: any, setFieldValue: any) => {
+  const setBatchValues = (value: any, setFieldValue: any) => {
     // eslint-disable-next-line consistent-return
     value.batchMembers.forEach((element: any) => {
       const findUser = userList.find((user) => user.id === element.id);
@@ -241,29 +267,33 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
                   />
                 </Stack>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <FormLabel className={classes.legend} component="legend">
-                    Team Type:
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    value={values?.teamType}
-                    aria-label="teamType"
-                    name="teamType"
-                    id="teamType"
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
-                    <FormControlLabel
-                      value="buddypairing"
-                      control={<Radio />}
-                      label="Buddy Pairing"
-                    />
-                  </RadioGroup>
-                </Stack>
+                {values.teamType?.length === 0 && (
+                  <>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                      <FormLabel className={classes.legend} component="legend">
+                        Team Type:
+                      </FormLabel>
+                      <RadioGroup
+                        row
+                        value={values?.teamType}
+                        aria-label="teamType"
+                        name="teamType"
+                        id="teamType"
+                        onChange={handleChange}
+                      >
+                        <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                        <FormControlLabel
+                          value="buddypairing"
+                          control={<Radio />}
+                          label="Buddy Pairing"
+                        />
+                      </RadioGroup>
+                    </Stack>
 
-                {touched.teamType && errors.teamType && (
-                  <FormHelperText error={true}>{errors.teamType}</FormHelperText>
+                    {touched.teamType && errors.teamType && (
+                      <FormHelperText error={true}>{errors.teamType}</FormHelperText>
+                    )}
+                  </>
                 )}
 
                 <FormLabel className={classes.legend} component="legend">
@@ -274,8 +304,8 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
                   {batchList && (
                     <Autocomplete
                       fullWidth
-                      // inputValue={values.mentorName}
-                      onChange={(event, value) => setBatchDetails(value, setFieldValue)}
+                      inputValue={batchDetails?.batchName}
+                      onChange={(event, value) => setBatchValues(value, setFieldValue)}
                       options={batchList}
                       disableCloseOnSelect
                       getOptionLabel={(option) => option.batchName}
@@ -290,7 +320,7 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
                           helperText={touched.mentorName && errors.mentorName}
                           {...params}
                           label=""
-                          placeholder="Batch"
+                          placeholder="Select Batch"
                         />
                       )}
                     />
@@ -321,7 +351,7 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
                             helperText={touched.mentorName && errors.mentorName}
                             {...params}
                             label="Team Mentor"
-                            placeholder="Mentor"
+                            placeholder="Team Mentor"
                           />
                         )}
                       />
@@ -355,12 +385,18 @@ export default function TeamForm({ isEdit, currentTeam, setRefresh, handleClose 
                             helperText={touched.teamMembers && errors.teamMembers}
                             {...params}
                             label="Team Members"
-                            placeholder="Members"
+                            placeholder="Team Members"
                           />
                         )}
                       />
                     </Stack>
                   </>
+                )}
+
+                {loading && (
+                  <div className={classes.loader}>
+                    <CircularProgress color="primary" />
+                  </div>
                 )}
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>

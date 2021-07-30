@@ -185,7 +185,14 @@ export default function BuddyPairing() {
         <HeaderBreadcrumbs
           heading="Buddy Pairings"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Buddy Pairing' }]}
-          action={<TeamModal isEdit={false} currentTeam={null} setRefresh={setRefresh} />}
+          action={
+            <TeamModal
+              type="buddypairing"
+              isEdit={false}
+              currentTeam={null}
+              setRefresh={setRefresh}
+            />
+          }
         />
         <TeamList
           type="mentor"
