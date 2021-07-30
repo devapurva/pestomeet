@@ -7,6 +7,7 @@ import { Box, Stack, AppBar, Toolbar, IconButton } from '@material-ui/core';
 import { MHidden } from '../../components/@material-extend';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
+import SettingsModal from '../../pages/SettingsModal';
 
 // ----------------------------------------------------------------------
 
@@ -51,7 +52,6 @@ export default function DashboardNavbar({ onOpenSidebar }: DashboardNavbarProps)
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
           <AccountPopover />
         </Stack>
       </ToolbarStyle>

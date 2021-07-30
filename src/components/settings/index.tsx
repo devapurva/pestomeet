@@ -16,8 +16,12 @@ import SettingFullscreen from './SettingFullscreen';
 
 const DRAWER_WIDTH = 260;
 
-export default function Settings() {
+export default function Settings({ openSettings }: { openSettings: boolean }) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(openSettings);
+  }, [openSettings]);
 
   useEffect(() => {
     if (open) {
