@@ -87,7 +87,6 @@ export default function UserCreateModal({ isEdit, currentUser, setRefresh }: Use
         maxWidth={isEdit ? 'lg' : 'md'}
         fullWidth
         onClose={(event, reason) => {
-          console.log('pages', reason);
           if (reason !== 'backdropClick') {
             handleClose();
           }

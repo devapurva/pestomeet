@@ -93,7 +93,6 @@ export default function TeamModal({ isEdit, currentTeam, setRefresh, type }: Tea
         maxWidth={isEdit ? 'lg' : 'md'}
         fullWidth
         onClose={(event, reason) => {
-          console.log('pages', reason);
           if (reason !== 'backdropClick') {
             handleClose();
           }

@@ -79,7 +79,6 @@ export default function Resources() {
 
   const handleDeleteTeam = async (id: string) => {
     await deleteTeam(id).then((response) => {
-      console.log(response);
       if (response?.data?.statusCode) {
         enqueueSnackbar('Team deleted successfully', {
           variant: 'success'

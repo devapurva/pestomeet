@@ -76,7 +76,12 @@ type CalendarFormProps = {
   batchList: BatchManager[];
 };
 
-export default function CalendarForm({ event, range, onCancel, batchList }: CalendarFormProps) {
+export default function AdminCalendarForm({
+  event,
+  range,
+  onCancel,
+  batchList
+}: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { user } = useAuth();
@@ -112,7 +117,6 @@ export default function CalendarForm({ event, range, onCancel, batchList }: Cale
           dispatch(updateEvent(event.id, newEvent));
           enqueueSnackbar('Update event success', { variant: 'success' });
         } else {
-          console.log('inside create');
           dispatch(createEvent(newEvent));
           enqueueSnackbar('Create event success', { variant: 'success' });
         }

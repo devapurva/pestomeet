@@ -1,6 +1,7 @@
+import { useRef, useEffect } from 'react';
 import * as Yup from 'yup';
 import { merge } from 'lodash';
-import { isBefore } from 'date-fns';
+import { isBefore, add } from 'date-fns';
 import { Icon } from '@iconify/react';
 import { useSnackbar } from 'notistack';
 import trash2Fill from '@iconify/icons-eva/trash-2-fill';
@@ -15,8 +16,7 @@ import {
   DialogContent,
   DialogActions,
   FormControlLabel,
-  Autocomplete,
-  Checkbox
+  Stack
 } from '@material-ui/core';
 import { LoadingButton, MobileDateTimePicker } from '@material-ui/lab';
 import { EventInput } from '@fullcalendar/common';
@@ -32,16 +32,6 @@ import { AuthUser } from '../../../@types/authentication';
 
 // ----------------------------------------------------------------------
 
-const COLOR_OPTIONS = [
-  '#00AB55', // theme.palette.primary.main,
-  '#1890FF', // theme.palette.info.main,
-  '#94D82D', // theme.palette.success.main,
-  '#FFC107', // theme.palette.warning.main,
-  '#FF4842', // theme.palette.error.main
-  '#04297A', // theme.palette.info.darker
-  '#7A0C2E' // theme.palette.error.darker
-];
-
 const getInitialValues = (
   event: EventInput,
   range: { start: Date; end: Date } | null,
@@ -55,6 +45,7 @@ const getInitialValues = (
     allDay: false,
     start: range ? new Date(range.start) : new Date(),
     end: range ? new Date(range.end) : new Date(),
+    // end: range ? add(new Date(range.end), { hours: 1 }) : new Date(),
     eventType: 'slot',
     organiserId: user?.id,
     organiserName: user?.name,
@@ -91,6 +82,7 @@ export default function SlotsCalendarForm({
   const dispatch = useDispatch();
   const { user } = useAuth();
   const isCreating = !event;
+  const submitRef = useRef<any>(null);
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Event Name is required'),
@@ -100,6 +92,12 @@ export default function SlotsCalendarForm({
     start: Yup.string().required('Start Date & Time is required'),
     end: Yup.string().required('End Date & Time is required')
   });
+
+  useEffect(() => {
+    if (submitRef) {
+      submitRef?.current?.click();
+    }
+  }, [submitRef]);
 
   const formik = useFormik({
     initialValues: getInitialValues(event, range, user),
@@ -122,7 +120,6 @@ export default function SlotsCalendarForm({
           dispatch(updateEvent(event.id, newEvent));
           enqueueSnackbar('Update event success', { variant: 'success' });
         } else {
-          console.log('inside create');
           dispatch(createEvent(newEvent));
           enqueueSnackbar('Create event success', { variant: 'success' });
         }
@@ -138,28 +135,7 @@ export default function SlotsCalendarForm({
   const { values, errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } =
     formik;
 
-  const handleDelete = async () => {
-    if (!event.id) return;
-    try {
-      onCancel();
-      dispatch(deleteEvent(event.id));
-      enqueueSnackbar('Delete event success', { variant: 'success' });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const isDateError = isBefore(new Date(values.end), new Date(values.start));
-
-  const setAttendees = (values: BatchManager[], setFieldValue: any) => {
-    const finalList = values.map((element) => {
-      const obj = {
-        batchId: element.batchId
-      };
-      return obj;
-    });
-    setFieldValue('attendees', finalList?.length > 0 ? finalList : []);
-  };
 
   return (
     <FormikProvider value={formik}>
@@ -174,99 +150,51 @@ export default function SlotsCalendarForm({
             sx={{ mb: 3 }}
           />
 
-          <TextField
-            fullWidth
-            multiline
-            maxRows={4}
-            label="Description"
-            {...getFieldProps('description')}
-            error={Boolean(touched.description && errors.description)}
-            helperText={touched.description && errors.description}
-            sx={{ mb: 3 }}
-          />
-
           <FormControlLabel
             control={<Switch checked={values.hasAssignment} {...getFieldProps('hasAssignment')} />}
             label="Assignment"
             sx={{ mb: 3 }}
           />
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+            <MobileDateTimePicker
+              label="Start date"
+              value={values.start}
+              inputFormat="dd/MM/yyyy hh:mm a"
+              onChange={(date) => setFieldValue('start', date)}
+              renderInput={(params) => <TextField {...params} fullWidth sx={{ mb: 3 }} />}
+            />
 
-          <MobileDateTimePicker
-            label="Start date"
-            value={values.start}
-            inputFormat="dd/MM/yyyy hh:mm a"
-            onChange={(date) => setFieldValue('start', date)}
-            renderInput={(params) => <TextField {...params} fullWidth sx={{ mb: 3 }} />}
-          />
-
-          <MobileDateTimePicker
-            label="End date"
-            value={values.end}
-            inputFormat="dd/MM/yyyy hh:mm a"
-            onChange={(date) => setFieldValue('end', date)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                error={Boolean(isDateError)}
-                helperText={isDateError && 'End date must be later than start date'}
-                sx={{ mb: 3 }}
-              />
-            )}
-          />
-
-          {batchList && (
-            <Autocomplete
-              fullWidth
-              multiple
-              options={batchList}
-              onChange={(event, value) => setAttendees(value, setFieldValue)}
-              disableCloseOnSelect
-              getOptionLabel={(option) => option.batchName}
-              renderOption={(props, option, { selected }) => (
-                <li key={option.batchId} {...props}>
-                  <Checkbox checked={selected} />
-                  {option.batchName}
-                </li>
-              )}
+            <MobileDateTimePicker
+              label="End date"
+              value={values.end}
+              inputFormat="dd/MM/yyyy hh:mm a"
+              onChange={(date) => setFieldValue('end', date)}
               renderInput={(params) => (
                 <TextField
-                  error={Boolean(touched.attendees && errors.attendees)}
-                  helperText={touched.attendees && errors.attendees}
                   {...params}
-                  label="Team Members"
-                  placeholder="Members"
+                  fullWidth
+                  error={Boolean(isDateError)}
+                  helperText={isDateError && 'End date must be later than start date'}
+                  sx={{ mb: 3 }}
                 />
               )}
             />
-          )}
-
-          <ColorSinglePicker
-            style={{ marginTop: 20 }}
-            {...getFieldProps('eventColor')}
-            colors={COLOR_OPTIONS}
-          />
+          </Stack>
         </DialogContent>
 
         <DialogActions>
-          {!isCreating && (
-            <Tooltip title="Delete Event">
-              <IconButton onClick={handleDelete}>
-                <Icon icon={trash2Fill} width={20} height={20} />
-              </IconButton>
-            </Tooltip>
-          )}
           <Box sx={{ flexGrow: 1 }} />
           <Button type="button" variant="outlined" color="inherit" onClick={onCancel}>
             Cancel
           </Button>
           <LoadingButton
+            ref={submitRef}
             type="submit"
             variant="contained"
             loading={isSubmitting}
             loadingIndicator="Loading..."
           >
-            Add
+            {!isCreating ? 'Save' : 'Add'}
           </LoadingButton>
         </DialogActions>
       </Form>

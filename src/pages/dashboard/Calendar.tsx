@@ -47,6 +47,15 @@ const selectedEventSelector = (state: RootState) => {
   return null;
 };
 
+const getViewByUserRole = (userRole: string) => {
+  switch (userRole) {
+    case 'Mentor':
+      return 'timeGridWeek';
+    default:
+      return 'dayGridMonth';
+  }
+};
+
 export default function Calendar() {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -55,7 +64,9 @@ export default function Calendar() {
   const calendarRef = useRef<FullCalendar>(null);
   const { enqueueSnackbar } = useSnackbar();
   const [date, setDate] = useState(new Date());
-  const [view, setView] = useState<CalendarView>(isMobile ? 'listWeek' : 'dayGridMonth');
+  const [view, setView] = useState<CalendarView>(
+    isMobile ? 'listWeek' : getViewByUserRole(user?.role)
+  );
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
   const { batchList } = useSelector((state: RootState) => state.list);
@@ -69,7 +80,7 @@ export default function Calendar() {
     const calendarEl = calendarRef.current;
     if (calendarEl) {
       const calendarApi = calendarEl.getApi();
-      const newView = isMobile ? 'listWeek' : 'dayGridMonth';
+      const newView = isMobile ? 'listWeek' : getViewByUserRole(user?.role);
       calendarApi.changeView(newView);
       setView(newView);
     }
@@ -112,6 +123,7 @@ export default function Calendar() {
   };
 
   const handleSelectRange = (arg: DateSelectArg) => {
+    // console.log('handleSelectRange');
     const calendarEl = calendarRef.current;
     if (calendarEl) {
       const calendarApi = calendarEl.getApi();
@@ -121,11 +133,12 @@ export default function Calendar() {
   };
 
   const handleSelectEvent = (arg: EventClickArg) => {
+    // console.log('handleSelectEvent');
     dispatch(selectEvent(arg.event.id));
   };
 
   const handleResizeEvent = async ({ event }: EventResizeDoneArg) => {
-    console.log('handleResizeEvent', event);
+    // console.log('handleResizeEvent', event);
     // try {
     //   dispatch(
     //     updateEvent(event.id, {
@@ -141,7 +154,7 @@ export default function Calendar() {
   };
 
   const handleDropEvent = async ({ event }: EventDropArg) => {
-    console.log('handleDropEvent', event);
+    // console.log('handleDropEvent', event);
     try {
       dispatch(
         updateEvent(event.id, {
@@ -178,7 +191,7 @@ export default function Calendar() {
               startIcon={<Icon icon={plusFill} width={20} height={20} />}
               onClick={handleAddEvent}
             >
-              New Event
+              {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
             </Button>
           }
         />
@@ -223,19 +236,17 @@ export default function Calendar() {
             />
           </CalendarStyle>
         </Card>
-
-        {user?.role === 'Admin' ||
-          (user?.role === 'Super Admin' && (
-            <Dialog open={isOpenModal} onClose={handleCloseModal}>
-              <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
-              <AdminCalendarForm
-                event={selectedEvent || {}}
-                range={selectedRange}
-                onCancel={handleCloseModal}
-                batchList={batchList}
-              />
-            </Dialog>
-          ))}
+        {(user?.role === 'Admin' || user?.role === 'Super Admin') && (
+          <Dialog open={isOpenModal} onClose={handleCloseModal}>
+            <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+            <AdminCalendarForm
+              event={selectedEvent || {}}
+              range={selectedRange}
+              onCancel={handleCloseModal}
+              batchList={batchList}
+            />
+          </Dialog>
+        )}
 
         {user?.role === 'Mentor' && (
           <Dialog open={isOpenModal} onClose={handleCloseModal}>
