@@ -1,14 +1,11 @@
 import * as Yup from 'yup';
 import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 import eyeFill from '@iconify/icons-eva/eye-fill';
-import closeFill from '@iconify/icons-eva/close-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { Icon } from '@iconify/react';
-import MIconButton from 'components/@material-extend/MIconButton';
 // material
 import { LoadingButton } from '@material-ui/lab';
 import {
@@ -16,7 +13,6 @@ import {
   Card,
   Grid,
   Stack,
-  Switch,
   TextField,
   Typography,
   FormHelperText,
@@ -29,13 +25,10 @@ import {
 } from '@material-ui/core';
 import useAuth from '../../../hooks/useAuth';
 import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
-// routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
 import { UserManager } from '../../../@types/user';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
-import Label from '../../Label';
 import { UploadAvatar } from '../../upload';
 
 // ----------------------------------------------------------------------
@@ -204,14 +197,7 @@ export default function UserNewForm({
       'inprogress'
     ).then((response: any) => {
       if (response?.data?.statusCode) {
-        enqueueSnackbar('User added successfully', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
+        enqueueSnackbar('User added successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
         }
@@ -237,14 +223,7 @@ export default function UserNewForm({
       'inprogress'
     ).then((response: any) => {
       if (response?.data?.statusCode) {
-        enqueueSnackbar('User updated successfully', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
+        enqueueSnackbar('User updated successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
         }

@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 // material
-import { LoadingButton, Autocomplete } from '@material-ui/lab';
+import { LoadingButton } from '@material-ui/lab';
 import {
   Box,
   Card,
@@ -17,7 +17,8 @@ import {
   RadioGroup,
   FormLabel,
   Checkbox,
-  CircularProgress
+  CircularProgress,
+  Autocomplete
 } from '@material-ui/core';
 // @types
 import { BatchManager, TeamManager, TeamMember, UserManager } from '../../../@types/user';

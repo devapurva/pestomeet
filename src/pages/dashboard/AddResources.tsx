@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
-import { paramCase } from 'change-case';
+import { makeStyles } from '@material-ui/core/styles';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 // material
@@ -35,28 +34,28 @@ type TeamModalProps = {
   students: UserManager[];
 };
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2)
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500]
-    }
-  });
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2)
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
+  }
+}));
 
-export interface DialogTitleProps extends WithStyles<typeof styles> {
+export interface DialogTitleProps {
   id: string;
   children: React.ReactNode | string;
   onClose: () => void;
 }
 
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, ...other } = props;
+const DialogTitle = (props: DialogTitleProps) => {
+  const classes = useStyles();
+  const { children, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
@@ -67,7 +66,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
       ) : null}
     </MuiDialogTitle>
   );
-});
+};
 
 export default function TeamModal({
   isEdit,
@@ -77,6 +76,7 @@ export default function TeamModal({
   mentors,
   students
 }: TeamModalProps) {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
