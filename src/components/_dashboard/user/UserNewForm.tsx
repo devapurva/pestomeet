@@ -166,7 +166,7 @@ export default function UserNewForm({
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
       avatar: currentUser?.avatar || null,
-      approval: currentUser?.approval,
+      approval: currentUser?.approval || 'inprogress',
       role: currentUser?.role || '',
       experience: currentUser?.experience || ''
     },
@@ -221,7 +221,7 @@ export default function UserNewForm({
       values?.phone,
       values?.role === 'student' ? values?.experience : 'not_applicable',
       values?.email,
-      values.approval
+      currentUser?.approval ? currentUser?.approval : 'inprogress'
     ).then((response: any) => {
       if (response?.data?.statusCode) {
         enqueueSnackbar('User updated successfully', { variant: 'success' });
