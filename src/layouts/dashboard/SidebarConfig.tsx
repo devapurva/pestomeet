@@ -93,11 +93,6 @@ export const mentorSiderBarConfig = [
         title: 'Buddy Pairing',
         path: PATH_DASHBOARD.buddyPairing,
         icon: ICONS.buddyPairing
-      },
-      {
-        title: 'Resources',
-        path: PATH_DASHBOARD.resources,
-        icon: ICONS.resources
       }
     ]
   },
@@ -154,11 +149,6 @@ const sidebarConfig = [
         title: 'Buddy Pairing',
         path: PATH_DASHBOARD.buddyPairing,
         icon: ICONS.buddyPairing
-      },
-      {
-        title: 'Resources',
-        path: PATH_DASHBOARD.resources,
-        icon: ICONS.resources
       }
     ]
   },
