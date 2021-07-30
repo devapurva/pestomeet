@@ -1,98 +1,21 @@
-import { filter } from 'lodash';
-import { Icon } from '@iconify/react';
 import { useSnackbar } from 'notistack';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
-// material
-import { useTheme } from '@material-ui/core/styles';
-import {
-  Card,
-  Table,
-  Stack,
-  Avatar,
-  Button,
-  Checkbox,
-  TableRow,
-  TableBody,
-  TableCell,
-  Container,
-  Typography,
-  TableContainer,
-  TablePagination,
-  responsiveFontSizes
-} from '@material-ui/core';
+import { Container } from '@material-ui/core';
 // redux
 import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import { deleteBatch, getBatchList, getAllUserList } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
-// @types
-import { BatchManager } from '../../@types/user';
 // components
 import Page from '../../components/Page';
-import Label from '../../components/Label';
-import Scrollbar from '../../components/Scrollbar';
-import SearchNotFound from '../../components/SearchNotFound';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import BatchList from '../../components/_dashboard/batch/batchList';
 import BatchModal from './CreateBatchModal';
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'phone', label: 'Phone', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'experience', label: 'Experience', alignRight: false },
-  { id: 'approval', label: 'Approval Status', alignRight: false }
-];
-
-// ----------------------------------------------------------------------
-
-type Anonymous = Record<string | number, string>;
-
-function descendingComparator(a: Anonymous, b: Anonymous, orderBy: string) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order: string, orderBy: string) {
-  return order === 'desc'
-    ? (a: Anonymous, b: Anonymous) => descendingComparator(a, b, orderBy)
-    : (a: Anonymous, b: Anonymous) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(
-  array: BatchManager[],
-  comparator: (a: any, b: any) => number,
-  query: string
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as const);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  if (query) {
-    return filter(
-      array,
-      (_batch) => _batch.batchName.toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
-  }
-  return stabilizedThis.map((el) => el[0]);
-}
-
 export default function Batches() {
-  const theme = useTheme();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
@@ -108,15 +31,8 @@ export default function Batches() {
   useEffect(() => {
     dispatch(getAllUserList());
     dispatch(getBatchList(user?.id));
-  }, [dispatch, user?.id]);
-
-  useEffect(() => {
-    if (refresh) {
-      dispatch(getAllUserList());
-      dispatch(getBatchList(user?.id));
-      setRefresh(false);
-    }
-  }, [refresh]);
+    setRefresh(false);
+  }, [dispatch, refresh, user?.id]);
 
   const admins = userList.filter((users) => users.role === 'admin');
   const otherUsers = userList.filter(

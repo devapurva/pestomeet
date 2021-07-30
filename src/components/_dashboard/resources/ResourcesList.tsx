@@ -11,14 +11,13 @@ import {
   TableContainer,
   TablePagination
 } from '@material-ui/core';
-// redux
-import { useDispatch } from '../../../redux/store';
 // @types
 import { TeamManager, TeamMember } from '../../../@types/user';
 // components
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
-import { TableListHead, TableMoreMenu } from './list';
+// import { TableListHead, TableMoreMenu } from './list';
+import { TableListHead } from './list';
 import EmptyContent from '../../EmptyContent';
 
 // ----------------------------------------------------------------------
@@ -108,17 +107,10 @@ export default function ResourcesList({
   setRefresh
 }: TeamListProps) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(getUserList());
-  // }, [dispatch]);
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 
   const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
-
-  const isUserNotFound = filteredUsers.length === 0;
 
   const getMembersName = (teamMembers: TeamMember[]) => {
     const names = teamMembers.map((element) => element.name);

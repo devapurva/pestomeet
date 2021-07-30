@@ -1,69 +1,26 @@
-import { filter } from 'lodash';
 import { useSnackbar } from 'notistack';
 import { useState, useEffect } from 'react';
 // material
-import { useTheme } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { getResourceList, deleteTeam } from '../../redux/slices/lists';
+import { deleteTeam } from '../../redux/slices/lists';
 import { getEvents } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
-// @types
-import { TeamManager } from '../../@types/user';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import ResourcesList from '../../components/_dashboard/resources/ResourcesList';
-import TeamModal from './CreateTeamModal';
+// import TeamModal from './CreateTeamModal';
 
 // ----------------------------------------------------------------------
 
-type Anonymous = Record<string | number, string>;
-
-function descendingComparator(a: Anonymous, b: Anonymous, orderBy: string) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order: string, orderBy: string) {
-  return order === 'desc'
-    ? (a: Anonymous, b: Anonymous) => descendingComparator(a, b, orderBy)
-    : (a: Anonymous, b: Anonymous) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(
-  array: TeamManager[],
-  comparator: (a: any, b: any) => number,
-  query: string
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as const);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  if (query) {
-    return filter(
-      array,
-      (_team) => _team.teamName.toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
-  }
-  return stabilizedThis.map((el) => el[0]);
-}
-
 export default function Resources() {
-  const theme = useTheme();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
-  const { buddyList, userList } = useSelector((state: RootState) => state.list);
+  const { buddyList } = useSelector((state: RootState) => state.list);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
@@ -73,17 +30,8 @@ export default function Resources() {
 
   useEffect(() => {
     dispatch(getEvents());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (refresh) {
-      dispatch(getEvents());
-      setRefresh(false);
-    }
-  }, [refresh]);
-
-  const mentors = userList.filter((users) => users.role === 'mentor');
-  const students = userList.filter((users) => users.role === 'student');
+    setRefresh(false);
+  }, [dispatch, refresh]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -126,12 +74,6 @@ export default function Resources() {
   const handleFilterByName = (filterName: string) => {
     setFilterName(filterName);
   };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - buddyList.length) : 0;
-
-  //   const filteredUsers = applySortFilter(buddyList, getComparator(order, orderBy), filterName);
-
-  //   const isUserNotFound = filteredUsers.length === 0;
 
   const handleDeleteTeam = async (id: string) => {
     await deleteTeam(id).then((response) => {

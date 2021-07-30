@@ -302,17 +302,6 @@ export const addUser = async (
     password,
     approval
   });
-  if (response.data.statusCode) {
-    const user = {
-      name,
-      role,
-      phone,
-      experience,
-      email,
-      password,
-      approval
-    };
-  }
   return response;
 };
 

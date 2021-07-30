@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 // utils
 import { HTTPClient } from '../utils/axios';
-import { isValidToken, setSession } from '../utils/jwt';
+import { setSession } from '../utils/jwt';
 import { PATH_AUTH } from '../routes/paths';
 // @types
 import { ActionMap, AuthState, AuthUser, JWTContextType, LoggedIn } from '../@types/authentication';
