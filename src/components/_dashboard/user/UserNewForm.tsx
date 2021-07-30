@@ -271,7 +271,7 @@ export default function UserNewForm({
         });
       }
     },
-    [setFieldValue]
+    [setFieldValue, currentUser, enqueueSnackbar]
   );
 
   return (

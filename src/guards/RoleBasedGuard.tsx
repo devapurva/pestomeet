@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Container, Alert, AlertTitle } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import useAuth from '../hooks/useAuth';
 import PermissionsDenied from '../pages/PermissionsDenied';
 
