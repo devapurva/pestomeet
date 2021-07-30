@@ -6,6 +6,7 @@ import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import accountChild from '@iconify/icons-mdi/account-child';
+import accountMultiplePlus from '@iconify/icons-mdi/account-multiple-plus';
 // material
 import {
   Button,
@@ -91,9 +92,9 @@ export default function TeamModal({ isEdit, currentTeam, setRefresh, type }: Tea
         <Button
           variant="contained"
           onClick={handleClickOpen}
-          startIcon={<Icon icon={accountChild} />}
+          startIcon={<Icon icon={type === 'mentor' ? accountChild : accountMultiplePlus} />}
         >
-          Create Mentor Team
+          Create {type === 'mentor' ? 'Mentor Team' : 'Buddy Pairings'}
         </Button>
       ) : (
         <div onClick={handleClickOpen} style={{ display: 'flex' }}>

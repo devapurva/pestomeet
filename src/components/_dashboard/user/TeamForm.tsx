@@ -98,9 +98,11 @@ export default function TeamForm({
   useEffect(() => {
     if (currentTeam && batchList?.length > 0 && userList?.length > 0 && !batchDetails) {
       setLoading(true);
-      const getBatch = batchList?.find((batch) => batch.batchId === currentTeam.batchId);
-      setBatchDetails(getBatch);
+      const getBatch: BatchManager | undefined = batchList?.find(
+        (batch) => batch.batchId === currentTeam.batchId
+      );
       if (getBatch) {
+        setBatchDetails(getBatch);
         getBatch?.batchMembers?.forEach((element: any) => {
           const findUser = userList.find((user) => user.id === element.id);
           if (findUser?.role === 'mentor') {
@@ -300,16 +302,19 @@ export default function TeamForm({
                 <FormLabel className={classes.legend} component="legend">
                   Batch:
                 </FormLabel>
-
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   {batchList && (
                     <Autocomplete
                       fullWidth
-                      inputValue={batchDetails?.batchName}
-                      onChange={(event, value) => setBatchValues(value, setFieldValue)}
+                      value={batchDetails}
+                      inputValue={batchDetails?.batchName ? batchDetails?.batchName : ''}
+                      onChange={(event, newValue) => setBatchValues(newValue, setFieldValue)}
                       options={batchList}
+                      isOptionEqualToValue={(option: BatchManager, value: BatchManager) =>
+                        option?.batchId === value?.batchId
+                      }
                       disableCloseOnSelect
-                      getOptionLabel={(option) => option.batchName}
+                      getOptionLabel={(option: BatchManager) => option.batchName}
                       renderOption={(props, option, { selected }) => (
                         <li key={option.batchId} {...props}>
                           {option.batchName}
