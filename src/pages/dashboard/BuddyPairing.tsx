@@ -2,6 +2,7 @@ import { useSnackbar } from 'notistack';
 import { useState, useEffect } from 'react';
 import { Container } from '@material-ui/core';
 // redux
+import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import { deleteTeam, getTeamList } from '../../redux/slices/lists';
 // routes
@@ -16,6 +17,7 @@ import TeamModal from './CreateTeamModal';
 
 export default function BuddyPairing() {
   const dispatch = useDispatch();
+  const { user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
   const { buddyList } = useSelector((state: RootState) => state.list);
@@ -27,9 +29,9 @@ export default function BuddyPairing() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getTeamList('buddypairing'));
+    dispatch(getTeamList('buddypairing', user?.id));
     setRefresh(false);
-  }, [dispatch, refresh]);
+  }, [dispatch, refresh, user?.id]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';

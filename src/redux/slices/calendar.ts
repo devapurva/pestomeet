@@ -103,11 +103,11 @@ export const { openModal, closeModal, selectEvent } = slice.actions;
 
 // ----------------------------------------------------------------------
 
-export function getEvents() {
+export function getEvents(id: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get('/list/event/masterclass');
+      const response = await HTTPClient.get(`/list/event/${id}`);
       if (response?.data?.statusCode) {
         const events = response?.data?.result?.map((element: any) => {
           const obj = {

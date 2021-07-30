@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 // material
 import { Container } from '@material-ui/core';
 // redux
+import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import { deleteTeam } from '../../redux/slices/lists';
 import { getEvents } from '../../redux/slices/calendar';
@@ -18,6 +19,7 @@ import ResourcesList from '../../components/_dashboard/resources/ResourcesList';
 
 export default function Resources() {
   const dispatch = useDispatch();
+  const { user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
   const { buddyList } = useSelector((state: RootState) => state.list);
@@ -29,9 +31,9 @@ export default function Resources() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getEvents());
+    dispatch(getEvents(user?.id));
     setRefresh(false);
-  }, [dispatch, refresh]);
+  }, [dispatch, refresh, user?.id]);
 
   const handleRequestSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';

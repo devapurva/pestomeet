@@ -12,6 +12,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import { Card, Button, Container, Dialog, DialogTitle, useMediaQuery } from '@material-ui/core';
 // redux
+import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import {
   getEvents,
@@ -44,6 +45,7 @@ const selectedEventSelector = (state: RootState) => {
 export default function Calendar() {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { user } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const calendarRef = useRef<FullCalendar>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -54,9 +56,9 @@ export default function Calendar() {
   const { batchList } = useSelector((state: RootState) => state.list);
 
   useEffect(() => {
-    dispatch(getBatchList('ninja'));
-    dispatch(getEvents());
-  }, [dispatch]);
+    dispatch(getBatchList(user?.id));
+    dispatch(getEvents(user?.id));
+  }, [dispatch, user?.id]);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;

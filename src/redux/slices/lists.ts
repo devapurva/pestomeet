@@ -253,11 +253,11 @@ export const deleteBatch = async (id: string) => {
 
 // ----------------------------------------------------------------------
 
-export function getTeamList(type: string) {
+export function getTeamList(type: string, id: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get(`/list/team/${type}`);
+      const response = await HTTPClient.get(`/list/myteam/${id}`);
       if (type === 'buddypairing') {
         dispatch(
           slice.actions.getBuddyListSuccess(response.data.result ? response.data.result : [])

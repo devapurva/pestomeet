@@ -254,9 +254,16 @@ export default function UserNewForm({
   } = formik;
 
   const handleDrop = useCallback(
-    (acceptedFiles) => {
+    async (acceptedFiles) => {
       const file = acceptedFiles[0];
-      if (file) {
+      if (file && currentUser) {
+        const formData = new FormData();
+        formData.append('profileImage', file);
+        await addAvatar(formData, currentUser.id).then((response: any) => {
+          if (response?.data?.statusCode) {
+            enqueueSnackbar('User profile avartar uploaded successfully', { variant: 'success' });
+          }
+        });
         setFieldValue('avatar', {
           ...file,
           preview: URL.createObjectURL(file)
