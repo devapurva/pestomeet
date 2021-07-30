@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import accountGroup from '@iconify/icons-mdi/account-group';
 // material
-import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
+import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Card, Typography, Box, CardProps } from '@material-ui/core';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
@@ -31,8 +31,6 @@ interface AppWidgets1Props extends CardProps {
 }
 
 export default function AppWidgets1({ studentCount }: AppWidgets1Props) {
-  const theme = useTheme();
-
   return (
     <RootStyle>
       <Box sx={{ ml: 3, color: 'grey.800' }}>

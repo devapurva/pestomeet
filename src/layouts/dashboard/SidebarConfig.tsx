@@ -1,6 +1,5 @@
-import { Icon, InlineIcon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
-import GroupIcon from '@material-ui/icons/Group';
 // for students
 import accountGroup from '@iconify/icons-mdi/account-group';
 // for mentors

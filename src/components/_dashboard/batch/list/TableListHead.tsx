@@ -1,10 +1,10 @@
 // material
 import { visuallyHidden } from '@material-ui/utils';
-import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@material-ui/core';
+import { Box, TableRow, TableCell, TableHead, TableSortLabel } from '@material-ui/core';
 
 // ----------------------------------------------------------------------
 
-type UserListHeadProps = {
+type TableListHeadProps = {
   order: 'asc' | 'desc';
   orderBy: string;
   rowCount: number;
@@ -14,7 +14,7 @@ type UserListHeadProps = {
   onSelectAllClick: (checked: boolean) => void;
 };
 
-export default function UserListHead({
+export default function TableListHead({
   order,
   orderBy,
   rowCount,
@@ -22,7 +22,7 @@ export default function UserListHead({
   numSelected,
   onRequestSort,
   onSelectAllClick
-}: UserListHeadProps) {
+}: TableListHeadProps) {
   return (
     <TableHead>
       <TableRow>

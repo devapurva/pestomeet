@@ -1,36 +1,31 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Icon } from '@iconify/react';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
-import checkAll from '@iconify/icons-mdi/check-all';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
-import BatchModal from '../../../../pages/dashboard/CreateBatchModal';
-import { BatchManager, UserManager } from '../../../../@types/user';
+import TeamModal from '../../../../pages/dashboard/CreateTeamModal';
+import { TeamManager } from '../../../../@types/user';
 
 // ----------------------------------------------------------------------
 
-type UserMoreMenuProps = {
+type TableMoreMenuProps = {
   onDelete: VoidFunction;
   userName: string;
   setRefresh?: any;
-  currentBatch?: BatchManager;
-  admins: UserManager[];
-  otherUsers: UserManager[];
+  currentTeam?: TeamManager;
+  type: string;
 };
 
-export default function UserMoreMenu({
+export default function TableMoreMenu({
   onDelete,
   userName,
-  currentBatch,
+  currentTeam,
   setRefresh,
-  admins,
-  otherUsers
-}: UserMoreMenuProps) {
+  type
+}: TableMoreMenuProps) {
   const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,10 +34,6 @@ export default function UserMoreMenu({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(!open);
   };
 
   return (
@@ -64,13 +55,7 @@ export default function UserMoreMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <BatchModal
-            isEdit={true}
-            setRefresh={setRefresh}
-            currentBatch={currentBatch}
-            admins={admins}
-            otherUsers={otherUsers}
-          />
+          <TeamModal type={type} isEdit={true} setRefresh={setRefresh} currentTeam={currentTeam} />
         </MenuItem>
 
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>

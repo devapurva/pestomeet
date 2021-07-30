@@ -1,13 +1,9 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
 import { useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
-import closeFill from '@iconify/icons-eva/close-fill';
-import { Icon } from '@iconify/react';
 // material
-import { LoadingButton, Autocomplete } from '@material-ui/lab';
+import { LoadingButton } from '@material-ui/lab';
 import {
   Box,
   Card,
@@ -19,15 +15,15 @@ import {
   Radio,
   RadioGroup,
   FormLabel,
-  Checkbox
+  Checkbox,
+  Autocomplete
 } from '@material-ui/core';
 import { addBatch, editBatch } from '../../../redux/slices/user';
 // @types
-import { BatchManager, BatchMembers, TeamManager, UserManager } from '../../../@types/user';
+import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import useAuth from '../../../hooks/useAuth';
-import MIconButton from '../../@material-extend/MIconButton';
 
 // ----------------------------------------------------------------------
 
@@ -75,7 +71,7 @@ export default function BatchForm({
 }: BatchFormProps) {
   const { user } = useAuth();
   const isMountedRef = useIsMountedRef();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
 
   const NewBatchSchema = Yup.object().shape({
@@ -124,14 +120,7 @@ export default function BatchForm({
       values.batchMembers
     ).then((response: any) => {
       if (response?.data?.statusCode) {
-        enqueueSnackbar('Batch added successfully', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
+        enqueueSnackbar('Batch added successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
         }
@@ -156,14 +145,7 @@ export default function BatchForm({
       values.batchMembers
     ).then((response: any) => {
       if (response?.data?.statusCode) {
-        enqueueSnackbar('Batch updated successfully', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
+        enqueueSnackbar('Batch updated successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
         }

@@ -24,7 +24,7 @@ import Typography from '@material-ui/core/Typography';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
-import BatchForm from '../../components/_dashboard/user/BatchForm';
+import BatchForm from '../../components/_dashboard/batch/BatchForm';
 import { BatchManager, UserManager } from '../../@types/user';
 
 // ----------------------------------------------------------------------

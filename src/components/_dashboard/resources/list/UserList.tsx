@@ -1,32 +1,16 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
-import { Icon } from '@iconify/react';
-import { useSnackbar } from 'notistack';
-import closeFill from '@iconify/icons-eva/close-fill';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
   Card,
   Table,
-  Stack,
-  Avatar,
-  Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  Container,
-  Typography,
   TableContainer,
   TablePagination
 } from '@material-ui/core';
-import MIconButton from 'components/@material-extend/MIconButton';
-// redux
-import { RootState, useDispatch, useSelector } from '../../../../redux/store';
-import { deleteUser, editUser } from '../../../../redux/slices/user';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
 // @types
 import { BatchManager, BatchMembers, UserManager } from '../../../../@types/user';
 // components
@@ -128,11 +112,6 @@ export default function UserList({
   otherUsers
 }: UserListProps) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(getUserList());
-  // }, [dispatch]);
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 

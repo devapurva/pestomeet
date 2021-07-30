@@ -6,27 +6,31 @@ import checkAll from '@iconify/icons-mdi/check-all';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
-import TeamModal from '../../../../pages/dashboard/CreateTeamModal';
-import { TeamManager, UserManager } from '../../../../@types/user';
+import BatchModal from '../../../../pages/dashboard/CreateBatchModal';
+import { BatchManager, UserManager } from '../../../../@types/user';
 
 // ----------------------------------------------------------------------
 
-type UserMoreMenuProps = {
+type TableMoreMenuProps = {
   onDelete: VoidFunction;
   userName: string;
   setRefresh?: any;
-  currentTeam?: TeamManager;
-  type: string;
+  currentBatch?: BatchManager;
+  admins: UserManager[];
+  otherUsers: UserManager[];
 };
 
-export default function UserMoreMenu({
+export default function TableMoreMenu({
   onDelete,
   userName,
-  currentTeam,
+  currentBatch,
   setRefresh,
-  type
-}: UserMoreMenuProps) {
+  admins,
+  otherUsers
+}: TableMoreMenuProps) {
   const ref = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,6 +39,10 @@ export default function UserMoreMenu({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(!open);
   };
 
   return (
@@ -56,7 +64,13 @@ export default function UserMoreMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <TeamModal type={type} isEdit={true} setRefresh={setRefresh} currentTeam={currentTeam} />
+          <BatchModal
+            isEdit={true}
+            setRefresh={setRefresh}
+            currentBatch={currentBatch}
+            admins={admins}
+            otherUsers={otherUsers}
+          />
         </MenuItem>
 
         <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>

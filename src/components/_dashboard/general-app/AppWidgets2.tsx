@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import accountTie from '@iconify/icons-mdi/account-tie';
 // material
-import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
+import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Card, Box, Typography, CardProps } from '@material-ui/core';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
@@ -31,8 +31,6 @@ interface AppWidgets2Props extends CardProps {
 }
 
 export default function AppWidgets2({ mentorCount }: AppWidgets2Props) {
-  const theme = useTheme();
-
   return (
     <RootStyle>
       <Box sx={{ ml: 3, color: 'grey.800' }}>

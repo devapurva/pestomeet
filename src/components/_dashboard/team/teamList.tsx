@@ -1,35 +1,22 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
   Card,
   Table,
-  Stack,
-  Avatar,
-  Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  Container,
-  Typography,
   TableContainer,
   TablePagination
 } from '@material-ui/core';
-// redux
-import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { deleteUser } from '../../../redux/slices/user';
-// routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
-import { TeamManager, TeamMember, UserManager } from '../../../@types/user';
+import { TeamManager, TeamMember } from '../../../@types/user';
 // components
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
-import SearchNotFound from '../../SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from './list';
+import { TableListHead, TableMoreMenu } from './list';
 import EmptyContent from '../../EmptyContent';
 
 // ----------------------------------------------------------------------
@@ -120,17 +107,10 @@ export default function TeamList({
   setRefresh
 }: TeamListProps) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(getUserList());
-  // }, [dispatch]);
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 
   const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
-
-  const isUserNotFound = filteredUsers.length === 0;
 
   const getMembersName = (teamMembers: TeamMember[]) => {
     const names = teamMembers.map((element) => element.name);
@@ -148,7 +128,7 @@ export default function TeamList({
       <Scrollbar>
         <TableContainer sx={{ minWidth: 800 }}>
           <Table>
-            <UserListHead
+            <TableListHead
               order={order}
               orderBy={orderBy}
               headLabel={TABLE_HEAD}
@@ -195,7 +175,7 @@ export default function TeamList({
                       </TableCell> */}
 
                       <TableCell align="left">
-                        <UserMoreMenu
+                        <TableMoreMenu
                           type={type}
                           setRefresh={setRefresh}
                           currentTeam={row}

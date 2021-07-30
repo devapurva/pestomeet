@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Icon } from '@iconify/react';
-import googleClassroom from '@iconify/icons-mdi/google-classroom';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
-import { Typography, Button, Card, CardContent, CardProps } from '@material-ui/core';
+import { Typography, Card, CardContent, CardProps } from '@material-ui/core';
 // components
 import UserCreateModal from 'pages/dashboard/UserCreateModal';
 import BatchModal from 'pages/dashboard//CreateBatchModal';
@@ -85,10 +82,6 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
             />
           </div>
         </div>
-
-        {/* <Button variant="contained" to="#" component={RouterLink}>
-          Add Batch
-        </Button> */}
       </CardContent>
 
       <SeoIllustration

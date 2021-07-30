@@ -21,7 +21,7 @@ import Typography from '@material-ui/core/Typography';
 // redux
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
-import ResourcesForm from '../../components/_dashboard/user/ResourcesForm';
+import ResourcesForm from '../../components/_dashboard/resources/ResourcesForm';
 import { TeamManager, UserManager } from '../../@types/user';
 
 // ----------------------------------------------------------------------
