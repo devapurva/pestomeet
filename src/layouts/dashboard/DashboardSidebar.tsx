@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
@@ -14,7 +15,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
-import sidebarConfig from './SidebarConfig';
+import sidebarConfig, { mentorSiderBarConfig, studentSidebarConfig } from './SidebarConfig';
 
 // ----------------------------------------------------------------------
 
@@ -82,7 +83,21 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }: Dash
         </Link>
       </Box>
 
-      <NavSection navConfig={sidebarConfig} />
+      {user?.role ? (
+        <NavSection
+          navConfig={
+            user?.role === 'Admin' || user?.role === 'Super Admin'
+              ? sidebarConfig
+              : user?.role === 'Student'
+              ? studentSidebarConfig
+              : user?.role === 'Mentor'
+              ? mentorSiderBarConfig
+              : sidebarConfig
+          }
+        />
+      ) : (
+        <></>
+      )}
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

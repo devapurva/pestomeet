@@ -38,6 +38,78 @@ const ICONS = {
   resources: <IconStyle icon={newspaperVariantMultipleOutline} />
 };
 
+export const studentSidebarConfig = [
+  // GENERAL
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'general',
+    items: [
+      {
+        title: 'overview',
+        path: PATH_DASHBOARD.general.app,
+        icon: ICONS.dashboard
+      }
+    ]
+  },
+  // APP
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'app',
+    items: [{ title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }]
+  }
+];
+
+export const mentorSiderBarConfig = [
+  // GENERAL
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'general',
+    items: [
+      {
+        title: 'overview',
+        path: PATH_DASHBOARD.general.app,
+        icon: ICONS.dashboard
+      }
+    ]
+  },
+
+  // MANAGEMENT
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'management',
+    items: [
+      // MANAGEMENT : USER
+      {
+        title: 'Students',
+        path: PATH_DASHBOARD.student,
+        icon: ICONS.student
+      },
+      {
+        title: 'My Team',
+        path: PATH_DASHBOARD.mentorTeam,
+        icon: ICONS.mentorTeam
+      },
+      {
+        title: 'Buddy Pairing',
+        path: PATH_DASHBOARD.buddyPairing,
+        icon: ICONS.buddyPairing
+      },
+      {
+        title: 'Resources',
+        path: PATH_DASHBOARD.resources,
+        icon: ICONS.resources
+      }
+    ]
+  },
+
+  // APP
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'app',
+    items: [{ title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }]
+  }
+];
+
 const sidebarConfig = [
   // GENERAL
   // ----------------------------------------------------------------------

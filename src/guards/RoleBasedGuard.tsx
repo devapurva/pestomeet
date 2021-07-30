@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Container, Alert, AlertTitle } from '@material-ui/core';
+import useAuth from '../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -10,8 +11,9 @@ type RoleBasedGuardProp = {
 
 const useCurrentRole = () => {
   // Logic here to get current user role
-  const role = 'admin';
-  return role;
+  // const role = 'admin';
+  const { user } = useAuth();
+  return user?.role;
 };
 
 export default function RoleBasedGuard({ accessibleRoles, children }: RoleBasedGuardProp) {

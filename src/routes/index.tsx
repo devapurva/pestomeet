@@ -6,7 +6,7 @@ import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // guards
 import GuestGuard from '../guards/GuestGuard';
 import AuthGuard from '../guards/AuthGuard';
-// import RoleBasedGuard from '../guards/RoleBasedGuard';
+import RoleBasedGuard from '../guards/RoleBasedGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 
@@ -76,23 +76,68 @@ export default function Router() {
         { path: '/dashboard/overview', element: <GeneralApp /> },
         {
           path: '/dashboard/mentor',
-          children: [{ path: '/', element: <MentorList /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin']}>
+                  <MentorList />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/student',
-          children: [{ path: '/', element: <StudentList /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin', 'Mentor']}>
+                  <StudentList />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/batch',
-          children: [{ path: '/', element: <Batches /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin']}>
+                  <Batches />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/team-mentor',
-          children: [{ path: '/', element: <MentorTeams /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin', 'Mentor']}>
+                  <MentorTeams />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/buddy-pairing',
-          children: [{ path: '/', element: <BuddyPairing /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin', 'Mentor']}>
+                  <BuddyPairing />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         { path: '/dashboard/calendar', element: <Calendar /> },
         { path: '/dashboard/resources', element: <Resources /> }
