@@ -11,7 +11,7 @@ export default function PermissionDeniedIllustration({ ...other }: BoxProps) {
 
   return (
     <Box {...other}>
-      <svg height="240" viewBox="0 0 327 240" width="327" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" height="100%" viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="a" x1="19.495903%" x2="77.479035%" y1="70.897978%" y2="18.101149%">
             <stop offset="0" stopColor={ERROR_DARKER} />
