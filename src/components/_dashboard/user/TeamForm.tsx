@@ -88,7 +88,7 @@ export default function TeamForm({
   const [mentors, setMentors] = useState<UserManager[]>([]);
   const [students, setStudents] = useState<UserManager[]>([]);
   const [batchDetails, setBatchDetails] = useState<BatchManager>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getAllUserList());
@@ -137,6 +137,7 @@ export default function TeamForm({
     },
     validationSchema: NewTeamSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
+      setSubmitting(true);
       try {
         if (isEdit) {
           handleEditTeam(values, { setErrors, setSubmitting });
