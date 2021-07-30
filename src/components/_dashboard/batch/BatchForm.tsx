@@ -18,7 +18,7 @@ import {
   Checkbox,
   Autocomplete
 } from '@material-ui/core';
-import { addBatch, editBatch } from '../../../redux/slices/user';
+import { addBatch, editBatch } from '../../../redux/slices/lists';
 // @types
 import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
 //

@@ -19,7 +19,7 @@ export default function UserCreate() {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
-  const { userList } = useSelector((state: RootState) => state.user);
+  const { userList } = useSelector((state: RootState) => state.list);
   const isEdit = pathname.includes('edit');
   const currentUser = userList.find((user) => paramCase(user.name) === name);
 

@@ -30,7 +30,7 @@ import {
   Autocomplete,
   Checkbox
 } from '@material-ui/core';
-import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
+import { addUser, addAvatar, editUser } from '../../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types

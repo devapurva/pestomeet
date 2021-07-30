@@ -1,7 +1,4 @@
 // ----------------------------------------------------------------------
-
-import { batch } from 'react-redux';
-
 function path(root: string, sublink: string) {
   return `${root}${sublink}`;
 }

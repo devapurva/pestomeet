@@ -7,7 +7,7 @@ import TabList from '@material-ui/lab/TabList';
 import TabPanel from '@material-ui/lab/TabPanel';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { deleteUser, getUserList } from '../../redux/slices/user';
+import { deleteUser, getUserList } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -21,7 +21,7 @@ export default function MentorList() {
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState(false);
   const { mentorInProgressList, mentorApprovedList } = useSelector(
-    (state: RootState) => state.user
+    (state: RootState) => state.list
   );
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');

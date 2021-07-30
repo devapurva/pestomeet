@@ -80,7 +80,7 @@ export default function TeamModal({
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
-  const { userList } = useSelector((state: RootState) => state.user);
+  const { userList } = useSelector((state: RootState) => state.list);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {

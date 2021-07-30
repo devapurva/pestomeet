@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Icon } from '@iconify/react';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
-import checkAll from '@iconify/icons-mdi/check-all';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
@@ -29,8 +28,6 @@ export default function TableMoreMenu({
   otherUsers
 }: TableMoreMenuProps) {
   const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,10 +36,6 @@ export default function TableMoreMenu({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(!open);
   };
 
   return (

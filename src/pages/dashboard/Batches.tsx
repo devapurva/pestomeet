@@ -26,7 +26,7 @@ import {
 // redux
 import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { deleteBatch, getBatchList, getAllUserList } from '../../redux/slices/user';
+import { deleteBatch, getBatchList, getAllUserList } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // @types
@@ -96,7 +96,7 @@ export default function Batches() {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
-  const { batchList, userList } = useSelector((state: RootState) => state.user);
+  const { batchList, userList } = useSelector((state: RootState) => state.list);
   const { user } = useAuth();
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');

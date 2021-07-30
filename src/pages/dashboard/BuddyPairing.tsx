@@ -25,7 +25,7 @@ import {
 } from '@material-ui/core';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { deleteTeam, getTeamList, getAllUserList } from '../../redux/slices/user';
+import { deleteTeam, getTeamList, getAllUserList } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // @types
@@ -95,7 +95,7 @@ export default function BuddyPairing() {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
-  const { buddyList, userList } = useSelector((state: RootState) => state.user);
+  const { buddyList, userList } = useSelector((state: RootState) => state.list);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);

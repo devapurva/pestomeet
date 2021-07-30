@@ -8,7 +8,7 @@ import BatchModal from 'pages/dashboard//CreateBatchModal';
 import { UserManager } from '../../../@types/user';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { getAllUserList } from '../../../redux/slices/user';
+import { getAllUserList } from '../../../redux/slices/lists';
 // material
 import { SeoIllustration } from '../../../assets';
 
@@ -36,7 +36,7 @@ interface AppWelcomeProps extends CardProps {
 export default function AppWelcome({ displayName }: AppWelcomeProps) {
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
-  const { userList } = useSelector((state: RootState) => state.user);
+  const { userList } = useSelector((state: RootState) => state.list);
   const [admins, setAdmins] = useState<UserManager[]>([]);
   const [otherUsers, setOtherUsers] = useState<UserManager[]>([]);
 

@@ -21,7 +21,7 @@ import {
   selectEvent,
   selectRange
 } from '../../redux/slices/calendar';
-import { getBatchList } from '../../redux/slices/user';
+import { getBatchList } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -51,7 +51,7 @@ export default function Calendar() {
   const [view, setView] = useState<CalendarView>(isMobile ? 'listWeek' : 'dayGridMonth');
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
-  const { batchList } = useSelector((state: RootState) => state.user);
+  const { batchList } = useSelector((state: RootState) => state.list);
 
   useEffect(() => {
     dispatch(getBatchList('ninja'));

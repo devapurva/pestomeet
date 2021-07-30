@@ -24,7 +24,7 @@ import {
   IconButton
 } from '@material-ui/core';
 import useAuth from '../../../hooks/useAuth';
-import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
+import { addUser, addAvatar, editUser } from '../../../redux/slices/lists';
 // @types
 import { UserManager } from '../../../@types/user';
 //
@@ -80,7 +80,7 @@ export default function UserNewForm({
 }: UserNewFormProps) {
   const { user } = useAuth();
   const isMountedRef = useIsMountedRef();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
 

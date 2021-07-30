@@ -1,4 +1,4 @@
-import { map, filter } from 'lodash';
+import { map } from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 import { dispatch } from '../store';
 // utils
@@ -51,6 +51,7 @@ type UserState = {
     batchCount: number;
     studentCount: number;
     teamCount: number;
+    mentorCount: number;
   };
 };
 
@@ -81,12 +82,13 @@ const initialState: UserState = {
   metrics: {
     batchCount: 0,
     studentCount: 0,
-    teamCount: 0
+    teamCount: 0,
+    mentorCount: 0
   }
 };
 
 const slice = createSlice({
-  name: 'user',
+  name: 'list',
   initialState,
   reducers: {
     // START LOADING

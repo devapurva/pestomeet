@@ -1,5 +1,3 @@
-import { filter } from 'lodash';
-import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { useSnackbar } from 'notistack';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -10,22 +8,15 @@ import {
   Table,
   Stack,
   Avatar,
-  Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  Container,
   Typography,
   TableContainer,
   TablePagination
 } from '@material-ui/core';
 import MIconButton from 'components/@material-extend/MIconButton';
-// redux
-import { RootState, useDispatch, useSelector } from '../../../../redux/store';
-import { deleteUser, editUser } from '../../../../redux/slices/user';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
+import { editUser } from '../../../../redux/slices/lists';
 // @types
 import { UserManager } from '../../../../@types/user';
 // utils
@@ -33,8 +24,7 @@ import { getComparator, applySortFilter } from '../../../../utils/tableConstants
 // components
 import Label from '../../../Label';
 import Scrollbar from '../../../Scrollbar';
-import SearchNotFound from '../../../SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from './index';
+import { UserListHead, UserMoreMenu } from './index';
 import EmptyContent from '../../../EmptyContent';
 
 // ----------------------------------------------------------------------

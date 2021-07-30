@@ -25,7 +25,7 @@ import { BatchManager, TeamManager, TeamMember, UserManager } from '../../../@ty
 // redux
 import useAuth from '../../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { addTeam, editTeam, getBatchList, getAllUserList } from '../../../redux/slices/user';
+import { addTeam, editTeam, getBatchList, getAllUserList } from '../../../redux/slices/lists';
 // components
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 
@@ -85,7 +85,7 @@ export default function TeamForm({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuth();
-  const { batchList, userList } = useSelector((state: RootState) => state.user);
+  const { batchList, userList } = useSelector((state: RootState) => state.list);
   const [mentors, setMentors] = useState<UserManager[]>([]);
   const [students, setStudents] = useState<UserManager[]>([]);
   const [batchDetails, setBatchDetails] = useState<BatchManager>();
@@ -116,7 +116,7 @@ export default function TeamForm({
       }
       setLoading(false);
     }
-  }, [currentTeam, batchList, userList]);
+  }, [currentTeam, batchList, userList, batchDetails]);
 
   const NewTeamSchema = Yup.object().shape({
     teamName: Yup.string()

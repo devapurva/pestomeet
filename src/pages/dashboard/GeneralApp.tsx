@@ -4,7 +4,7 @@ import { Container, Grid } from '@material-ui/core';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { getHomeMetrics } from '../../redux/slices/user';
+import { getHomeMetrics } from '../../redux/slices/lists';
 // components
 import Page from '../../components/Page';
 import {
@@ -19,7 +19,7 @@ import {
 
 export default function GeneralApp() {
   const dispatch = useDispatch();
-  const { metrics } = useSelector((state: RootState) => state.user);
+  const { metrics } = useSelector((state: RootState) => state.list);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function GeneralApp() {
           </Grid>
 
           <Grid item xs={12} md={3}>
-            <AppWidgets2 mentorCount={0} />
+            <AppWidgets2 mentorCount={metrics?.mentorCount} />
           </Grid>
 
           <Grid item xs={12} md={3}>
