@@ -186,6 +186,7 @@ export default function UserList({
                     >
                       <TableCell component="th" scope="row" padding="none">
                         <Stack direction="row" alignItems="center" spacing={2}>
+                          {console.log(avatar)}
                           <Avatar alt={name} src={avatar} />
                           <Typography variant="subtitle2" noWrap>
                             {name}

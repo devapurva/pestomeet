@@ -221,7 +221,7 @@ export default function UserNewForm({
       values?.phone,
       values?.role === 'student' ? values?.experience : 'not_applicable',
       values?.email,
-      'inprogress'
+      values.approval
     ).then((response: any) => {
       if (response?.data?.statusCode) {
         enqueueSnackbar('User updated successfully', { variant: 'success' });
