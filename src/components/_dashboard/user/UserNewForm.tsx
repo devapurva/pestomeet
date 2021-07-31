@@ -369,10 +369,10 @@ export default function UserNewForm({
                     {user?.role === 'Admin' && (
                       <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
                     )}
-                    {user?.role === 'SuperAdmin' && (
+                    {user?.role === 'Super Admin' && (
                       <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                     )}
-                    {user?.role === 'SuperAdmin' && (
+                    {user?.role === 'Super Admin' && (
                       <FormControlLabel
                         value="superadmin"
                         control={<Radio />}
