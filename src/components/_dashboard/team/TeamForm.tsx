@@ -240,6 +240,7 @@ export default function TeamForm({
         setStudents((students) => students.concat(findUser));
       }
     });
+    setBatchDetails(value);
     setFieldValue('batchId', value ? value.batchId : null);
     setFieldValue('batchOwnerID', value ? value.batchOwnerID : null);
   };
@@ -342,7 +343,8 @@ export default function TeamForm({
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                       <Autocomplete
                         fullWidth
-                        inputValue={values.mentorName}
+                        value={mentors[0]}
+                        isOptionEqualToValue={(option: any, value: any) => option?.id === value}
                         onChange={(event, value) => setMentorNameValues(value, setFieldValue)}
                         options={mentors}
                         disableCloseOnSelect

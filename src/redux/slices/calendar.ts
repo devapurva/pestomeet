@@ -41,23 +41,12 @@ const slice = createSlice({
 
     // CREATE EVENT
     createEventSuccess(state, action) {
-      const newEvent = action.payload;
       state.isLoading = false;
-      state.events = [...state.events, newEvent];
     },
 
     // UPDATE EVENT
     updateEventSuccess(state, action) {
-      const event = action.payload;
-      const updateEvent = map(state.events, (_event) => {
-        if (_event.id === event.id) {
-          return event;
-        }
-        return _event;
-      });
-
       state.isLoading = false;
-      state.events = updateEvent;
     },
 
     // DELETE EVENT
@@ -136,9 +125,11 @@ export function createEvent(newEvent: Omit<EventInput, 'id'>) {
     dispatch(slice.actions.startLoading());
     try {
       const response = await HTTPClient.post('/create/event', newEvent);
-      dispatch(slice.actions.createEventSuccess(response.data.event));
+      dispatch(slice.actions.createEventSuccess(response.data.result));
+      return response;
     } catch (error) {
       dispatch(slice.actions.hasError(error));
+      return error;
     }
   };
 }
@@ -168,8 +159,10 @@ export function updateEvent(
         updateEvent
       });
       dispatch(slice.actions.updateEventSuccess(response.data.event));
+      return response;
     } catch (error) {
       dispatch(slice.actions.hasError(error));
+      return error;
     }
   };
 }

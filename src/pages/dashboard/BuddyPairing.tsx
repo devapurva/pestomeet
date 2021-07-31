@@ -10,7 +10,7 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import TeamList from '../../components/_dashboard/team/teamList';
+import { TeamList } from '../../components/_dashboard/team';
 import TeamModal from './CreateTeamModal';
 
 // ----------------------------------------------------------------------

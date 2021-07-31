@@ -117,8 +117,11 @@ export default function AdminCalendarForm({
           dispatch(updateEvent(event.id, newEvent));
           enqueueSnackbar('Update event success', { variant: 'success' });
         } else {
-          dispatch(createEvent(newEvent));
-          enqueueSnackbar('Create event success', { variant: 'success' });
+          dispatch(createEvent(newEvent)).then((response) => {
+            if (response?.data?.statusCode) {
+              enqueueSnackbar('Create event success', { variant: 'success' });
+            }
+          });
         }
         resetForm();
         onCancel();
