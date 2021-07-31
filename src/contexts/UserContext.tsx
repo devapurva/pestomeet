@@ -141,10 +141,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
           user: {
             ...user,
             name: user.name.replace(REGEX, (c) => c.toUpperCase()),
-            role:
-              user.role === 'superadmin'
-                ? 'super admin'.replace(REGEX, (c) => c.toUpperCase())
-                : user.role.replace(REGEX, (c) => c.toUpperCase())
+            role: user.role.replace(REGEX, (c) => c.toUpperCase())
           }
         }
       });

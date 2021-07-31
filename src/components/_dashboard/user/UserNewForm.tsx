@@ -374,7 +374,7 @@ export default function UserNewForm({
                     )}
                     {user?.role === 'Super Admin' && (
                       <FormControlLabel
-                        value="superadmin"
+                        value="super admin"
                         control={<Radio />}
                         label="Super Admin"
                       />
