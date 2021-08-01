@@ -5,7 +5,7 @@ import { Typography, Card, CardContent, CardProps } from '@material-ui/core';
 import UserCreateModal from 'pages/dashboard/UserCreateModal';
 import BatchModal from 'pages/dashboard//CreateBatchModal';
 // types
-import { UserManager } from '../../../@types/user';
+import { UserManager } from '../../../@types/common';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
 import { getAllUserList } from '../../../redux/slices/lists';

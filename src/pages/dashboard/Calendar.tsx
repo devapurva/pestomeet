@@ -34,7 +34,7 @@ import {
   CalendarToolbar,
   SlotsCalendarForm
 } from '../../components/_dashboard/calendar';
-
+import ResourceModal from './AddResources';
 import { CalendarView } from '../../@types/calendar';
 
 // ----------------------------------------------------------------------
@@ -67,6 +67,7 @@ export default function Calendar() {
   const [view, setView] = useState<CalendarView>(
     isMobile ? 'listWeek' : getViewByUserRole(user?.role)
   );
+  const [refresh, setRefresh] = useState(false);
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
   const { batchList } = useSelector((state: RootState) => state.list);
@@ -74,7 +75,8 @@ export default function Calendar() {
   useEffect(() => {
     dispatch(getBatchList(user?.id));
     dispatch(getEvents(user?.role === 'Super Admin' ? null : user?.id));
-  }, [dispatch, user?.id, user?.role]);
+    setRefresh(false);
+  }, [dispatch, user?.id, user?.role, refresh]);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;
@@ -186,13 +188,16 @@ export default function Calendar() {
           heading="Calendar"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Calendar' }]}
           action={
-            <Button
-              variant="contained"
-              startIcon={<Icon icon={plusFill} width={20} height={20} />}
-              onClick={handleAddEvent}
-            >
-              {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                startIcon={<Icon icon={plusFill} width={20} height={20} />}
+                onClick={handleAddEvent}
+              >
+                {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
+              </Button>
+              {/* <ResourceModal isEdit={false} currentResource={null} setRefresh={setRefresh} /> */}
+            </>
           }
         />
 
@@ -244,6 +249,7 @@ export default function Calendar() {
               range={selectedRange}
               onCancel={handleCloseModal}
               batchList={batchList}
+              setRefresh={setRefresh}
             />
           </Dialog>
         )}
@@ -256,6 +262,7 @@ export default function Calendar() {
               range={selectedRange}
               onCancel={handleCloseModal}
               batchList={batchList}
+              setRefresh={setRefresh}
             />
           </Dialog>
         )}

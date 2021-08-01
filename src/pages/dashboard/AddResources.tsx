@@ -21,17 +21,14 @@ import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector, RootState } from '../../redux/store';
 // components
 import ResourcesForm from '../../components/_dashboard/resources/ResourcesForm';
-import { TeamManager, UserManager } from '../../@types/user';
+import { ResourceManager } from '../../@types/common';
 
 // ----------------------------------------------------------------------
 
-type TeamModalProps = {
+type ResourceModalProps = {
   isEdit: boolean;
-  currentTeam?: TeamManager | null;
+  currentResource?: ResourceManager | null;
   setRefresh: any;
-  openModal?: boolean | undefined;
-  mentors: UserManager[];
-  students: UserManager[];
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -68,14 +65,7 @@ const DialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-export default function TeamModal({
-  isEdit,
-  currentTeam,
-  setRefresh,
-  openModal,
-  mentors,
-  students
-}: TeamModalProps) {
+export default function ResourceModal({ isEdit, currentResource, setRefresh }: ResourceModalProps) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -90,10 +80,6 @@ export default function TeamModal({
   const handleClose = () => {
     setOpen(false);
   };
-
-  useEffect(() => {
-    if (openModal !== undefined) setOpen(openModal);
-  }, [openModal]);
 
   return (
     <div>
@@ -120,17 +106,17 @@ export default function TeamModal({
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'Edit Resources' : 'Add Resources'}
+          {isEdit ? 'View Resources' : 'Add Resources'}
         </DialogTitle>
         <DialogContent>
-          <ResourcesForm
+          {/* <ResourcesForm
             isEdit={isEdit}
             currentTeam={currentTeam}
             setRefresh={setRefresh}
             handleClose={handleClose}
             mentors={mentors}
             students={students}
-          />
+          /> */}
         </DialogContent>
       </Dialog>
     </div>

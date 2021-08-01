@@ -13,7 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 // components
 import UserNewForm from '../../components/_dashboard/user/UserNewForm';
-import { UserManager } from '../../@types/user';
+import { UserManager } from '../../@types/common';
 
 // ----------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ import {
   Autocomplete
 } from '@material-ui/core';
 // @types
-import { BatchManager, TeamManager, TeamMember, UserManager } from '../../../@types/user';
+import { BatchManager, TeamManager, TeamMember, UserManager } from '../../../@types/common';
 // redux
 import useAuth from '../../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../../redux/store';

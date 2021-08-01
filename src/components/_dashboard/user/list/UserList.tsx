@@ -18,7 +18,7 @@ import {
 import MIconButton from 'components/@material-extend/MIconButton';
 import { editUser } from '../../../../redux/slices/lists';
 // @types
-import { UserManager } from '../../../../@types/user';
+import { UserManager } from '../../../../@types/common';
 // utils
 import { getComparator, applySortFilter } from '../../../../utils/tableConstants';
 // components

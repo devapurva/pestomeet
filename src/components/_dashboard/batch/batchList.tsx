@@ -12,7 +12,7 @@ import {
   TablePagination
 } from '@material-ui/core';
 // @types
-import { BatchManager, BatchMembers, UserManager } from '../../../@types/user';
+import { BatchManager, BatchMembers, UserManager } from '../../../@types/common';
 // components
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';

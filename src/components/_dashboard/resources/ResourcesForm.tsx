@@ -34,7 +34,7 @@ import { addUser, addAvatar, editUser } from '../../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
-import { TeamManager, TeamMember, UserManager } from '../../../@types/user';
+import { TeamManager, TeamMember, UserManager } from '../../../@types/common';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import Label from '../../Label';

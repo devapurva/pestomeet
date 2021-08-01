@@ -8,7 +8,7 @@ import {
   TeamManager,
   BatchMembers,
   TeamMember
-} from '../../@types/user';
+} from '../../@types/common';
 
 // ----------------------------------------------------------------------
 

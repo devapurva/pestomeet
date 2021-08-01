@@ -27,7 +27,7 @@ import { useDispatch } from '../../../redux/store';
 import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
 //
 import ColorSinglePicker from '../../ColorSinglePicker';
-import { BatchManager, UserManager } from '../../../@types/user';
+import { BatchManager, UserManager } from '../../../@types/common';
 import { AuthUser } from '../../../@types/authentication';
 
 // ----------------------------------------------------------------------
@@ -70,13 +70,15 @@ type CalendarFormProps = {
   } | null;
   onCancel: VoidFunction;
   batchList: BatchManager[];
+  setRefresh?: any;
 };
 
 export default function SlotsCalendarForm({
   event,
   range,
   onCancel,
-  batchList
+  batchList,
+  setRefresh
 }: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -126,6 +128,9 @@ export default function SlotsCalendarForm({
         resetForm();
         onCancel();
         setSubmitting(false);
+        if (setRefresh) {
+          setRefresh(true);
+        }
       } catch (error) {
         console.error(error);
       }

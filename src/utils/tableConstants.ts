@@ -1,5 +1,5 @@
 import { filter } from 'lodash';
-import { UserManager } from '../@types/user';
+import { UserManager } from '../@types/common';
 
 type Anonymous = Record<string | number, string>;
 

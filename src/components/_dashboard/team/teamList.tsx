@@ -12,7 +12,7 @@ import {
   TablePagination
 } from '@material-ui/core';
 // @types
-import { TeamManager, TeamMember } from '../../../@types/user';
+import { TeamManager, TeamMember } from '../../../@types/common';
 // components
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';

@@ -38,3 +38,13 @@ export type TeamManager = {
   batchOwnerID: string;
   teamMembers: TeamMember[] | [];
 };
+
+export type ResourceManager = {
+  resourceId?: string;
+  resourceName: string;
+  uploaderId: string;
+  eventId: string;
+  eventType: string;
+  resource: string | FormData;
+  resourceLinks: Array<string>;
+};

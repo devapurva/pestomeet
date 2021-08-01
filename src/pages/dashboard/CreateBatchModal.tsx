@@ -13,7 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 // components
 import BatchForm from '../../components/_dashboard/batch/BatchForm';
-import { BatchManager, UserManager } from '../../@types/user';
+import { BatchManager, UserManager } from '../../@types/common';
 
 // ----------------------------------------------------------------------
 

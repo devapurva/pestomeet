@@ -14,7 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 // components
 import TeamForm from '../../components/_dashboard/team/TeamForm';
-import { TeamManager } from '../../@types/user';
+import { TeamManager } from '../../@types/common';
 
 // ----------------------------------------------------------------------
 

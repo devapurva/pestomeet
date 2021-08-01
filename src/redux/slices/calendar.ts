@@ -155,11 +155,8 @@ export function updateEvent(
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.post('/api/calendar/events/update', {
-        eventId,
-        updateEvent
-      });
-      dispatch(slice.actions.updateEventSuccess(response.data.event));
+      const response = await HTTPClient.patch(`/edit/event/${eventId}`, updateEvent);
+      dispatch(slice.actions.updateEventSuccess(response.data.result));
       return response;
     } catch (error) {
       dispatch(slice.actions.hasError(error));

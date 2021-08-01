@@ -26,7 +26,7 @@ import {
 import useAuth from '../../../hooks/useAuth';
 import { addUser, addAvatar, editUser } from '../../../redux/slices/lists';
 // @types
-import { UserManager } from '../../../@types/user';
+import { UserManager } from '../../../@types/common';
 import { AuthUser } from '../../../@types/authentication';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';

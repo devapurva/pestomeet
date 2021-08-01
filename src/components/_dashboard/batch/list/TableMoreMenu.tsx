@@ -6,7 +6,7 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
 import BatchModal from '../../../../pages/dashboard/CreateBatchModal';
-import { BatchManager, UserManager } from '../../../../@types/user';
+import { BatchManager, UserManager } from '../../../../@types/common';
 
 // ----------------------------------------------------------------------
 

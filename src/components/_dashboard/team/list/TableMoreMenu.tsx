@@ -6,7 +6,7 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
 import TeamModal from '../../../../pages/dashboard/CreateTeamModal';
-import { TeamManager } from '../../../../@types/user';
+import { TeamManager } from '../../../../@types/common';
 
 // ----------------------------------------------------------------------
 

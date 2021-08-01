@@ -7,7 +7,7 @@ import checkAll from '@iconify/icons-mdi/check-all';
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
 import UserCreateModal from '../../../../pages/dashboard/UserCreateModal';
-import { UserManager } from '../../../../@types/user';
+import { UserManager } from '../../../../@types/common';
 
 // ----------------------------------------------------------------------
 

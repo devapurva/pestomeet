@@ -28,7 +28,7 @@ import { useDispatch } from '../../../redux/store';
 import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
 //
 import ColorSinglePicker from '../../ColorSinglePicker';
-import { BatchManager } from '../../../@types/user';
+import { BatchManager } from '../../../@types/common';
 
 // ----------------------------------------------------------------------
 
@@ -80,13 +80,15 @@ type CalendarFormProps = {
   } | null;
   onCancel: VoidFunction;
   batchList: BatchManager[];
+  setRefresh?: any;
 };
 
 export default function AdminCalendarForm({
   event,
   range,
   onCancel,
-  batchList
+  batchList,
+  setRefresh
 }: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -145,6 +147,9 @@ export default function AdminCalendarForm({
         resetForm();
         onCancel();
         setSubmitting(false);
+        if (setRefresh) {
+          setRefresh(true);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -176,6 +181,7 @@ export default function AdminCalendarForm({
       };
       return obj;
     });
+    setBatchDetails(values);
     setFieldValue('attendees', finalList?.length > 0 ? finalList : []);
   };
 
