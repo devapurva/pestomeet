@@ -5,28 +5,17 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
-import BatchModal from '../../../../pages/dashboard/CreateBatchModal';
+import ResourceModal from '../../../../pages/dashboard/AddResources';
 import { BatchManager, UserManager } from '../../../../@types/common';
 
 // ----------------------------------------------------------------------
 
 type UserMoreMenuProps = {
-  onDelete: VoidFunction;
-  userName: string;
   setRefresh?: any;
-  currentBatch?: BatchManager;
-  admins: UserManager[];
-  otherUsers: UserManager[];
+  eventId?: string;
 };
 
-export default function UserMoreMenu({
-  onDelete,
-  userName,
-  currentBatch,
-  setRefresh,
-  admins,
-  otherUsers
-}: UserMoreMenuProps) {
+export default function UserMoreMenu({ setRefresh, eventId }: UserMoreMenuProps) {
   const ref = useRef(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -57,20 +46,7 @@ export default function UserMoreMenu({
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <BatchModal
-            isEdit={true}
-            setRefresh={setRefresh}
-            currentBatch={currentBatch}
-            admins={admins}
-            otherUsers={otherUsers}
-          />
-        </MenuItem>
-
-        <MenuItem onClick={onDelete} sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={trash2Outline} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+          <ResourceModal isEdit={true} setRefresh={setRefresh} eventId={eventId} />
         </MenuItem>
       </Menu>
     </>

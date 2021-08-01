@@ -1,5 +1,7 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
+
+import { EventInput } from '@fullcalendar/common';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -17,15 +19,14 @@ import { TeamManager, TeamMember } from '../../../@types/common';
 import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
 // import { TableListHead, TableMoreMenu } from './list';
-import { TableListHead } from './list';
+import { TableListHead, TableMoreMenu } from './list';
 import EmptyContent from '../../EmptyContent';
+// import { deleteResource } from '../../../redux/slices/calendar';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'eventName', label: 'Event Name', alignRight: false },
-  { id: 'uploaderName', label: 'Uploaded By', alignRight: false },
-  { id: 'lastupdateTime', label: 'Updated At', alignRight: false },
   { id: '', label: 'Actions', alignRight: false }
 ];
 
@@ -50,7 +51,7 @@ function getComparator(order: string, orderBy: string) {
 }
 
 function applySortFilter(
-  array: TeamManager[],
+  array: EventInput[],
   comparator: (a: any, b: any) => number,
   query: string
 ) {
@@ -63,7 +64,7 @@ function applySortFilter(
   if (query) {
     return filter(
       array,
-      (_team) => _team.teamName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (_event) => _event.eventName.toLowerCase().indexOf(query.toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
@@ -72,7 +73,6 @@ function applySortFilter(
 type TeamListProps = {
   type: string;
   handleRequestSort: any;
-  handleSelectAllClick: any;
   handleClick: any;
   handleChangeRowsPerPage: any;
   handleFilterByName: any;
@@ -84,14 +84,13 @@ type TeamListProps = {
   orderBy: string;
   filterName: string;
   rowsPerPage: number;
-  userList: TeamManager[];
+  userList: EventInput[];
   setRefresh: any;
 };
 
 export default function ResourcesList({
   type,
   handleRequestSort,
-  handleSelectAllClick,
   handleClick,
   handleChangeRowsPerPage,
   handleFilterByName,
@@ -135,25 +134,25 @@ export default function ResourcesList({
               rowCount={userList.length}
               numSelected={selected.length}
               onRequestSort={handleRequestSort}
-              onSelectAllClick={handleSelectAllClick}
             />
             <TableBody>
               {filteredUsers
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
-                  const { teamId, teamName, mentorName, teamType, teamMembers } = row;
-                  const isItemSelected = selected.indexOf(teamName) !== -1;
+                  const { eventName, eventId } = row;
+                  const isItemSelected = selected.indexOf(eventName) !== -1;
 
                   return (
                     <TableRow
                       hover
-                      key={teamId}
+                      key={eventId}
                       tabIndex={-1}
                       role="checkbox"
                       selected={isItemSelected}
                       aria-checked={isItemSelected}
                     >
-                      <TableCell align="left">{sentenceCase(teamName)}</TableCell>
+                      <TableCell align="left">{sentenceCase(eventName)}</TableCell>
+                      {/* <TableCell align="left">{sentenceCase(teamName)}</TableCell>
                       <TableCell align="left">{mentorName}</TableCell>
                       <TableCell align="left">
                         <Label
@@ -163,7 +162,7 @@ export default function ResourcesList({
                           {teamType === 'buddypairing' ? 'Buddy Pairing' : 'Mentor Team'}
                         </Label>
                       </TableCell>
-                      <TableCell align="left">{getMembersName(teamMembers)}</TableCell>
+                      <TableCell align="left">{getMembersName(teamMembers)}</TableCell> */}
                       {/* <TableCell align="left">{experience}</TableCell>
                       <TableCell align="left">
                         <Label
@@ -175,14 +174,7 @@ export default function ResourcesList({
                       </TableCell> */}
 
                       <TableCell align="left">
-                        {/* <TableMoreMenu
-                          setRefresh={setRefresh}
-                          currentTeam={row}
-                          onDelete={() => handleDeleteTeam(batchId)}
-                          userName={batchName}
-                          admins={admins}
-                          otherUsers={otherUsers}
-                        /> */}
+                        <TableMoreMenu setRefresh={setRefresh} eventId={row?.eventId} />
                       </TableCell>
                     </TableRow>
                   );

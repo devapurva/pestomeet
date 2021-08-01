@@ -14,6 +14,8 @@ const initialState: CalendarState = {
   isLoading: false,
   error: false,
   events: [],
+  resourceEvents: [],
+  assignmentEvents: [],
   isOpenModal: false,
   selectedEventId: null,
   selectedRange: null
@@ -36,8 +38,12 @@ const slice = createSlice({
 
     // GET EVENTS
     getEventsSuccess(state, action) {
-      state.isLoading = false;
+      const resources = action.payload.filter((event: any) => event?.resourceCount > 0);
+      const assignments = action.payload.filter((event: any) => event?.hasAssignment === true);
       state.events = action.payload;
+      state.resourceEvents = resources || [];
+      state.assignmentEvents = assignments || [];
+      state.isLoading = false;
     },
 
     // CREATE EVENT
@@ -213,6 +219,21 @@ export function addResources(resourceFormData: FormData) {
     try {
       const response = await HTTPClient.post('/resource/upload', resourceFormData);
       dispatch(slice.actions.addResourceSuccess(response.data.result));
+      return response;
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      return error;
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function getResource(eventId: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/resource/list/${eventId}`);
       return response;
     } catch (error) {
       dispatch(slice.actions.hasError(error));

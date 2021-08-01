@@ -69,6 +69,20 @@ export const mentorSiderBarConfig = [
         title: 'overview',
         path: PATH_DASHBOARD.general.app,
         icon: ICONS.dashboard
+      },
+      { title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }
+    ]
+  },
+
+  // COURSE
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'Course',
+    items: [
+      {
+        title: 'Resources',
+        path: PATH_DASHBOARD.resources,
+        icon: ICONS.resources
       }
     ]
   },
@@ -95,13 +109,6 @@ export const mentorSiderBarConfig = [
         icon: ICONS.buddyPairing
       }
     ]
-  },
-
-  // APP
-  // ----------------------------------------------------------------------
-  {
-    subheader: 'app',
-    items: [{ title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }]
   }
 ];
 
@@ -115,6 +122,20 @@ const sidebarConfig = [
         title: 'overview',
         path: PATH_DASHBOARD.general.app,
         icon: ICONS.dashboard
+      },
+      { title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }
+    ]
+  },
+
+  // COURSE
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'course material',
+    items: [
+      {
+        title: 'Resources',
+        path: PATH_DASHBOARD.resources,
+        icon: ICONS.resources
       }
     ]
   },
@@ -151,13 +172,6 @@ const sidebarConfig = [
         icon: ICONS.buddyPairing
       }
     ]
-  },
-
-  // APP
-  // ----------------------------------------------------------------------
-  {
-    subheader: 'app',
-    items: [{ title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }]
   }
 ];
 

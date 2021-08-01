@@ -196,6 +196,8 @@ export default function Calendar() {
   const handleCloseModal = () => {
     dispatch(closeModal());
   };
+  // <
+  //             <AssignmentModal isEdit={false} currentAssignment={null} setRefresh={setRefresh} />
 
   return (
     <Page title="Calendar">
@@ -204,17 +206,13 @@ export default function Calendar() {
           heading="Calendar"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Calendar' }]}
           action={
-            <div className={classes.calenderHeader}>
-              <Button
-                variant="contained"
-                startIcon={<Icon icon={plusFill} width={20} height={20} />}
-                onClick={handleAddEvent}
-              >
-                {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
-              </Button>
-              <ResourceModal isEdit={false} currentResource={null} setRefresh={setRefresh} />
-              <AssignmentModal isEdit={false} currentAssignment={null} setRefresh={setRefresh} />
-            </div>
+            <Button
+              variant="contained"
+              startIcon={<Icon icon={plusFill} width={20} height={20} />}
+              onClick={handleAddEvent}
+            >
+              {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
+            </Button>
           }
         />
 

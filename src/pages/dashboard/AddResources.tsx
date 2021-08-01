@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Icon } from '@iconify/react';
@@ -17,8 +18,8 @@ import { ResourceManager } from '../../@types/common';
 
 type ResourceModalProps = {
   isEdit: boolean;
-  currentResource?: ResourceManager | null;
   setRefresh: any;
+  eventId?: string;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +56,7 @@ const DialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-export default function ResourceModal({ isEdit, currentResource, setRefresh }: ResourceModalProps) {
+export default function ResourceModal({ isEdit, setRefresh, eventId }: ResourceModalProps) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -73,7 +74,8 @@ export default function ResourceModal({ isEdit, currentResource, setRefresh }: R
           Add Resources
         </Button>
       ) : (
-        <div style={{ display: 'flex' }}>
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+        <div onClick={handleClickOpen} style={{ display: 'flex' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
@@ -96,9 +98,9 @@ export default function ResourceModal({ isEdit, currentResource, setRefresh }: R
         <DialogContent>
           <ResourcesForm
             isEdit={isEdit}
-            currentResource={currentResource}
             setRefresh={setRefresh}
             handleClose={handleClose}
+            eventId={eventId}
           />
         </DialogContent>
       </Dialog>

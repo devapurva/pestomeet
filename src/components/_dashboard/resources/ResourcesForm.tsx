@@ -31,7 +31,7 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { addResources, deleteResource } from '../../../redux/slices/calendar';
+import { addResources, getResource, deleteResource } from '../../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
@@ -47,14 +47,17 @@ import { UploadAvatar } from '../../upload';
 const useStyles = makeStyles({
   legend: {
     paddingTop: 8
+  },
+  link: {
+    marginBottom: 10
   }
 });
 
 type TeamFormProps = {
   isEdit: boolean;
-  currentResource?: ResourceManager | null;
   setRefresh: any;
   handleClose?: any;
+  eventId?: string;
 };
 
 type FormikValues = {
@@ -80,12 +83,7 @@ type FormikSetErrors = {
 const VALIDURL =
   /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
 
-export default function ResourcesForm({
-  isEdit,
-  currentResource,
-  setRefresh,
-  handleClose
-}: TeamFormProps) {
+export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId }: TeamFormProps) {
   const dispatch = useDispatch();
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar } = useSnackbar();
@@ -95,6 +93,20 @@ export default function ResourcesForm({
   const [resourceLinks, setResourceLinks] = useState<string[]>([]);
   const [invalidLink, setInvalidLink] = useState(false);
   const [eventDetails, setEventDetails] = useState<EventInput>({});
+  const [currentResource, setCurrentResource] = useState<ResourceManager>();
+
+  useEffect(() => {
+    if (isEdit && eventId) {
+      dispatch(getResource(eventId)).then((response) => {
+        if (response?.data?.result) {
+          const resourceDetails = response?.data?.result?.[0];
+          const resourceLinks = JSON.parse(resourceDetails?.resourceLinks[0]);
+          setResourceLinks(resourceLinks);
+          setCurrentResource(resourceDetails);
+        }
+      });
+    }
+  }, [isEdit, eventId, dispatch]);
 
   useEffect(() => {
     if (events?.length > 0 && currentResource && !eventDetails) {
@@ -229,6 +241,7 @@ export default function ResourcesForm({
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
+                    disabled={isEdit}
                     label="Resource Name"
                     {...getFieldProps('resourceName')}
                     error={Boolean(touched.resourceName && errors.resourceName)}
@@ -236,91 +249,117 @@ export default function ResourcesForm({
                   />
                 </Stack>
 
-                <FormLabel className={classes.legend} component="legend">
-                  Event:
-                </FormLabel>
+                {isEdit ? (
+                  <div>
+                    {resourceLinks &&
+                      resourceLinks?.map((link, index) => (
+                        <div key={index} className={classes.link}>
+                          <a href={link} target="_blank" rel="noreferrer">
+                            {link}
+                          </a>
+                        </div>
+                      ))}
+                    {values.resource && (
+                      <a href={values.resource} target="_blank" rel="noreferrer" key="resourceFile">
+                        {values.resource}
+                      </a>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <FormLabel className={classes.legend} component="legend">
+                      Event:
+                    </FormLabel>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  {events && (
-                    <Autocomplete
-                      fullWidth
-                      options={events}
-                      value={eventDetails}
-                      isOptionEqualToValue={(option: any, value: any) =>
-                        option?.eventId === value?.eventId
-                      }
-                      onChange={(event, value) => setTeamOwner(value, setFieldValue)}
-                      disableCloseOnSelect
-                      getOptionLabel={(option) => (option?.title ? option?.title : '')}
-                      renderOption={(props, option, { selected }) => (
-                        <li key={option.id} {...props}>
-                          <Checkbox checked={selected} />
-                          {option.title}
-                        </li>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          error={Boolean(touched.eventId && errors.eventId)}
-                          helperText={touched.eventId && errors.eventId}
-                          {...params}
-                          label="Event"
-                          placeholder="Event"
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                      {events && (
+                        <Autocomplete
+                          fullWidth
+                          disabled={isEdit}
+                          options={events}
+                          value={eventDetails}
+                          isOptionEqualToValue={(option: any, value: any) =>
+                            option?.eventId === value?.eventId
+                          }
+                          onChange={(event, value) => setTeamOwner(value, setFieldValue)}
+                          disableCloseOnSelect
+                          getOptionLabel={(option) => (option?.title ? option?.title : '')}
+                          renderOption={(props, option, { selected }) => (
+                            <li key={option.id} {...props}>
+                              <Checkbox checked={selected} />
+                              {option.title}
+                            </li>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              error={Boolean(touched.eventId && errors.eventId)}
+                              helperText={touched.eventId && errors.eventId}
+                              {...params}
+                              label="Event"
+                              placeholder="Event"
+                            />
+                          )}
                         />
                       )}
-                    />
-                  )}
-                </Stack>
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    type="text"
-                    label="Resource Links"
-                    {...getFieldProps('resourceLink')}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton edge="end" onClick={() => appendResourceLinks(setFieldValue)}>
-                            <Icon icon={plusFill} />
+                    </Stack>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                      <TextField
+                        fullWidth
+                        type="text"
+                        label="Resource Links"
+                        disabled={isEdit}
+                        {...getFieldProps('resourceLink')}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                edge="end"
+                                onClick={() => appendResourceLinks(setFieldValue)}
+                              >
+                                <Icon icon={plusFill} />
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                        error={Boolean(touched.resourceLink && errors.resourceLink)}
+                        helperText={touched.resourceLink && errors.resourceLink}
+                      />
+                      <Button
+                        variant="contained"
+                        startIcon={<Icon icon={plusFill} />}
+                        onClick={() => uploadFile(setFieldValue)}
+                      >
+                        Upload Video
+                      </Button>
+                    </Stack>
+                    {invalidLink && <FormHelperText error={true}>Invalid Link</FormHelperText>}
+                    {resourceLinks &&
+                      resourceLinks?.map((link, index) => (
+                        <div key={index}>
+                          {link}
+                          <IconButton edge="end" onClick={() => deleteLink(link)}>
+                            <Icon icon={closeFill} />
                           </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                    error={Boolean(touched.resourceLink && errors.resourceLink)}
-                    helperText={touched.resourceLink && errors.resourceLink}
-                  />
-                  <Button
-                    variant="contained"
-                    startIcon={<Icon icon={plusFill} />}
-                    onClick={() => uploadFile(setFieldValue)}
-                  >
-                    Upload Video
-                  </Button>
-                </Stack>
-                {invalidLink && <FormHelperText error={true}>Invalid Link</FormHelperText>}
-                {resourceLinks &&
-                  resourceLinks?.map((link, index) => (
-                    <div key={index}>
-                      {link}
-                      <IconButton edge="end" onClick={() => deleteLink(link)}>
-                        <Icon icon={closeFill} />
-                      </IconButton>
-                    </div>
-                  ))}
-                {values.resource && (
-                  <div key="resourceFile">
-                    {values.resource?.name}
-                    <IconButton edge="end" onClick={() => deleteResourceValue(setFieldValue)}>
-                      <Icon icon={closeFill} />
-                    </IconButton>
+                        </div>
+                      ))}
+                    {values.resource && (
+                      <div key="resourceFile">
+                        {values.resource?.name}
+                        <IconButton edge="end" onClick={() => deleteResourceValue(setFieldValue)}>
+                          <Icon icon={closeFill} />
+                        </IconButton>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                    Add Resources
-                  </LoadingButton>
-                </Box>
+                {!isEdit && (
+                  <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                    <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                      Add Resources
+                    </LoadingButton>
+                  </Box>
+                )}
               </Stack>
             </Card>
           </Grid>

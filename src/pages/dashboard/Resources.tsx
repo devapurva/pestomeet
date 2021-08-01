@@ -13,7 +13,7 @@ import { PATH_DASHBOARD } from '../../routes/paths';
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import ResourcesList from '../../components/_dashboard/resources/ResourcesList';
-// import TeamModal from './CreateTeamModal';
+import ResourceModal from './AddResources';
 
 // ----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ export default function Resources() {
   const { user } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const [refresh, setRefresh] = useState(false);
-  const { buddyList } = useSelector((state: RootState) => state.list);
+  const { resourceEvents } = useSelector((state: RootState) => state.calendar);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [selected, setSelected] = useState<string[]>([]);
@@ -39,15 +39,6 @@ export default function Resources() {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      const newSelecteds = buddyList.map((n) => n.teamName);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
   };
 
   const handleClick = (name: string) => {
@@ -94,20 +85,11 @@ export default function Resources() {
         <HeaderBreadcrumbs
           heading="Resources"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Resources' }]}
-          // action={
-          //   <TeamModal
-          //     isEdit={false}
-          //     currentTeam={null}
-          //     setRefresh={setRefresh}
-          //     mentors={mentors}
-          //     students={students}
-          //   />
-          // }
+          action={<ResourceModal isEdit={false} setRefresh={setRefresh} />}
         />
         <ResourcesList
           type="mentor"
           handleRequestSort={handleRequestSort}
-          handleSelectAllClick={handleSelectAllClick}
           handleClick={handleClick}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
           handleFilterByName={handleFilterByName}
@@ -119,7 +101,7 @@ export default function Resources() {
           orderBy={orderBy}
           filterName={filterName}
           rowsPerPage={rowsPerPage}
-          userList={buddyList}
+          userList={resourceEvents}
           setRefresh={setRefresh}
         />
       </Container>
