@@ -10,7 +10,15 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { useState, useRef, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
-import { Card, Button, Container, Dialog, DialogTitle, useMediaQuery } from '@material-ui/core';
+import {
+  Card,
+  Button,
+  Container,
+  Dialog,
+  DialogTitle,
+  useMediaQuery,
+  makeStyles
+} from '@material-ui/core';
 // redux
 import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
@@ -35,9 +43,16 @@ import {
   SlotsCalendarForm
 } from '../../components/_dashboard/calendar';
 import ResourceModal from './AddResources';
+import AssignmentModal from './AddAssignment';
 import { CalendarView } from '../../@types/calendar';
 
 // ----------------------------------------------------------------------
+
+const useStyles = makeStyles((theme) => ({
+  calenderHeader: {
+    display: 'flex'
+  }
+}));
 
 const selectedEventSelector = (state: RootState) => {
   const { events, selectedEventId } = state.calendar;
@@ -57,8 +72,9 @@ const getViewByUserRole = (userRole: string) => {
 };
 
 export default function Calendar() {
-  const dispatch = useDispatch();
   const theme = useTheme();
+  const classes = useStyles();
+  const dispatch = useDispatch();
   const { user } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const calendarRef = useRef<FullCalendar>(null);
@@ -188,7 +204,7 @@ export default function Calendar() {
           heading="Calendar"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Calendar' }]}
           action={
-            <>
+            <div className={classes.calenderHeader}>
               <Button
                 variant="contained"
                 startIcon={<Icon icon={plusFill} width={20} height={20} />}
@@ -196,8 +212,9 @@ export default function Calendar() {
               >
                 {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
               </Button>
-              {/* <ResourceModal isEdit={false} currentResource={null} setRefresh={setRefresh} /> */}
-            </>
+              <ResourceModal isEdit={false} currentResource={null} setRefresh={setRefresh} />
+              <AssignmentModal isEdit={false} currentAssignment={null} setRefresh={setRefresh} />
+            </div>
           }
         />
 

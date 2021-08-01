@@ -10,14 +10,14 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 // components
-import ResourcesForm from '../../components/_dashboard/resources/ResourcesForm';
-import { ResourceManager } from '../../@types/common';
+import AssignmentsForm from '../../components/_dashboard/assignment/AssignmentForm';
+import { AssignmentManager } from '../../@types/common';
 
 // ----------------------------------------------------------------------
 
 type ResourceModalProps = {
   isEdit: boolean;
-  currentResource?: ResourceManager | null;
+  currentAssignment?: AssignmentManager | null;
   setRefresh: any;
 };
 
@@ -55,7 +55,11 @@ const DialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-export default function ResourceModal({ isEdit, currentResource, setRefresh }: ResourceModalProps) {
+export default function AssignmentModal({
+  isEdit,
+  currentAssignment,
+  setRefresh
+}: ResourceModalProps) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -70,7 +74,7 @@ export default function ResourceModal({ isEdit, currentResource, setRefresh }: R
     <div>
       {!isEdit ? (
         <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
-          Add Resources
+          Add Assignment
         </Button>
       ) : (
         <div style={{ display: 'flex' }}>
@@ -94,9 +98,9 @@ export default function ResourceModal({ isEdit, currentResource, setRefresh }: R
           {isEdit ? 'View Resources' : 'Add Resources'}
         </DialogTitle>
         <DialogContent>
-          <ResourcesForm
+          <AssignmentsForm
             isEdit={isEdit}
-            currentResource={currentResource}
+            currentAssignment={currentAssignment}
             setRefresh={setRefresh}
             handleClose={handleClose}
           />

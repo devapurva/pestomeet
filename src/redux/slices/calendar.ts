@@ -6,6 +6,7 @@ import { dispatch } from '../store';
 import { HTTPClient } from '../../utils/axios';
 //
 import { CalendarState } from '../../@types/calendar';
+import { ResourceManager } from '../../@types/common';
 
 // ----------------------------------------------------------------------
 
@@ -68,6 +69,16 @@ const slice = createSlice({
       const { start, end } = action.payload;
       state.isOpenModal = true;
       state.selectedRange = { start, end };
+    },
+
+    // UPLOAD RESOURCE
+    addResourceSuccess(state, action) {
+      state.isLoading = false;
+    },
+
+    // UPLOAD ASSIGNMENT
+    addAssignmentSuccess(state, action) {
+      state.isLoading = false;
     },
 
     // OPEN MODAL
@@ -191,5 +202,74 @@ export function selectRange(start: Date, end: Date) {
         end: end.getTime()
       })
     );
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function addResources(resourceFormData: FormData) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.post('/resource/upload', resourceFormData);
+      dispatch(slice.actions.addResourceSuccess(response.data.result));
+      return response;
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      return error;
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function deleteResource(resourceId: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.delete(`/resource/delete${resourceId}`);
+      return response;
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      return error;
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function addAssignments(
+  assingment: Partial<{
+    assignmentName: string;
+    assignmentLinks: any;
+    uploaderId: string;
+    eventID: string;
+  }>
+) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.post('/create/assignment', assingment);
+      dispatch(slice.actions.addAssignmentSuccess(response.data.result));
+      return response;
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      return error;
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+export function deleteAssignment(assignmentId: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.delete(`/delete/assignment${assignmentId}`);
+      return response;
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      return error;
+    }
   };
 }

@@ -1,3 +1,5 @@
+import { AnySrvRecord } from 'dns';
+
 export type UserManager = {
   id: string;
   avatar?: string;
@@ -45,6 +47,14 @@ export type ResourceManager = {
   uploaderId: string;
   eventId: string;
   eventType: string;
-  resource: string | FormData;
-  resourceLinks: Array<string>;
+  resource: any;
+  resourceLinks: any;
+};
+
+export type AssignmentManager = {
+  assignmentId?: string;
+  assignmentName: string;
+  uploaderId: string;
+  eventID: string;
+  assignmentLinks: any;
 };

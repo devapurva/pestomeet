@@ -135,8 +135,11 @@ export default function AdminCalendarForm({
           attendees: values.attendees
         };
         if (event.id) {
-          dispatch(updateEvent(event.id, newEvent));
-          enqueueSnackbar('Update event success', { variant: 'success' });
+          dispatch(updateEvent(event.id, newEvent)).then((response) => {
+            if (response?.data.statusCode) {
+              enqueueSnackbar('Update event success', { variant: 'success' });
+            }
+          });
         } else {
           dispatch(createEvent(newEvent)).then((response) => {
             if (response?.data?.statusCode) {

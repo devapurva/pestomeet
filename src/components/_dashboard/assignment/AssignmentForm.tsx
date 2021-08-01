@@ -2,9 +2,9 @@ import * as Yup from 'yup';
 import { useCallback, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { Icon } from '@iconify/react';
-import { EventInput } from '@fullcalendar/common';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
+import { EventInput } from '@fullcalendar/common';
 // material
 import { LoadingButton } from '@material-ui/lab';
 
@@ -31,16 +31,14 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { addResources, deleteResource } from '../../../redux/slices/calendar';
+import { addAssignments, deleteAssignment } from '../../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
-import { TeamManager, TeamMember, UserManager, ResourceManager } from '../../../@types/common';
+import { AssignmentManager } from '../../../@types/common';
 // hooks
 import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
-import Label from '../../Label';
-import { UploadAvatar } from '../../upload';
 
 // ----------------------------------------------------------------------
 
@@ -52,27 +50,25 @@ const useStyles = makeStyles({
 
 type TeamFormProps = {
   isEdit: boolean;
-  currentResource?: ResourceManager | null;
+  currentAssignment?: AssignmentManager | null;
   setRefresh: any;
   handleClose?: any;
 };
 
 type FormikValues = {
-  resourceId?: string | undefined;
-  resourceName: string;
+  assignmentId?: string;
+  assignmentName: string;
   uploaderId: string;
-  eventId: string;
-  eventType: string;
-  resource: any;
-  resourceLinks: any;
+  eventID: string;
+  assignmentLinks: any;
 };
 
 type FormikSetErrors = {
   (
     errors: FormikErrors<{
-      resourceName: string;
+      assignmentName: string;
       resource: string;
-      resourceLinks: string;
+      assignmentLinks: string;
     }>
   ): void;
 };
@@ -80,9 +76,9 @@ type FormikSetErrors = {
 const VALIDURL =
   /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
 
-export default function ResourcesForm({
+export default function AssignmentsForm({
   isEdit,
-  currentResource,
+  currentAssignment,
   setRefresh,
   handleClose
 }: TeamFormProps) {
@@ -92,53 +88,50 @@ export default function ResourcesForm({
   const classes = useStyles();
   const { user } = useAuth();
   const { events } = useSelector((state: RootState) => state.calendar);
-  const [resourceLinks, setResourceLinks] = useState<string[]>([]);
+  const [assignmentLinks, setAssignmentLinks] = useState<string[]>([]);
   const [invalidLink, setInvalidLink] = useState(false);
   const [eventDetails, setEventDetails] = useState<EventInput>({});
 
   useEffect(() => {
-    if (events?.length > 0 && currentResource && !eventDetails) {
-      const details = events.find((event) => event.eventId === currentResource?.eventId);
+    if (events?.length > 0 && currentAssignment && !eventDetails) {
+      const details = events.find((event) => event.eventId === currentAssignment?.eventID);
       if (details) {
         setEventDetails(details);
       }
     }
-  }, [events, currentResource, eventDetails]);
+  }, [events, currentAssignment, eventDetails]);
 
   const NewResourceSchema = Yup.object().shape({
-    resourceName: Yup.string()
-      .max(100, `Resource name cannot be more than ${100} characters`)
-      .required('Resource name is required'),
-    resource: Yup.mixed(),
-    eventId: Yup.string().required('Event is required'),
+    assignmentName: Yup.string()
+      .max(100, `Assignment name cannot be more than ${100} characters`)
+      .required('Assignment name is required'),
+    eventID: Yup.string().required('Event is required'),
     eventType: Yup.string().required('Event is required'),
-    resourceLink: Yup.string()
+    assignmentLink: Yup.string()
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      resourceId: currentResource?.resourceId || '',
-      resourceName: currentResource?.resourceName || '',
-      uploaderId: currentResource?.uploaderId || '',
-      eventId: currentResource?.eventId || '',
-      eventType: currentResource?.eventType || '',
-      resource: currentResource?.resource || '',
+      assignmentId: currentAssignment?.assignmentId || '',
+      assignmentName: currentAssignment?.assignmentName || '',
+      uploaderId: currentAssignment?.uploaderId || '',
+      eventID: currentAssignment?.eventID || '',
       resourceLink: ''
     },
     validationSchema: NewResourceSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
-        const formData = new FormData();
-        formData.append('resourceName', values.resourceName);
-        formData.append('resource', values.resource);
-        formData.append('resourceLinks', JSON.stringify(resourceLinks));
-        formData.append('uploaderId', user?.id);
-        formData.append('eventId', values.eventId);
-        formData.append('eventType', values.eventType);
-        dispatch(addResources(formData)).then((response: any) => {
+        dispatch(
+          addAssignments({
+            assignmentName: values.assignmentName,
+            assignmentLinks: assignmentLinks,
+            uploaderId: user?.id,
+            eventID: values.eventID
+          })
+        ).then((response: any) => {
           if (response?.data?.statusCode) {
-            enqueueSnackbar('Resources Added Successfully', { variant: 'success' });
+            enqueueSnackbar('Assignments Added Successfully', { variant: 'success' });
             if (isMountedRef.current) {
               setSubmitting(false);
             }
@@ -172,51 +165,24 @@ export default function ResourcesForm({
     handleChange
   } = formik;
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        setFieldValue('avatar', {
-          ...file,
-          preview: URL.createObjectURL(file)
-        });
-      }
-    },
-    [setFieldValue]
-  );
-
-  const setTeamOwner = (value: any, setFieldValue: any) => {
+  const setEventsDetails = (value: any, setFieldValue: any) => {
     setEventDetails(value);
-    setFieldValue('eventId', value ? value.id : null);
+    setFieldValue('eventID', value ? value.id : null);
     setFieldValue('eventType', value ? value.eventType : null);
   };
 
   const appendResourceLinks = (setFieldValue: any) => {
     if (values.resourceLink.match(VALIDURL)) {
       setInvalidLink(false);
-      const link = [...resourceLinks, values.resourceLink];
-      setResourceLinks(link);
+      const link = [...assignmentLinks, values.resourceLink];
+      setAssignmentLinks(link);
       setFieldValue('resourceLink', '');
     } else setInvalidLink(true);
   };
 
   const deleteLink = (link: string) => {
-    const filterLinks = resourceLinks.filter((links) => links !== link);
-    setResourceLinks(filterLinks);
-  };
-
-  const uploadFile = (setFieldValue: any) => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', '.mp4, .avi');
-    input.click();
-    return (input.onchange = async () => {
-      setFieldValue('resource', input?.files?.[0]);
-    });
-  };
-
-  const deleteResourceValue = (setFieldValue: any) => {
-    setFieldValue('resource', '');
+    const filterLinks = assignmentLinks.filter((links) => links !== link);
+    setAssignmentLinks(filterLinks);
   };
 
   return (
@@ -229,10 +195,10 @@ export default function ResourcesForm({
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
-                    label="Resource Name"
-                    {...getFieldProps('resourceName')}
-                    error={Boolean(touched.resourceName && errors.resourceName)}
-                    helperText={touched.resourceName && errors.resourceName}
+                    label="Assignment Name"
+                    {...getFieldProps('assignmentName')}
+                    error={Boolean(touched.assignmentName && errors.assignmentName)}
+                    helperText={touched.assignmentName && errors.assignmentName}
                   />
                 </Stack>
 
@@ -249,7 +215,7 @@ export default function ResourcesForm({
                       isOptionEqualToValue={(option: any, value: any) =>
                         option?.eventId === value?.eventId
                       }
-                      onChange={(event, value) => setTeamOwner(value, setFieldValue)}
+                      onChange={(event, value) => setEventsDetails(value, setFieldValue)}
                       disableCloseOnSelect
                       getOptionLabel={(option) => (option?.title ? option?.title : '')}
                       renderOption={(props, option, { selected }) => (
@@ -260,8 +226,8 @@ export default function ResourcesForm({
                       )}
                       renderInput={(params) => (
                         <TextField
-                          error={Boolean(touched.eventId && errors.eventId)}
-                          helperText={touched.eventId && errors.eventId}
+                          error={Boolean(touched.eventID && errors.eventID)}
+                          helperText={touched.eventID && errors.eventID}
                           {...params}
                           label="Event"
                           placeholder="Event"
@@ -275,7 +241,7 @@ export default function ResourcesForm({
                   <TextField
                     fullWidth
                     type="text"
-                    label="Resource Links"
+                    label="Assignment Links"
                     {...getFieldProps('resourceLink')}
                     InputProps={{
                       endAdornment: (
@@ -289,17 +255,10 @@ export default function ResourcesForm({
                     error={Boolean(touched.resourceLink && errors.resourceLink)}
                     helperText={touched.resourceLink && errors.resourceLink}
                   />
-                  <Button
-                    variant="contained"
-                    startIcon={<Icon icon={plusFill} />}
-                    onClick={() => uploadFile(setFieldValue)}
-                  >
-                    Upload Video
-                  </Button>
                 </Stack>
                 {invalidLink && <FormHelperText error={true}>Invalid Link</FormHelperText>}
-                {resourceLinks &&
-                  resourceLinks?.map((link, index) => (
+                {assignmentLinks &&
+                  assignmentLinks?.map((link, index) => (
                     <div key={index}>
                       {link}
                       <IconButton edge="end" onClick={() => deleteLink(link)}>
@@ -307,18 +266,10 @@ export default function ResourcesForm({
                       </IconButton>
                     </div>
                   ))}
-                {values.resource && (
-                  <div key="resourceFile">
-                    {values.resource?.name}
-                    <IconButton edge="end" onClick={() => deleteResourceValue(setFieldValue)}>
-                      <Icon icon={closeFill} />
-                    </IconButton>
-                  </div>
-                )}
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                   <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                    Add Resources
+                    Add Assignment
                   </LoadingButton>
                 </Box>
               </Stack>
