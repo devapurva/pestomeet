@@ -159,14 +159,18 @@ export default function AdminCalendarForm({
   const { values, errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } =
     formik;
 
-  console.log('values', values);
-
   const handleDelete = async () => {
     if (!event.id) return;
     try {
       onCancel();
-      dispatch(deleteEvent(event.id));
-      enqueueSnackbar('Delete event success', { variant: 'success' });
+      dispatch(deleteEvent(event.id)).then((response) => {
+        if (response?.data?.statusCode) {
+          enqueueSnackbar('Event Deleted', { variant: 'success' });
+          if (setRefresh) {
+            setRefresh(true);
+          }
+        }
+      });
     } catch (error) {
       console.error(error);
     }

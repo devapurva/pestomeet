@@ -171,10 +171,12 @@ export function deleteEvent(eventId: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      await HTTPClient.post('/api/calendar/events/delete', { eventId });
-      dispatch(slice.actions.deleteEventSuccess({ eventId }));
+      const response = await HTTPClient.delete(`/delete/event/${eventId}`);
+      return response;
+      // dispatch(slice.actions.deleteEventSuccess({ eventId }));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
+      return error;
     }
   };
 }
