@@ -73,8 +73,8 @@ export default function Calendar() {
 
   useEffect(() => {
     dispatch(getBatchList(user?.id));
-    dispatch(getEvents(user?.id));
-  }, [dispatch, user?.id]);
+    dispatch(getEvents(user?.role === 'Super Admin' ? null : user?.id));
+  }, [dispatch, user?.id, user?.role]);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;
@@ -133,7 +133,7 @@ export default function Calendar() {
   };
 
   const handleSelectEvent = (arg: EventClickArg) => {
-    // console.log('handleSelectEvent');
+    // console.log('handleSelectEvent', arg);
     dispatch(selectEvent(arg.event.id));
   };
 

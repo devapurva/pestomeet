@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { merge } from 'lodash';
 import { isBefore } from 'date-fns';
@@ -41,8 +42,13 @@ const COLOR_OPTIONS = [
   '#7A0C2E' // theme.palette.error.darker
 ];
 
-const getInitialValues = (event: EventInput, range: { start: Date; end: Date } | null) => {
+const getInitialValues = (
+  event: EventInput,
+  range: { start: Date; end: Date } | null,
+  batchDetails?: BatchManager[]
+) => {
   // eslint-disable-next-line no-underscore-dangle
+
   const _event = {
     title: '',
     description: '',
@@ -54,7 +60,7 @@ const getInitialValues = (event: EventInput, range: { start: Date; end: Date } |
     organiserId: '',
     organiserName: '',
     hasAssignment: false,
-    attendees: []
+    attendees: batchDetails
   };
 
   if (event || range) {
@@ -85,7 +91,20 @@ export default function AdminCalendarForm({
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { user } = useAuth();
+  const [batchDetails, setBatchDetails] = useState<BatchManager[]>([]);
   const isCreating = !event;
+
+  useEffect(() => {
+    if (Object.keys(event).length > 0 && batchDetails) {
+      // eslint-disable-next-line consistent-return
+      event?.attendees?.forEach((batchObj: { batchId: string | undefined }) => {
+        const getBatch = batchList.find((batch) => batch?.batchId === batchObj?.batchId);
+        if (getBatch) {
+          setBatchDetails((batchDetails) => batchDetails.concat(getBatch));
+        }
+      });
+    }
+  }, [event, batchList]);
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Event Name is required'),
@@ -97,7 +116,7 @@ export default function AdminCalendarForm({
   });
 
   const formik = useFormik({
-    initialValues: getInitialValues(event, range),
+    initialValues: getInitialValues(event, range, batchDetails),
     validationSchema: EventSchema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
@@ -134,6 +153,8 @@ export default function AdminCalendarForm({
 
   const { values, errors, touched, handleSubmit, isSubmitting, getFieldProps, setFieldValue } =
     formik;
+
+  console.log('values', values);
 
   const handleDelete = async () => {
     if (!event.id) return;
@@ -213,34 +234,42 @@ export default function AdminCalendarForm({
           />
 
           {batchList && (
-            <Autocomplete
-              fullWidth
-              multiple
-              options={batchList}
-              onChange={(event, value) => setAttendees(value, setFieldValue)}
-              disableCloseOnSelect
-              getOptionLabel={(option) => option.batchName}
-              renderOption={(props, option, { selected }) => (
-                <li key={option.batchId} {...props}>
-                  <Checkbox checked={selected} />
-                  {option.batchName}
-                </li>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  error={Boolean(touched.attendees && errors.attendees)}
-                  helperText={touched.attendees && errors.attendees}
-                  {...params}
-                  label="Team Members"
-                  placeholder="Members"
-                />
-              )}
-            />
+            <>
+              {/* {console.log(values.attendees, batchList)} */}
+              <Autocomplete
+                fullWidth
+                multiple
+                value={batchDetails}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option?.batchId === value?.batchId
+                }
+                options={batchList}
+                onChange={(event, value) => setAttendees(value, setFieldValue)}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.batchName}
+                renderOption={(props, option, { selected }) => (
+                  <li key={option.batchId} {...props}>
+                    <Checkbox checked={selected} />
+                    {/* {console.log(option)} */}
+                    {option.batchName}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    error={Boolean(touched.attendees && errors.attendees)}
+                    helperText={touched.attendees && errors.attendees}
+                    {...params}
+                    label="Team Members"
+                    placeholder="Members"
+                  />
+                )}
+              />
+            </>
           )}
 
           <ColorSinglePicker
             style={{ marginTop: 20 }}
-            {...getFieldProps('eventColor')}
+            {...getFieldProps('textColor')}
             colors={COLOR_OPTIONS}
           />
         </DialogContent>
@@ -263,7 +292,7 @@ export default function AdminCalendarForm({
             loading={isSubmitting}
             loadingIndicator="Loading..."
           >
-            Add
+            {isCreating ? 'Add' : 'Save'}
           </LoadingButton>
         </DialogActions>
       </Form>

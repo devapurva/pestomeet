@@ -92,11 +92,12 @@ export const { openModal, closeModal, selectEvent } = slice.actions;
 
 // ----------------------------------------------------------------------
 
-export function getEvents(id: string) {
+export function getEvents(id?: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.get(`/list/event/${id}`);
+      const url = id ? `/list/myevent/${id}` : '/list/event/masterclass';
+      const response = await HTTPClient.get(url);
       if (response?.data?.statusCode) {
         const events = response?.data?.result?.map((element: any) => {
           const obj = {
