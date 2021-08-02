@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
-import { matchPath, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 import eyeFill from '@iconify/icons-eva/eye-fill';
@@ -357,11 +357,11 @@ export default function UserNewForm({
                     onChange={handleChange}
                   >
                     {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
-                      pathname.includes('student') && (
+                      pathname.includes('student' || 'all-user') && (
                         <FormControlLabel value="student" control={<Radio />} label="Student" />
                       )}
                     {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
-                      pathname.includes('mentor') && (
+                      pathname.includes('mentor' || 'all-user') && (
                         <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
                       )}
                     {user?.role === 'Super Admin' && pathname.includes('all-user') && (

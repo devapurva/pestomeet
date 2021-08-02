@@ -205,7 +205,7 @@ export default function UserList({
                             (role === 'mentor' && 'info') ||
                             (role === 'super admin' && 'primary') ||
                             (role === 'admin' && 'error') ||
-                            'secondary'
+                            'warning'
                           }
                         >
                           {getRoleText(role)}
