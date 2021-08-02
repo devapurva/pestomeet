@@ -95,28 +95,6 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
   const [eventDetails, setEventDetails] = useState<EventInput>({});
   const [currentResource, setCurrentResource] = useState<ResourceManager>();
 
-  useEffect(() => {
-    if (isEdit && eventId) {
-      dispatch(getResource(eventId)).then((response) => {
-        if (response?.data?.result) {
-          const resourceDetails = response?.data?.result?.[0];
-          const resourceLinks = JSON.parse(resourceDetails?.resourceLinks[0]);
-          setResourceLinks(resourceLinks);
-          setCurrentResource(resourceDetails);
-        }
-      });
-    }
-  }, [isEdit, eventId, dispatch]);
-
-  useEffect(() => {
-    if (events?.length > 0 && currentResource && !eventDetails) {
-      const details = events.find((event) => event.eventId === currentResource?.eventId);
-      if (details) {
-        setEventDetails(details);
-      }
-    }
-  }, [events, currentResource, eventDetails]);
-
   const NewResourceSchema = Yup.object().shape({
     resourceName: Yup.string()
       .max(100, `Resource name cannot be more than ${100} characters`)
@@ -248,118 +226,92 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                     helperText={touched.resourceName && errors.resourceName}
                   />
                 </Stack>
+                <FormLabel className={classes.legend} component="legend">
+                  Event:
+                </FormLabel>
 
-                {isEdit ? (
-                  <div>
-                    {resourceLinks &&
-                      resourceLinks?.map((link, index) => (
-                        <div key={index} className={classes.link}>
-                          <a href={link} target="_blank" rel="noreferrer">
-                            {link}
-                          </a>
-                        </div>
-                      ))}
-                    {values.resource && (
-                      <a href={values.resource} target="_blank" rel="noreferrer" key="resourceFile">
-                        {values.resource}
-                      </a>
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    <FormLabel className={classes.legend} component="legend">
-                      Event:
-                    </FormLabel>
-
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                      {events && (
-                        <Autocomplete
-                          fullWidth
-                          disabled={isEdit}
-                          options={events}
-                          value={eventDetails}
-                          isOptionEqualToValue={(option: any, value: any) =>
-                            option?.eventId === value?.eventId
-                          }
-                          onChange={(event, value) => setTeamOwner(value, setFieldValue)}
-                          disableCloseOnSelect
-                          getOptionLabel={(option) => (option?.title ? option?.title : '')}
-                          renderOption={(props, option, { selected }) => (
-                            <li key={option.id} {...props}>
-                              <Checkbox checked={selected} />
-                              {option.title}
-                            </li>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              error={Boolean(touched.eventId && errors.eventId)}
-                              helperText={touched.eventId && errors.eventId}
-                              {...params}
-                              label="Event"
-                              placeholder="Event"
-                            />
-                          )}
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  {events && (
+                    <Autocomplete
+                      fullWidth
+                      disabled={isEdit}
+                      options={events}
+                      value={eventDetails}
+                      isOptionEqualToValue={(option: any, value: any) =>
+                        option?.eventId === value?.eventId
+                      }
+                      onChange={(event, value) => setTeamOwner(value, setFieldValue)}
+                      disableCloseOnSelect
+                      getOptionLabel={(option) => (option?.title ? option?.title : '')}
+                      renderOption={(props, option, { selected }) => (
+                        <li key={option.id} {...props}>
+                          <Checkbox checked={selected} />
+                          {option.title}
+                        </li>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          error={Boolean(touched.eventId && errors.eventId)}
+                          helperText={touched.eventId && errors.eventId}
+                          {...params}
+                          label="Event"
+                          placeholder="Event"
                         />
                       )}
-                    </Stack>
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                      <TextField
-                        fullWidth
-                        type="text"
-                        label="Resource Links"
-                        disabled={isEdit}
-                        {...getFieldProps('resourceLink')}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                edge="end"
-                                onClick={() => appendResourceLinks(setFieldValue)}
-                              >
-                                <Icon icon={plusFill} />
-                              </IconButton>
-                            </InputAdornment>
-                          )
-                        }}
-                        error={Boolean(touched.resourceLink && errors.resourceLink)}
-                        helperText={touched.resourceLink && errors.resourceLink}
-                      />
-                      <Button
-                        variant="contained"
-                        startIcon={<Icon icon={plusFill} />}
-                        onClick={() => uploadFile(setFieldValue)}
-                      >
-                        Upload Video
-                      </Button>
-                    </Stack>
-                    {invalidLink && <FormHelperText error={true}>Invalid Link</FormHelperText>}
-                    {resourceLinks &&
-                      resourceLinks?.map((link, index) => (
-                        <div key={index}>
-                          {link}
-                          <IconButton edge="end" onClick={() => deleteLink(link)}>
-                            <Icon icon={closeFill} />
+                    />
+                  )}
+                </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                  <TextField
+                    fullWidth
+                    type="text"
+                    label="Resource Links"
+                    disabled={isEdit}
+                    {...getFieldProps('resourceLink')}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton edge="end" onClick={() => appendResourceLinks(setFieldValue)}>
+                            <Icon icon={plusFill} />
                           </IconButton>
-                        </div>
-                      ))}
-                    {values.resource && (
-                      <div key="resourceFile">
-                        {values.resource?.name}
-                        <IconButton edge="end" onClick={() => deleteResourceValue(setFieldValue)}>
-                          <Icon icon={closeFill} />
-                        </IconButton>
-                      </div>
-                    )}
+                        </InputAdornment>
+                      )
+                    }}
+                    error={Boolean(touched.resourceLink && errors.resourceLink)}
+                    helperText={touched.resourceLink && errors.resourceLink}
+                  />
+                  <Button
+                    variant="contained"
+                    startIcon={<Icon icon={plusFill} />}
+                    onClick={() => uploadFile(setFieldValue)}
+                  >
+                    Upload Video
+                  </Button>
+                </Stack>
+                {invalidLink && <FormHelperText error={true}>Invalid Link</FormHelperText>}
+                {resourceLinks &&
+                  resourceLinks?.map((link, index) => (
+                    <div key={index}>
+                      {link}
+                      <IconButton edge="end" onClick={() => deleteLink(link)}>
+                        <Icon icon={closeFill} />
+                      </IconButton>
+                    </div>
+                  ))}
+                {values.resource && (
+                  <div key="resourceFile">
+                    {values.resource?.name}
+                    <IconButton edge="end" onClick={() => deleteResourceValue(setFieldValue)}>
+                      <Icon icon={closeFill} />
+                    </IconButton>
                   </div>
                 )}
 
-                {!isEdit && (
-                  <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                    <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                      Add Resources
-                    </LoadingButton>
-                  </Box>
-                )}
+                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                    Add Resources
+                  </LoadingButton>
+                </Box>
               </Stack>
             </Card>
           </Grid>
