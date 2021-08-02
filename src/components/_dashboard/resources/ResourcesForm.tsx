@@ -143,11 +143,11 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
       try {
         const formData = new FormData();
         formData.append('resourceName', values.resourceName);
-        formData.append('resource', values.resource);
         formData.append('resourceLinks', JSON.stringify(resourceLinks));
         formData.append('uploaderId', user?.id);
         formData.append('eventId', values.eventId);
         formData.append('eventType', values.eventType);
+        formData.append('resource', values.resource);
         dispatch(addResources(formData)).then((response: any) => {
           if (response?.data?.statusCode) {
             enqueueSnackbar('Resources Added Successfully', { variant: 'success' });

@@ -32,6 +32,7 @@ const instanceCreator = ($axios: any) => ({
     return $axios.delete(resource, { data: data });
   },
   customRequest(config: any) {
+    console.log(config);
     return $axios(config);
   },
   successHandler(response: any) {

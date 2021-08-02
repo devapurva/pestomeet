@@ -6,11 +6,11 @@ import { Icon } from '@iconify/react';
 import { Button, Dialog, DialogContent, ListItemIcon, ListItemText } from '@material-ui/core';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import editFill from '@iconify/icons-eva/edit-fill';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 // components
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import ResourcesForm from '../../components/_dashboard/resources/ResourcesForm';
 import { ResourceManager } from '../../@types/common';
 

@@ -217,7 +217,14 @@ export function addResources(resourceFormData: FormData) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.post('/resource/upload', resourceFormData);
+      const response = await HTTPClient.customRequest({
+        url: `/resource/upload`,
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: resourceFormData
+      });
       dispatch(slice.actions.addResourceSuccess(response.data.result));
       return response;
     } catch (error) {
@@ -248,7 +255,7 @@ export function deleteResource(resourceId: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.delete(`/resource/delete${resourceId}`);
+      const response = await HTTPClient.delete(`/resource/delete/${resourceId}`);
       return response;
     } catch (error) {
       dispatch(slice.actions.hasError(error));

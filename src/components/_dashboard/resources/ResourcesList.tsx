@@ -20,14 +20,16 @@ import Label from '../../Label';
 import Scrollbar from '../../Scrollbar';
 // import { TableListHead, TableMoreMenu } from './list';
 import { TableListHead, TableMoreMenu } from './list';
+import ViewResource from '../../../pages/dashboard/ViewResources';
 import EmptyContent from '../../EmptyContent';
 // import { deleteResource } from '../../../redux/slices/calendar';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'eventName', label: 'Event Name', alignRight: false },
-  { id: '', label: 'Actions', alignRight: false }
+  { id: 'eventName', label: 'Event Name', alignRight: 'left' },
+  { id: 'resourceCount', label: 'Resource Count', alignRight: 'left' },
+  { id: '', label: 'Actions', alignRight: 'left' }
 ];
 
 // ----------------------------------------------------------------------
@@ -139,7 +141,7 @@ export default function ResourcesList({
               {filteredUsers
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
-                  const { eventName, eventId } = row;
+                  const { eventName, eventId, resourceCount } = row;
                   const isItemSelected = selected.indexOf(eventName) !== -1;
 
                   return (
@@ -152,29 +154,9 @@ export default function ResourcesList({
                       aria-checked={isItemSelected}
                     >
                       <TableCell align="left">{sentenceCase(eventName)}</TableCell>
-                      {/* <TableCell align="left">{sentenceCase(teamName)}</TableCell>
-                      <TableCell align="left">{mentorName}</TableCell>
+                      <TableCell align="left">{resourceCount}</TableCell>
                       <TableCell align="left">
-                        <Label
-                          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(teamType === 'mentor' && 'success') || 'info'}
-                        >
-                          {teamType === 'buddypairing' ? 'Buddy Pairing' : 'Mentor Team'}
-                        </Label>
-                      </TableCell>
-                      <TableCell align="left">{getMembersName(teamMembers)}</TableCell> */}
-                      {/* <TableCell align="left">{experience}</TableCell>
-                      <TableCell align="left">
-                        <Label
-                          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(approval === 'approved' && 'success') || 'error'}
-                        >
-                          {sentenceCase(approval)}
-                        </Label>
-                      </TableCell> */}
-
-                      <TableCell align="left">
-                        <TableMoreMenu setRefresh={setRefresh} eventId={row?.eventId} />
+                        <ViewResource eventId={row?.eventId} />
                       </TableCell>
                     </TableRow>
                   );

@@ -5,7 +5,7 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 // components
-import ResourceModal from '../../../../pages/dashboard/AddResources';
+import ViewResource from '../../../../pages/dashboard/ViewResources';
 import { BatchManager, UserManager } from '../../../../@types/common';
 
 // ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ export default function UserMoreMenu({ setRefresh, eventId }: UserMoreMenuProps)
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}>
-          <ResourceModal isEdit={true} setRefresh={setRefresh} eventId={eventId} />
+          {Boolean(anchorEl) && <ViewResource eventId={eventId} />}
         </MenuItem>
       </Menu>
     </>
