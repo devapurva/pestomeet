@@ -81,6 +81,7 @@ type CalendarFormProps = {
   onCancel: VoidFunction;
   batchList: BatchManager[];
   setRefresh?: any;
+  role: string;
 };
 
 export default function AdminCalendarForm({
@@ -88,7 +89,8 @@ export default function AdminCalendarForm({
   range,
   onCancel,
   batchList,
-  setRefresh
+  setRefresh,
+  role
 }: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -199,6 +201,7 @@ export default function AdminCalendarForm({
         <DialogContent sx={{ pb: 0, overflowY: 'unset' }}>
           <TextField
             fullWidth
+            disabled={role === 'Student'}
             label="Title"
             {...getFieldProps('title')}
             error={Boolean(touched.title && errors.title)}
@@ -208,6 +211,7 @@ export default function AdminCalendarForm({
 
           <TextField
             fullWidth
+            disabled={role === 'Student'}
             multiline
             maxRows={4}
             label="Description"
@@ -218,12 +222,14 @@ export default function AdminCalendarForm({
           />
 
           <FormControlLabel
+            disabled={role === 'Student'}
             control={<Switch checked={values.hasAssignment} {...getFieldProps('hasAssignment')} />}
             label="Assignment"
             sx={{ mb: 3 }}
           />
 
           <MobileDateTimePicker
+            disabled={role === 'Student'}
             label="Start date"
             value={values.start}
             inputFormat="dd/MM/yyyy hh:mm a"
@@ -232,6 +238,7 @@ export default function AdminCalendarForm({
           />
 
           <MobileDateTimePicker
+            disabled={role === 'Student'}
             label="End date"
             value={values.end}
             inputFormat="dd/MM/yyyy hh:mm a"
@@ -251,6 +258,7 @@ export default function AdminCalendarForm({
             <>
               <Autocomplete
                 fullWidth
+                disabled={role === 'Student'}
                 multiple
                 value={batchDetails}
                 isOptionEqualToValue={(option: any, value: any) =>
@@ -279,15 +287,17 @@ export default function AdminCalendarForm({
             </>
           )}
 
-          <ColorSinglePicker
-            style={{ marginTop: 20 }}
-            {...getFieldProps('textColor')}
-            colors={COLOR_OPTIONS}
-          />
+          {role !== 'Student' && (
+            <ColorSinglePicker
+              style={{ marginTop: 20 }}
+              {...getFieldProps('textColor')}
+              colors={COLOR_OPTIONS}
+            />
+          )}
         </DialogContent>
 
         <DialogActions>
-          {!isCreating && (
+          {!isCreating && role !== 'Student' && (
             <Tooltip title="Delete Event">
               <IconButton onClick={handleDelete}>
                 <Icon icon={trash2Fill} width={20} height={20} />
@@ -298,14 +308,16 @@ export default function AdminCalendarForm({
           <Button type="button" variant="outlined" color="inherit" onClick={onCancel}>
             Cancel
           </Button>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            loading={isSubmitting}
-            loadingIndicator="Loading..."
-          >
-            {isCreating ? 'Add' : 'Save'}
-          </LoadingButton>
+          {role !== 'Student' && (
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={isSubmitting}
+              loadingIndicator="Loading..."
+            >
+              {isCreating ? 'Add' : 'Save'}
+            </LoadingButton>
+          )}
         </DialogActions>
       </Form>
     </FormikProvider>

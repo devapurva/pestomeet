@@ -1,4 +1,9 @@
-import FullCalendar, { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/react'; // => request placed at the top
+import FullCalendar, {
+  DateSelectArg,
+  EventClickArg,
+  EventDropArg,
+  EventInput
+} from '@fullcalendar/react'; // => request placed at the top
 import listPlugin from '@fullcalendar/list';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -259,6 +264,7 @@ export default function Calendar() {
           <Dialog open={isOpenModal} onClose={handleCloseModal}>
             <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
             <AdminCalendarForm
+              role={user?.role}
               event={selectedEvent || {}}
               range={selectedRange}
               onCancel={handleCloseModal}
@@ -268,7 +274,41 @@ export default function Calendar() {
           </Dialog>
         )}
 
-        {(user?.role === 'Mentor' || user?.role === 'Student') && (
+        {user?.role === 'Student' &&
+          selectedEvent &&
+          Object.keys(selectedEvent).length > 0 &&
+          selectedEvent?.eventType === 'masterclass' && (
+            <Dialog open={isOpenModal} onClose={handleCloseModal}>
+              <DialogTitle>View Event</DialogTitle>
+              <AdminCalendarForm
+                role={user?.role}
+                event={selectedEvent || {}}
+                range={selectedRange}
+                onCancel={handleCloseModal}
+                batchList={batchList}
+                setRefresh={setRefresh}
+              />
+            </Dialog>
+          )}
+
+        {user?.role === 'Student' &&
+          selectedEvent &&
+          Object.keys(selectedEvent).length > 0 &&
+          selectedEvent?.eventType === 'slot' && (
+            <Dialog open={isOpenModal} onClose={handleCloseModal}>
+              <DialogTitle>{selectedEvent ? 'Edit Slot' : 'Add Slot'}</DialogTitle>
+              <SlotsCalendarForm
+                role={user?.role}
+                event={selectedEvent || {}}
+                range={selectedRange}
+                onCancel={handleCloseModal}
+                batchList={userList}
+                setRefresh={setRefresh}
+              />
+            </Dialog>
+          )}
+
+        {user?.role === 'Mentor' && (
           <Dialog open={isOpenModal} onClose={handleCloseModal}>
             <DialogTitle>{selectedEvent ? 'Edit Slot' : 'Add Slot'}</DialogTitle>
             <SlotsCalendarForm
