@@ -10,7 +10,7 @@ import accountChild from '@iconify/icons-mdi/account-child';
 import accountMultiplePlus from '@iconify/icons-mdi/account-multiple-plus';
 import newspaperVariantMultipleOutline from '@iconify/icons-mdi/newspaper-variant-multiple-outline';
 import newspaperVariantPlus from '@iconify/icons-mdi/newspaper-plus';
-
+import mdiBadgeAccount from '@iconify/icons-mdi/badge-account';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -30,6 +30,7 @@ const IconStyle = styled(Icon)(({ theme }) => ({
 
 const ICONS = {
   student: <IconStyle icon={accountGroup} />,
+  user: <IconStyle icon={mdiBadgeAccount} />,
   mentor: <IconStyle icon={accountTie} />,
   batch: <IconStyle icon={googleClassroom} />,
   calendar: getIcon('ic_calendar'),
@@ -182,6 +183,11 @@ const sidebarConfig = [
     subheader: 'management',
     items: [
       // MANAGEMENT : USER
+      {
+        title: 'All Users',
+        path: PATH_DASHBOARD.users,
+        icon: ICONS.user
+      },
       {
         title: 'Students',
         path: PATH_DASHBOARD.student,

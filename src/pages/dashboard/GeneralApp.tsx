@@ -31,24 +31,32 @@ export default function GeneralApp() {
       <Container maxWidth="xl">
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-            <AppWelcome displayName={user?.name} />
+            <AppWelcome displayName={user?.name} userRole={user?.role} />
           </Grid>
 
-          <Grid item xs={12} md={3}>
-            <AppWidgets1 studentCount={metrics?.studentCount} />
-          </Grid>
+          {user?.role !== 'Student' && (
+            <Grid item xs={12} md={3}>
+              <AppWidgets1 studentCount={metrics?.studentCount} />
+            </Grid>
+          )}
 
-          <Grid item xs={12} md={3}>
-            <AppWidgets2 mentorCount={metrics?.mentorCount} />
-          </Grid>
+          {user?.role !== 'Student' && user?.role !== 'Mentor' && (
+            <Grid item xs={12} md={3}>
+              <AppWidgets2 mentorCount={metrics?.mentorCount} />
+            </Grid>
+          )}
 
-          <Grid item xs={12} md={3}>
-            <AppWidgets3 batchCount={metrics?.batchCount} />
-          </Grid>
+          {user?.role !== 'Student' && user?.role !== 'Mentor' && (
+            <Grid item xs={12} md={3}>
+              <AppWidgets3 batchCount={metrics?.batchCount} />
+            </Grid>
+          )}
 
-          <Grid item xs={12} md={3}>
-            <AppWidgets4 teamCount={metrics?.teamCount} />
-          </Grid>
+          {user?.role !== 'Student' && user?.role !== 'Mentor' && (
+            <Grid item xs={12} md={3}>
+              <AppWidgets4 teamCount={metrics?.teamCount} />
+            </Grid>
+          )}
         </Grid>
       </Container>
     </Page>

@@ -111,6 +111,10 @@ export default function UserList({
         return 'STUDENT';
       case 'mentor':
         return 'MENTOR';
+      case 'super admin':
+        return 'SUPER ADMIN';
+      case 'admin':
+        return 'ADMIN';
       default:
         return 'NA';
     }
@@ -197,7 +201,12 @@ export default function UserList({
                       <TableCell align="left">
                         <Label
                           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(role === 'mentor' && 'info') || 'secondary'}
+                          color={
+                            (role === 'mentor' && 'info') ||
+                            (role === 'super admin' && 'primary') ||
+                            (role === 'admin' && 'error') ||
+                            'secondary'
+                          }
                         >
                           {getRoleText(role)}
                         </Label>

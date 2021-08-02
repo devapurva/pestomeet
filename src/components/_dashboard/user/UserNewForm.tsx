@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
+import { matchPath, useLocation } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 import eyeFill from '@iconify/icons-eva/eye-fill';
@@ -79,6 +80,7 @@ export default function UserNewForm({
   setRefresh,
   handleClose
 }: UserNewFormProps) {
+  const { pathname } = useLocation();
   const { user } = useAuth();
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar } = useSnackbar();
@@ -281,20 +283,11 @@ export default function UserNewForm({
           {isEdit && (
             <Grid item xs={12} md={4}>
               <Card sx={{ py: 10, px: 3 }}>
-                {/* {isEdit && (
-                  <Label
-                    color="success"
-                    sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-                  >
-                    Success
-                  </Label>
-                )} */}
-
                 <Box sx={{ mb: 5 }}>
                   <UploadAvatar
                     accept="image/*"
                     file={values.avatar}
-                    maxSize={3145728}
+                    maxSize={2097152}
                     onDrop={handleDrop}
                     error={Boolean(touched.avatar && errors.avatar)}
                     caption={
@@ -363,16 +356,18 @@ export default function UserNewForm({
                     id="role"
                     onChange={handleChange}
                   >
-                    {user?.role === 'Admin' && (
-                      <FormControlLabel value="student" control={<Radio />} label="Student" />
-                    )}
-                    {user?.role === 'Admin' && (
-                      <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
-                    )}
-                    {user?.role === 'Super Admin' && (
+                    {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
+                      pathname.includes('student') && (
+                        <FormControlLabel value="student" control={<Radio />} label="Student" />
+                      )}
+                    {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
+                      pathname.includes('mentor') && (
+                        <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                      )}
+                    {user?.role === 'Super Admin' && pathname.includes('all-user') && (
                       <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                     )}
-                    {user?.role === 'Super Admin' && (
+                    {user?.role === 'Super Admin' && pathname.includes('all-user') && (
                       <FormControlLabel
                         value="super admin"
                         control={<Radio />}
@@ -387,25 +382,27 @@ export default function UserNewForm({
                 )}
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    style={{ width: values?.role === 'student' ? '100%' : '50%' }}
-                    autoComplete="current-password"
-                    type={showPassword ? 'text' : 'password'}
-                    label="Password"
-                    {...getFieldProps('password')}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                            <Icon icon={showPassword ? eyeFill : eyeOffFill} />
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                    error={Boolean(touched.password && errors.password)}
-                    helperText={touched.password && errors.password}
-                  />
+                  {!isEdit && (
+                    <TextField
+                      fullWidth
+                      style={{ width: values?.role === 'student' ? '100%' : '50%' }}
+                      autoComplete="current-password"
+                      type={showPassword ? 'text' : 'password'}
+                      label="Password"
+                      {...getFieldProps('password')}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                              <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                      error={Boolean(touched.password && errors.password)}
+                      helperText={touched.password && errors.password}
+                    />
+                  )}
                   {values?.role === 'student' ? (
                     <TextField
                       fullWidth

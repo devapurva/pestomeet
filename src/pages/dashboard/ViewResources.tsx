@@ -36,6 +36,7 @@ import { getResource, deleteResource } from '../../redux/slices/calendar';
 import { ResourceManager } from '../../@types/common';
 // hooks
 import useAuth from '../../hooks/useAuth';
+import EmptyContent from '../../components/EmptyContent';
 
 // ----------------------------------------------------------------------
 
@@ -254,6 +255,7 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
                     )}
                   </Accordion>
                 ))}
+              {resourceList?.length === 0 && <EmptyContent title="No Resources Found Yet" />}
             </div>
           )}
         </DialogContent>

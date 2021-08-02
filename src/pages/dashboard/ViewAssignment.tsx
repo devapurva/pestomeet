@@ -36,6 +36,7 @@ import { deleteAssignment, getAssignment } from '../../redux/slices/calendar';
 import { AssignmentManager } from '../../@types/common';
 // hooks
 import useAuth from '../../hooks/useAuth';
+import EmptyContent from '../../components/EmptyContent';
 
 // ----------------------------------------------------------------------
 
@@ -261,6 +262,7 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
                     )}
                   </Accordion>
                 ))}
+              {assignmentList?.length === 0 && <EmptyContent title="No Assignments Found Yet" />}
             </div>
           )}
         </DialogContent>

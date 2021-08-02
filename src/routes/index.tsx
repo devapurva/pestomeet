@@ -75,6 +75,19 @@ export default function Router() {
         { path: '/dashboard', element: <Navigate to="/dashboard/overview" replace /> },
         { path: '/dashboard/overview', element: <GeneralApp /> },
         {
+          path: '/dashboard/all-user',
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Super Admin']}>
+                  <AllUserList />
+                </RoleBasedGuard>
+              )
+            }
+          ]
+        },
+        {
           path: '/dashboard/mentor',
           children: [
             {
@@ -168,6 +181,7 @@ const Login = Loadable(lazy(() => import('../pages/authentication/Login')));
 const Register = Loadable(lazy(() => import('../pages/authentication/Register')));
 // Dashboard
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
+const AllUserList = Loadable(lazy(() => import('../pages/dashboard/AllUserList')));
 const StudentList = Loadable(lazy(() => import('../pages/dashboard/StudentList')));
 const MentorList = Loadable(lazy(() => import('../pages/dashboard/MentorList')));
 const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));

@@ -30,6 +30,7 @@ export const PATH_DASHBOARD = {
     app: path(ROOTS_DASHBOARD, '/overview')
   },
   calendar: path(ROOTS_DASHBOARD, '/calendar'),
+  users: path(ROOTS_DASHBOARD, '/all-user'),
   mentor: path(ROOTS_DASHBOARD, '/mentor'),
   student: path(ROOTS_DASHBOARD, '/student'),
   batch: path(ROOTS_DASHBOARD, '/batch'),
