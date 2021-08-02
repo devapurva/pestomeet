@@ -53,6 +53,24 @@ export const studentSidebarConfig = [
       }
     ]
   },
+
+  // COURSE
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'course material',
+    items: [
+      {
+        title: 'Resources',
+        path: PATH_DASHBOARD.resources,
+        icon: ICONS.resources
+      },
+      {
+        title: 'Assignments',
+        path: PATH_DASHBOARD.assignments,
+        icon: ICONS.assignment
+      }
+    ]
+  },
   // APP
   // ----------------------------------------------------------------------
   {
@@ -71,20 +89,24 @@ export const mentorSiderBarConfig = [
         title: 'overview',
         path: PATH_DASHBOARD.general.app,
         icon: ICONS.dashboard
-      },
-      { title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }
+      }
     ]
   },
 
   // COURSE
   // ----------------------------------------------------------------------
   {
-    subheader: 'Course',
+    subheader: 'course material',
     items: [
       {
         title: 'Resources',
         path: PATH_DASHBOARD.resources,
         icon: ICONS.resources
+      },
+      {
+        title: 'Assignments',
+        path: PATH_DASHBOARD.assignments,
+        icon: ICONS.assignment
       }
     ]
   },
@@ -111,6 +133,13 @@ export const mentorSiderBarConfig = [
         icon: ICONS.buddyPairing
       }
     ]
+  },
+
+  // APP
+  // ----------------------------------------------------------------------
+  {
+    subheader: 'app',
+    items: [{ title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }]
   }
 ];
 
