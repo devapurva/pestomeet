@@ -289,6 +289,21 @@ export function addAssignments(
 
 // ----------------------------------------------------------------------
 
+export function getAssignment(eventId: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/list/assignment/${eventId}`);
+      return response;
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      return error;
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
 export function deleteAssignment(assignmentId: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
