@@ -144,6 +144,9 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
             const resourceDetails = response?.data?.result?.[0];
             setCurrentAssignment(resourceDetails);
             setAssignmentList(response?.data?.result);
+          } else if (!response) {
+            handleClose();
+            enqueueSnackbar('Error fetching assignment', { variant: 'error' });
           }
         })
         .catch((error) => {

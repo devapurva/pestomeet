@@ -144,6 +144,9 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
           const resourceDetails = response?.data?.result?.[0];
           setCurrentResource(resourceDetails);
           setResourceList(response?.data?.result);
+        } else if (!response) {
+          handleClose();
+          enqueueSnackbar('Error fetching resources', { variant: 'error' });
         }
       });
       setLoading(false);
