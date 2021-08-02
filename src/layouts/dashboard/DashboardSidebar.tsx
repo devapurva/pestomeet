@@ -82,7 +82,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }: Dash
           </AccountStyle>
         </Link>
       </Box>
-
+      {console.log(user?.role)}
+      {console.log(sidebarConfig)}
+      {console.log(studentSidebarConfig)}
+      {console.log(mentorSiderBarConfig)}
       {user?.role ? (
         <NavSection
           navConfig={
