@@ -31,9 +31,9 @@ import {
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
-import { deleteResource, getAssignment } from '../../redux/slices/calendar';
+import { deleteAssignment, getAssignment } from '../../redux/slices/calendar';
 // @types
-import { ResourceManager } from '../../@types/common';
+import { AssignmentManager } from '../../@types/common';
 // hooks
 import useAuth from '../../hooks/useAuth';
 
@@ -121,10 +121,9 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
   const classes = useStyles();
   const { user } = useAuth();
   const { events } = useSelector((state: RootState) => state.calendar);
-  const [resourceLinks, setResourceLinks] = useState<string[]>([]);
   const [eventDetails, setEventDetails] = useState<EventInput>({});
-  const [currentResource, setCurrentResource] = useState<ResourceManager>();
-  const [resourceList, setResourceList] = useState<ResourceManager[]>([]);
+  const [currentAssignment, setCurrentAssignment] = useState<AssignmentManager>();
+  const [assignmentList, setAssignmentList] = useState<AssignmentManager[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -139,36 +138,40 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
   useEffect(() => {
     if (open && eventId) {
       setLoading(true);
-      dispatch(getAssignment(eventId)).then((response) => {
-        if (response?.data?.result) {
-          const resourceDetails = response?.data?.result?.[0];
-          setCurrentResource(resourceDetails);
-          setResourceList(response?.data?.result);
-        }
-      });
+      dispatch(getAssignment(eventId))
+        .then((response) => {
+          if (response?.data?.result) {
+            const resourceDetails = response?.data?.result?.[0];
+            setCurrentAssignment(resourceDetails);
+            setAssignmentList(response?.data?.result);
+          }
+        })
+        .catch((error) => {
+          handleClose();
+          enqueueSnackbar('Error fetching assignment', { variant: 'error' });
+        });
       setLoading(false);
     }
   }, [open, eventId, dispatch]);
 
   useEffect(() => {
-    if (open && events?.length > 0 && currentResource && Object.keys(eventDetails).length === 0) {
+    if (open && events?.length > 0 && currentAssignment && Object.keys(eventDetails).length === 0) {
       setLoading(true);
-      const details = events.find((event) => event.eventId === currentResource?.eventId);
+      const details = events.find((event) => event.eventId === currentAssignment?.eventID);
       if (details) {
         setEventDetails(details);
       }
       setLoading(false);
     }
-  }, [open, events, currentResource, eventDetails]);
+  }, [open, events, currentAssignment, eventDetails]);
 
   // eslint-disable-next-line consistent-return
   const parseLinks = (array: string[]) => {
     if (array?.length > 0) {
-      const links = JSON.parse(array[0]);
       return (
         <div>
           <Typography className={classes.heading}>Links:</Typography>
-          {links?.map((link: string, index: number) => (
+          {array?.map((link: string, index: number) => (
             <Typography key={`${link + index}`} className={classes.secondaryHeading}>
               <a rel="noreferrer" href={link} target="_blank">
                 {link}
@@ -180,12 +183,14 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
     }
   };
 
-  const resourceDelete = (id?: string) => {
+  const assignmentDelete = (id?: string) => {
     if (id) {
-      dispatch(deleteResource(id)).then((response) => {
+      dispatch(deleteAssignment(id)).then((response) => {
         if (response?.data?.statusCode) {
-          setResourceList((resourceList) => resourceList.filter((list) => list.resourceId !== id));
-          enqueueSnackbar('Resources Deleted', { variant: 'success' });
+          setAssignmentList((assignmentList) =>
+            assignmentList.filter((list) => list.assignmentId !== id)
+          );
+          enqueueSnackbar('Assignment Deleted', { variant: 'success' });
         }
       });
     }
@@ -216,8 +221,8 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
             </div>
           ) : (
             <div>
-              {resourceList &&
-                resourceList.map((resource, index) => (
+              {assignmentList &&
+                assignmentList.map((assignment, index) => (
                   <Accordion key={index} defaultExpanded={index === 0}>
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -225,23 +230,19 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
                       id="panel1c-header"
                     >
                       <div className={classes.column}>
-                        <Typography className={classes.heading}>{resource.resourceName}</Typography>
+                        <Typography className={classes.heading}>
+                          {assignment.assignmentName}
+                        </Typography>
                       </div>
                     </AccordionSummary>
                     <AccordionDetails className={classes.details}>
-                      <Typography className={classes.heading}>Video:</Typography>
-                      <Typography className={classes.secondaryHeading}>
-                        <a rel="noreferrer" href={resource.resource} target="_blank">
-                          {resource.resource}
-                        </a>
-                      </Typography>
-                      {parseLinks(resource?.resourceLinks)}
+                      {parseLinks(assignment?.assignmentLinks)}
                     </AccordionDetails>
                     <Divider />
-                    {(user?.id === resource.uploaderId || user?.role === 'Super Admin') && (
+                    {(user?.id === assignment.uploaderId || user?.role === 'Super Admin') && (
                       <AccordionActions>
                         <Button
-                          onClick={() => resourceDelete(resource.resourceId)}
+                          onClick={() => assignmentDelete(assignment.assignmentId)}
                           size="small"
                           color="error"
                         >

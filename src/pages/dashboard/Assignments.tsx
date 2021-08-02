@@ -85,7 +85,11 @@ export default function Assignments() {
         <HeaderBreadcrumbs
           heading="Assignments"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Assignments' }]}
-          action={<AssignmentModal isEdit={false} setRefresh={setRefresh} />}
+          action={
+            user?.role === 'Student' ? (
+              <AssignmentModal isEdit={false} setRefresh={setRefresh} />
+            ) : null
+          }
         />
         <AssignmentList
           type="mentor"
