@@ -95,7 +95,7 @@ export default function AssignmentModal({
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'View Resources' : 'Add Resources'}
+          {isEdit ? 'View Assignment' : 'Add Assignment'}
         </DialogTitle>
         <DialogContent>
           <AssignmentsForm

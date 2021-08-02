@@ -30,7 +30,7 @@ import {
   selectEvent,
   selectRange
 } from '../../redux/slices/calendar';
-import { getBatchList } from '../../redux/slices/lists';
+import { getBatchList, getAllUserByID } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -86,10 +86,13 @@ export default function Calendar() {
   const [refresh, setRefresh] = useState(false);
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
-  const { batchList } = useSelector((state: RootState) => state.list);
+  const { batchList, userList } = useSelector((state: RootState) => state.list);
 
   useEffect(() => {
-    dispatch(getBatchList(user?.id));
+    if (user?.role !== 'Student') {
+      dispatch(getBatchList(user?.id));
+      dispatch(getAllUserByID(user?.id));
+    }
     dispatch(getEvents(user?.role === 'Super Admin' ? null : user?.id));
     setRefresh(false);
   }, [dispatch, user?.id, user?.role, refresh]);
@@ -141,7 +144,6 @@ export default function Calendar() {
   };
 
   const handleSelectRange = (arg: DateSelectArg) => {
-    // console.log('handleSelectRange');
     const calendarEl = calendarRef.current;
     if (calendarEl) {
       const calendarApi = calendarEl.getApi();
@@ -151,12 +153,10 @@ export default function Calendar() {
   };
 
   const handleSelectEvent = (arg: EventClickArg) => {
-    // console.log('handleSelectEvent', arg);
     dispatch(selectEvent(arg.event.id));
   };
 
   const handleResizeEvent = async ({ event }: EventResizeDoneArg) => {
-    // console.log('handleResizeEvent', event);
     // try {
     //   dispatch(
     //     updateEvent(event.id, {
@@ -172,7 +172,6 @@ export default function Calendar() {
   };
 
   const handleDropEvent = async ({ event }: EventDropArg) => {
-    // console.log('handleDropEvent', event);
     try {
       dispatch(
         updateEvent(event.id, {
@@ -196,8 +195,6 @@ export default function Calendar() {
   const handleCloseModal = () => {
     dispatch(closeModal());
   };
-  // <
-  //             <AssignmentModal isEdit={false} currentAssignment={null} setRefresh={setRefresh} />
 
   return (
     <Page title="Calendar">
@@ -206,13 +203,15 @@ export default function Calendar() {
           heading="Calendar"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Calendar' }]}
           action={
-            <Button
-              variant="contained"
-              startIcon={<Icon icon={plusFill} width={20} height={20} />}
-              onClick={handleAddEvent}
-            >
-              {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
-            </Button>
+            user?.role !== 'Student' ? (
+              <Button
+                variant="contained"
+                startIcon={<Icon icon={plusFill} width={20} height={20} />}
+                onClick={handleAddEvent}
+              >
+                {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
+              </Button>
+            ) : null
           }
         />
 
@@ -269,14 +268,15 @@ export default function Calendar() {
           </Dialog>
         )}
 
-        {user?.role === 'Mentor' && (
+        {(user?.role === 'Mentor' || user?.role === 'Student') && (
           <Dialog open={isOpenModal} onClose={handleCloseModal}>
-            <DialogTitle>{selectedEvent ? 'Add Slot' : 'Edit Slot'}</DialogTitle>
+            <DialogTitle>{selectedEvent ? 'Edit Slot' : 'Add Slot'}</DialogTitle>
             <SlotsCalendarForm
+              role={user?.role}
               event={selectedEvent || {}}
               range={selectedRange}
               onCancel={handleCloseModal}
-              batchList={batchList}
+              batchList={userList}
               setRefresh={setRefresh}
             />
           </Dialog>

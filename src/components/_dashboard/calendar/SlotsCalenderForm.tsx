@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { merge } from 'lodash';
 import { isBefore, add } from 'date-fns';
@@ -23,10 +23,9 @@ import { EventInput } from '@fullcalendar/common';
 // hooks
 import useAuth from '../../../hooks/useAuth';
 // redux
-import { useDispatch } from '../../../redux/store';
+import { RootState, useDispatch, useSelector } from '../../../redux/store';
 import { createEvent, updateEvent, deleteEvent } from '../../../redux/slices/calendar';
 //
-import ColorSinglePicker from '../../ColorSinglePicker';
 import { BatchManager, UserManager } from '../../../@types/common';
 import { AuthUser } from '../../../@types/authentication';
 
@@ -50,7 +49,8 @@ const getInitialValues = (
     organiserId: user?.id,
     organiserName: user?.name,
     hasAssignment: false,
-    attendees: []
+    attendees: [],
+    hasBooked: false
   };
 
   if (event || range) {
@@ -69,8 +69,9 @@ type CalendarFormProps = {
     end: Date;
   } | null;
   onCancel: VoidFunction;
-  batchList: BatchManager[];
+  batchList: UserManager[];
   setRefresh?: any;
+  role: string | undefined;
 };
 
 export default function SlotsCalendarForm({
@@ -78,13 +79,25 @@ export default function SlotsCalendarForm({
   range,
   onCancel,
   batchList,
-  setRefresh
+  setRefresh,
+  role
 }: CalendarFormProps) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { user } = useAuth();
   const isCreating = !event;
   const submitRef = useRef<any>(null);
+
+  const [batchId, setBatchId] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (batchList?.length > 0) {
+      const obj = {
+        batchMember: batchList
+      };
+      setBatchId([{ ...obj }]);
+    }
+  }, [batchList]);
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Event Name is required'),
@@ -95,11 +108,11 @@ export default function SlotsCalendarForm({
     end: Yup.string().required('End Date & Time is required')
   });
 
-  useEffect(() => {
-    if (submitRef) {
-      submitRef?.current?.click();
-    }
-  }, [submitRef]);
+  // useEffect(() => {
+  //   if (submitRef) {
+  //     submitRef?.current?.click();
+  //   }
+  // }, [submitRef]);
 
   const formik = useFormik({
     initialValues: getInitialValues(event, range, user),
@@ -108,7 +121,7 @@ export default function SlotsCalendarForm({
       try {
         const newEvent = {
           eventName: values.title,
-          eventDescription: values.description,
+          eventDescription: values.title,
           eventType: values.eventType,
           eventColor: values.textColor,
           eventStart: values.start,
@@ -116,7 +129,8 @@ export default function SlotsCalendarForm({
           organiserId: user?.id,
           organiserName: user?.name,
           hasAssignment: values.hasAssignment,
-          attendees: values.attendees
+          attendees: role === 'Student' ? event?.attendees : batchId || values.attendees,
+          hasBooked: values.hasBooked
         };
         if (event.id) {
           dispatch(updateEvent(event.id, newEvent));
@@ -148,6 +162,7 @@ export default function SlotsCalendarForm({
         <DialogContent sx={{ pb: 0, overflowY: 'unset' }}>
           <TextField
             fullWidth
+            disabled={role === 'Student'}
             label="Title"
             {...getFieldProps('title')}
             error={Boolean(touched.title && errors.title)}
@@ -156,12 +171,14 @@ export default function SlotsCalendarForm({
           />
 
           <FormControlLabel
+            disabled={role === 'Student'}
             control={<Switch checked={values.hasAssignment} {...getFieldProps('hasAssignment')} />}
             label="Assignment"
             sx={{ mb: 3 }}
           />
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
             <MobileDateTimePicker
+              disabled={role === 'Student'}
               label="Start date"
               value={values.start}
               inputFormat="dd/MM/yyyy hh:mm a"
@@ -171,6 +188,7 @@ export default function SlotsCalendarForm({
 
             <MobileDateTimePicker
               label="End date"
+              disabled={role === 'Student'}
               value={values.end}
               inputFormat="dd/MM/yyyy hh:mm a"
               onChange={(date) => setFieldValue('end', date)}
@@ -185,6 +203,13 @@ export default function SlotsCalendarForm({
               )}
             />
           </Stack>
+          {role === 'Student' && (
+            <FormControlLabel
+              control={<Switch checked={values.hasBooked} {...getFieldProps('hasBooked')} />}
+              label="Book Event"
+              sx={{ mb: 3 }}
+            />
+          )}
         </DialogContent>
 
         <DialogActions>

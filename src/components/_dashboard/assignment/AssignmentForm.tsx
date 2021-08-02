@@ -218,12 +218,17 @@ export default function AssignmentsForm({
                       onChange={(event, value) => setEventsDetails(value, setFieldValue)}
                       disableCloseOnSelect
                       getOptionLabel={(option) => (option?.title ? option?.title : '')}
-                      renderOption={(props, option, { selected }) => (
-                        <li key={option.id} {...props}>
-                          <Checkbox checked={selected} />
-                          {option.title}
-                        </li>
-                      )}
+                      // eslint-disable-next-line consistent-return
+                      renderOption={(props, option, { selected }) => {
+                        if (option?.hasAssignment) {
+                          return (
+                            <li key={option.id} {...props}>
+                              <Checkbox checked={selected} />
+                              {option.title}
+                            </li>
+                          );
+                        }
+                      }}
                       renderInput={(params) => (
                         <TextField
                           error={Boolean(touched.eventID && errors.eventID)}

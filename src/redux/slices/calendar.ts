@@ -39,7 +39,7 @@ const slice = createSlice({
     // GET EVENTS
     getEventsSuccess(state, action) {
       const resources = action.payload.filter((event: any) => event?.resourceCount > 0);
-      const assignments = action.payload.filter((event: any) => event?.hasAssignment === true);
+      const assignments = action.payload.filter((event: any) => event?.hasAssignment);
       state.events = action.payload;
       state.resourceEvents = resources || [];
       state.assignmentEvents = assignments || [];

@@ -357,11 +357,11 @@ export default function UserNewForm({
                     onChange={handleChange}
                   >
                     {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
-                      pathname.includes('student' || 'all-user') && (
+                      (pathname.includes('student') || pathname.includes('all-user')) && (
                         <FormControlLabel value="student" control={<Radio />} label="Student" />
                       )}
                     {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
-                      pathname.includes('mentor' || 'all-user') && (
+                      (pathname.includes('mentor') || pathname.includes('all-user')) && (
                         <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
                       )}
                     {user?.role === 'Super Admin' && pathname.includes('all-user') && (

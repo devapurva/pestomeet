@@ -84,7 +84,6 @@ function AuthProvider({ children }: { children: ReactNode }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-        // console.log(isValidToken(accessToken));
         if (accessToken) {
           setSession(accessToken);
           const user: LoggedIn = jwt_decode(accessToken);

@@ -116,7 +116,7 @@ export default function BatchForm({
       values.batchName,
       values.batchType,
       values.batchOwner,
-      values.batchOwnerID ? values.batchOwnerID : user?.id,
+      user?.id,
       values.batchMembers
     ).then((response: any) => {
       if (response?.data?.statusCode) {

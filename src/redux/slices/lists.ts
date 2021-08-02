@@ -158,6 +158,20 @@ export function getHomeMetrics(id: string) {
 
 // ----------------------------------------------------------------------
 
+export function getAllUserByID(id: string) {
+  return async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await HTTPClient.get(`/list/students/${id}`);
+      dispatch(slice.actions.getUserListSuccess(response.data.result ? response.data.result : []));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
 export function getAllUserList() {
   return async () => {
     dispatch(slice.actions.startLoading());

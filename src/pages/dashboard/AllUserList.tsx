@@ -37,7 +37,6 @@ export default function AllUserList() {
 
   useEffect(() => {
     dispatch(getAllUserList());
-    dispatch(getAllUserList());
     setRefresh(false);
   }, [dispatch, refresh]);
 

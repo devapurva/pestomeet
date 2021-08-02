@@ -184,7 +184,8 @@ export default function AdminCalendarForm({
   const setAttendees = (values: BatchManager[], setFieldValue: any) => {
     const finalList = values.map((element) => {
       const obj = {
-        batchId: element.batchId
+        batchId: element.batchId,
+        batchMember: element.batchMembers
       };
       return obj;
     });
@@ -248,7 +249,6 @@ export default function AdminCalendarForm({
 
           {batchList && (
             <>
-              {/* {console.log(values.attendees, batchList)} */}
               <Autocomplete
                 fullWidth
                 multiple
@@ -263,7 +263,6 @@ export default function AdminCalendarForm({
                 renderOption={(props, option, { selected }) => (
                   <li key={option.batchId} {...props}>
                     <Checkbox checked={selected} />
-                    {/* {console.log(option)} */}
                     {option.batchName}
                   </li>
                 )}
