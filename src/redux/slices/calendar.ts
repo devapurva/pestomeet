@@ -308,7 +308,7 @@ export function deleteAssignment(assignmentId: string) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await HTTPClient.delete(`/delete/assignment${assignmentId}`);
+      const response = await HTTPClient.delete(`/delete/assignment/${assignmentId}`);
       return response;
     } catch (error) {
       dispatch(slice.actions.hasError(error));

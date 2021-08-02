@@ -194,6 +194,12 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
             assignmentList.filter((list) => list.assignmentId !== id)
           );
           enqueueSnackbar('Assignment Deleted', { variant: 'success' });
+
+          setTimeout(() => {
+            if (assignmentList?.length === 0) {
+              handleClose();
+            }
+          }, 200);
         }
       });
     }
