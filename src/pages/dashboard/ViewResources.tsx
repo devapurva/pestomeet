@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSnackbar } from 'notistack';
-import { Icon } from '@iconify/react';
+import { Icon, InlineIcon } from '@iconify/react';
 import { EventInput } from '@fullcalendar/common';
 import { makeStyles } from '@material-ui/core/styles';
 // material
@@ -29,6 +29,7 @@ import {
   Divider
 } from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import mdiVideoPlusOutline from '@iconify/icons-mdi/video-plus-outline';
 // redux
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import { getResource, deleteResource } from '../../redux/slices/calendar';
@@ -128,6 +129,7 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
   const [resourceList, setResourceList] = useState<ResourceManager[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -170,26 +172,32 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
     if (array?.length > 0) {
       const links = JSON.parse(array[0]);
       return (
-        <div>
-          <Typography className={classes.heading}>Links:</Typography>
-          {links?.map((link: string, index: number) => (
-            <Typography key={`${link + index}`} className={classes.secondaryHeading}>
-              <a rel="noreferrer" href={link} target="_blank">
-                {link}
-              </a>
-            </Typography>
-          ))}
-        </div>
+        <>
+          {links?.length !== 0 && (
+            <div>
+              <Typography className={classes.heading}>Links:</Typography>
+              {links?.map((link: string, index: number) => (
+                <Typography key={`${link + index}`} className={classes.secondaryHeading}>
+                  <a rel="noreferrer" href={link} target="_blank">
+                    {link}
+                  </a>
+                </Typography>
+              ))}
+            </div>
+          )}
+        </>
       );
     }
   };
 
   const resourceDelete = (id?: string) => {
     if (id) {
+      setIsLoading(true);
       dispatch(deleteResource(id)).then((response) => {
         if (response?.data?.statusCode) {
           setResourceList((resourceList) => resourceList.filter((list) => list.resourceId !== id));
           enqueueSnackbar('Resources Deleted', { variant: 'success' });
+          setIsLoading(false);
         }
       });
     }
@@ -202,7 +210,7 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
       </div>
       <Dialog
         open={open}
-        maxWidth="lg"
+        maxWidth="md"
         fullWidth
         onClose={(event, reason) => {
           if (reason !== 'backdropClick') {
@@ -235,9 +243,12 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
                     <AccordionDetails className={classes.details}>
                       <Typography className={classes.heading}>Video:</Typography>
                       <Typography className={classes.secondaryHeading}>
-                        <a rel="noreferrer" href={resource.resource} target="_blank">
-                          {resource.resource}
-                        </a>
+                        <span>
+                          {/* <InlineIcon icon={mdiVideoPlusOutline} height={22} /> */}
+                          <a rel="noreferrer" href={resource.resource} target="_blank">
+                            {resource.resource}
+                          </a>
+                        </span>
                       </Typography>
                       {parseLinks(resource?.resourceLinks)}
                     </AccordionDetails>
@@ -248,8 +259,9 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
                           onClick={() => resourceDelete(resource.resourceId)}
                           size="small"
                           color="error"
+                          disabled={isLoading}
                         >
-                          Delete
+                          {isLoading ? 'Deleting...' : 'Delete'}
                         </Button>
                       </AccordionActions>
                     )}

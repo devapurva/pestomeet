@@ -127,6 +127,7 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
   const [assignmentList, setAssignmentList] = useState<AssignmentManager[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -173,22 +174,27 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
   const parseLinks = (array: string[]) => {
     if (array?.length > 0) {
       return (
-        <div>
-          <Typography className={classes.heading}>Links:</Typography>
-          {array?.map((link: string, index: number) => (
-            <Typography key={`${link + index}`} className={classes.secondaryHeading}>
-              <a rel="noreferrer" href={link} target="_blank">
-                {link}
-              </a>
-            </Typography>
-          ))}
-        </div>
+        <>
+          {array?.length !== 0 && (
+            <div>
+              <Typography className={classes.heading}>Links:</Typography>
+              {array?.map((link: string, index: number) => (
+                <Typography key={`${link + index}`} className={classes.secondaryHeading}>
+                  <a rel="noreferrer" href={link} target="_blank">
+                    {link}
+                  </a>
+                </Typography>
+              ))}
+            </div>
+          )}
+        </>
       );
     }
   };
 
   const assignmentDelete = (id?: string) => {
     if (id) {
+      setIsLoading(true);
       dispatch(deleteAssignment(id)).then((response) => {
         if (response?.data?.statusCode) {
           setAssignmentList((assignmentList) =>
@@ -201,6 +207,7 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
               handleClose();
             }
           }, 200);
+          setIsLoading(false);
         }
       });
     }
@@ -255,8 +262,9 @@ export default function ViewAssignment({ eventId }: ViewResourceProps) {
                           onClick={() => assignmentDelete(assignment.assignmentId)}
                           size="small"
                           color="error"
+                          disabled={isLoading}
                         >
-                          Delete
+                          {isLoading ? 'Deleting...' : 'Delete'}
                         </Button>
                       </AccordionActions>
                     )}

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Icon } from '@iconify/react';
 // material
@@ -58,6 +59,7 @@ const DialogTitle = (props: DialogTitleProps) => {
 };
 
 export default function UserCreateModal({ isEdit, currentUser, setRefresh }: UserCreateModalProps) {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -68,11 +70,24 @@ export default function UserCreateModal({ isEdit, currentUser, setRefresh }: Use
     setOpen(false);
   };
 
+  // eslint-disable-next-line consistent-return
+  const getRole = () => {
+    if (pathname.includes('student')) {
+      return 'Student';
+    }
+    if (pathname.includes('mentor')) {
+      return 'Mentor';
+    }
+    if (pathname.includes('all-user')) {
+      return 'User';
+    }
+  };
+
   return (
     <div>
       {!isEdit ? (
         <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
-          New User
+          Add {getRole()}
         </Button>
       ) : (
         <div onClick={handleClickOpen} style={{ display: 'flex' }}>
@@ -93,7 +108,7 @@ export default function UserCreateModal({ isEdit, currentUser, setRefresh }: Use
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? 'Edit User' : 'Create New User'}
+          {isEdit ? `Edit ${getRole()}` : `Add ${getRole()}`}
         </DialogTitle>
         <DialogContent>
           <UserNewForm

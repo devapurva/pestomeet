@@ -116,13 +116,13 @@ const slice = createSlice({
     // GET MENTOR TEAM LIST
     getMentorTeamListSuccess(state, action) {
       state.isLoading = false;
-      state.mentorTeamList = action.payload;
+      state.mentorTeamList = action.payload?.filter((list: any) => list?.teamType === 'mentor');
     },
 
     // GET BUDDY PAIRING LIST
     getBuddyListSuccess(state, action) {
       state.isLoading = false;
-      state.buddyList = action.payload;
+      state.buddyList = action.payload?.filter((list: any) => list?.teamType === 'buddypairing');
     },
 
     // GET TEAM LIST

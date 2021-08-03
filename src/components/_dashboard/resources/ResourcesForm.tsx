@@ -19,7 +19,7 @@ import {
   FormHelperText,
   FormControlLabel,
   Radio,
-  RadioGroup,
+  Divider,
   FormLabel,
   InputAdornment,
   IconButton,
@@ -29,6 +29,7 @@ import {
 } from '@material-ui/core';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
+import mdiVideoPlusOutline from '@iconify/icons-mdi/video-plus-outline';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
 import { addResources, getResource, deleteResource } from '../../../redux/slices/calendar';
@@ -100,7 +101,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
     resourceName: Yup.string()
       .max(100, `Resource name cannot be more than ${100} characters`)
       .required('Resource name is required'),
-    resource: Yup.mixed(),
+    resource: Yup.mixed().required('Video is required'),
     eventId: Yup.string().required('Event is required'),
     eventType: Yup.string().required('Event is required'),
     resourceLink: Yup.string()
@@ -256,6 +257,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   <TextField
                     fullWidth
+                    style={{ width: '79%' }}
                     type="text"
                     label="Resource Links"
                     disabled={isEdit}
@@ -263,7 +265,11 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton edge="end" onClick={() => appendResourceLinks(setFieldValue)}>
+                          <IconButton
+                            edge="end"
+                            color="primary"
+                            onClick={() => appendResourceLinks(setFieldValue)}
+                          >
                             <Icon icon={plusFill} />
                           </IconButton>
                         </InputAdornment>
@@ -272,14 +278,18 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                     error={Boolean(touched.resourceLink && errors.resourceLink)}
                     helperText={touched.resourceLink && errors.resourceLink}
                   />
+                  <Divider orientation="vertical" flexItem light={false} />
                   <Button
                     variant="contained"
-                    startIcon={<Icon icon={plusFill} />}
+                    startIcon={<Icon icon={mdiVideoPlusOutline} />}
                     onClick={() => uploadFile(setFieldValue)}
                   >
                     Upload Video
                   </Button>
                 </Stack>
+                {touched.resource && errors.resource && (
+                  <FormHelperText error={true}>{errors.resource}</FormHelperText>
+                )}
                 {invalidLink && <FormHelperText error={true}>Invalid Link</FormHelperText>}
                 {resourceLinks &&
                   resourceLinks?.map((link, index) => (

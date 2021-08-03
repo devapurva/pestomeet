@@ -88,6 +88,16 @@ export default function UserNewForm({
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // eslint-disable-next-line consistent-return
+  const getRole = () => {
+    if (pathname.includes('student')) {
+      return 'student';
+    }
+    if (pathname.includes('mentor')) {
+      return 'mentor';
+    }
+  };
+
   const NewUserSchema = Yup.object().shape(
     {
       name: Yup.string()
@@ -170,7 +180,7 @@ export default function UserNewForm({
       phone: currentUser?.phone || '',
       avatar: currentUser?.avatar || null,
       approval: currentUser?.approval || 'inprogress',
-      role: currentUser?.role || '',
+      role: currentUser?.role || getRole() || '',
       experience: currentUser?.experience || ''
     },
     validationSchema: isEdit ? EditUserSchema : NewUserSchema,
@@ -353,38 +363,40 @@ export default function UserNewForm({
                   />
                 </Stack>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <FormLabel className={classes.legend} component="legend">
-                    Role:
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    value={values?.role}
-                    aria-label="role"
-                    name="role"
-                    id="role"
-                    onChange={handleChange}
-                  >
-                    {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
-                      (pathname.includes('student') || pathname.includes('all-user')) && (
-                        <FormControlLabel value="student" control={<Radio />} label="Student" />
+                {pathname.includes('all-user') && (
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <FormLabel className={classes.legend} component="legend">
+                      Role:
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      value={values?.role}
+                      aria-label="role"
+                      name="role"
+                      id="role"
+                      onChange={handleChange}
+                    >
+                      {user?.role === 'Super Admin' && pathname.includes('all-user') && (
+                        <FormControlLabel
+                          value="super admin"
+                          control={<Radio />}
+                          label="Super Admin"
+                        />
                       )}
-                    {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
-                      (pathname.includes('mentor') || pathname.includes('all-user')) && (
-                        <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                      {user?.role === 'Super Admin' && pathname.includes('all-user') && (
+                        <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                       )}
-                    {user?.role === 'Super Admin' && pathname.includes('all-user') && (
-                      <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                    )}
-                    {user?.role === 'Super Admin' && pathname.includes('all-user') && (
-                      <FormControlLabel
-                        value="super admin"
-                        control={<Radio />}
-                        label="Super Admin"
-                      />
-                    )}
-                  </RadioGroup>
-                </Stack>
+                      {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
+                        (pathname.includes('mentor') || pathname.includes('all-user')) && (
+                          <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                        )}
+                      {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
+                        (pathname.includes('student') || pathname.includes('all-user')) && (
+                          <FormControlLabel value="student" control={<Radio />} label="Student" />
+                        )}
+                    </RadioGroup>
+                  </Stack>
+                )}
 
                 {touched.role && errors.role && (
                   <FormHelperText error={true}>{errors.role}</FormHelperText>
@@ -429,7 +441,7 @@ export default function UserNewForm({
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                   <LoadingButton type="submit" variant="contained" loading={loading}>
-                    {!isEdit ? 'Create User' : 'Save Changes'}
+                    {!isEdit ? `Add ${getRole() || 'User'}` : 'Save Changes'}
                   </LoadingButton>
                 </Box>
               </Stack>
