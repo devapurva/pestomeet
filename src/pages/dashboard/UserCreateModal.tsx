@@ -87,7 +87,7 @@ export default function UserCreateModal({ isEdit, currentUser, setRefresh }: Use
     <div>
       {!isEdit ? (
         <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
-          Add {getRole()}
+          Add {getRole() || 'User'}
         </Button>
       ) : (
         <div onClick={handleClickOpen} style={{ display: 'flex' }}>
@@ -108,7 +108,7 @@ export default function UserCreateModal({ isEdit, currentUser, setRefresh }: Use
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {isEdit ? `Edit ${getRole()}` : `Add ${getRole()}`}
+          {isEdit ? `Edit ${getRole()}` : `Add ${getRole() || 'User'}`}
         </DialogTitle>
         <DialogContent>
           <UserNewForm
