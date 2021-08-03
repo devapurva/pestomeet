@@ -94,6 +94,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
   const [invalidLink, setInvalidLink] = useState(false);
   const [eventDetails, setEventDetails] = useState<EventInput>({});
   const [currentResource, setCurrentResource] = useState<ResourceManager>();
+  const [loading, setLoading] = useState(false);
 
   const NewResourceSchema = Yup.object().shape({
     resourceName: Yup.string()
@@ -118,6 +119,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
     },
     validationSchema: NewResourceSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
+      setLoading(true);
       try {
         const formData = new FormData();
         formData.append('resourceName', values.resourceName);
@@ -130,15 +132,18 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
           if (response?.data?.statusCode) {
             enqueueSnackbar('Resources Added Successfully', { variant: 'success' });
             if (isMountedRef.current) {
+              setLoading(false);
               setSubmitting(false);
             }
             if (setRefresh) setRefresh(true);
             if (handleClose) handleClose();
           } else {
+            setLoading(false);
             handleError(response?.data, setSubmitting, setErrors);
           }
         });
       } catch (error) {
+        setLoading(false);
         handleError(error, setSubmitting, setErrors);
       }
     }
@@ -161,19 +166,6 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
     getFieldProps,
     handleChange
   } = formik;
-
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        setFieldValue('avatar', {
-          ...file,
-          preview: URL.createObjectURL(file)
-        });
-      }
-    },
-    [setFieldValue]
-  );
 
   const setTeamOwner = (value: any, setFieldValue: any) => {
     setEventDetails(value);
@@ -308,7 +300,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                 )}
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  <LoadingButton type="submit" variant="contained" loading={loading}>
                     Add Resources
                   </LoadingButton>
                 </Box>

@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
@@ -73,6 +74,7 @@ export default function BatchForm({
   const isMountedRef = useIsMountedRef();
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
 
   const NewBatchSchema = Yup.object().shape({
     batchName: Yup.string()
@@ -96,6 +98,7 @@ export default function BatchForm({
     },
     validationSchema: NewBatchSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
+      setLoading(true);
       try {
         if (isEdit) {
           handleEditBatch(values, { setErrors, setSubmitting });
@@ -122,11 +125,13 @@ export default function BatchForm({
       if (response?.data?.statusCode) {
         enqueueSnackbar('Batch added successfully', { variant: 'success' });
         if (isMountedRef.current) {
+          setLoading(false);
           setSubmitting(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
       } else {
+        setLoading(false);
         handleError(response?.data, setSubmitting, setErrors);
       }
     });
@@ -147,11 +152,13 @@ export default function BatchForm({
       if (response?.data?.statusCode) {
         enqueueSnackbar('Batch updated successfully', { variant: 'success' });
         if (isMountedRef.current) {
+          setLoading(false);
           setSubmitting(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
       } else {
+        setLoading(false);
         handleError(response?.data, setSubmitting, setErrors);
       }
     });
@@ -293,7 +300,7 @@ export default function BatchForm({
                 </Stack>
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  <LoadingButton type="submit" variant="contained" loading={loading}>
                     {!isEdit ? 'Create Batch' : 'Save Changes'}
                   </LoadingButton>
                 </Box>

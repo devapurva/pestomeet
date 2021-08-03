@@ -97,6 +97,7 @@ export default function AdminCalendarForm({
   const { user } = useAuth();
   const [batchDetails, setBatchDetails] = useState<BatchManager[]>([]);
   const isCreating = !event;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (Object.keys(event).length > 0 && batchDetails) {
@@ -123,6 +124,7 @@ export default function AdminCalendarForm({
     initialValues: getInitialValues(event, range, batchDetails),
     validationSchema: EventSchema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
+      setLoading(true);
       try {
         const newEvent = {
           eventName: values.title,
@@ -152,10 +154,12 @@ export default function AdminCalendarForm({
         resetForm();
         onCancel();
         setSubmitting(false);
+        setLoading(true);
         if (setRefresh) {
           setRefresh(true);
         }
       } catch (error) {
+        setLoading(true);
         console.error(error);
       }
     }
@@ -171,6 +175,7 @@ export default function AdminCalendarForm({
       dispatch(deleteEvent(event.id)).then((response) => {
         if (response?.data?.statusCode) {
           enqueueSnackbar('Event Deleted', { variant: 'success' });
+          setLoading(true);
           if (setRefresh) {
             setRefresh(true);
           }
@@ -312,7 +317,7 @@ export default function AdminCalendarForm({
             <LoadingButton
               type="submit"
               variant="contained"
-              loading={isSubmitting}
+              loading={loading}
               loadingIndicator="Loading..."
             >
               {isCreating ? 'Add' : 'Save'}

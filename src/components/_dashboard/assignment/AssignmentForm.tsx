@@ -91,6 +91,7 @@ export default function AssignmentsForm({
   const [assignmentLinks, setAssignmentLinks] = useState<string[]>([]);
   const [invalidLink, setInvalidLink] = useState(false);
   const [eventDetails, setEventDetails] = useState<EventInput>({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (events?.length > 0 && currentAssignment && !eventDetails) {
@@ -121,6 +122,7 @@ export default function AssignmentsForm({
     },
     validationSchema: NewResourceSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
+      setLoading(true);
       try {
         dispatch(
           addAssignments({
@@ -133,15 +135,18 @@ export default function AssignmentsForm({
           if (response?.data?.statusCode) {
             enqueueSnackbar('Assignments Added Successfully', { variant: 'success' });
             if (isMountedRef.current) {
+              setLoading(false);
               setSubmitting(false);
             }
             if (setRefresh) setRefresh(true);
             if (handleClose) handleClose();
           } else {
+            setLoading(false);
             handleError(response?.data, setSubmitting, setErrors);
           }
         });
       } catch (error) {
+        setLoading(false);
         handleError(error, setSubmitting, setErrors);
       }
     }
@@ -273,7 +278,7 @@ export default function AssignmentsForm({
                   ))}
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  <LoadingButton type="submit" variant="contained" loading={loading}>
                     Add Assignment
                   </LoadingButton>
                 </Box>

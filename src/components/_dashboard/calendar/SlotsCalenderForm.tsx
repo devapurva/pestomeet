@@ -87,6 +87,7 @@ export default function SlotsCalendarForm({
   const { user } = useAuth();
   const isCreating = !event;
   const submitRef = useRef<any>(null);
+  const [loading, setLoading] = useState(false);
 
   const [batchId, setBatchId] = useState<any[]>([]);
 
@@ -118,6 +119,7 @@ export default function SlotsCalendarForm({
     initialValues: getInitialValues(event, range, user),
     validationSchema: EventSchema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
+      setLoading(false);
       try {
         const newEvent = {
           eventName: values.title,
@@ -133,11 +135,19 @@ export default function SlotsCalendarForm({
           hasBooked: values.hasBooked
         };
         if (event.id) {
-          dispatch(updateEvent(event.id, newEvent));
-          enqueueSnackbar('Update event success', { variant: 'success' });
+          dispatch(updateEvent(event.id, newEvent)).then((response) => {
+            if (response?.data?.statusCode) {
+              enqueueSnackbar('Update event success', { variant: 'success' });
+              setLoading(false);
+            }
+          });
         } else {
-          dispatch(createEvent(newEvent));
-          enqueueSnackbar('Create event success', { variant: 'success' });
+          dispatch(createEvent(newEvent)).then((response) => {
+            if (response?.data?.statusCode) {
+              enqueueSnackbar('Create event success', { variant: 'success' });
+              setLoading(false);
+            }
+          });
         }
         resetForm();
         onCancel();
@@ -146,6 +156,7 @@ export default function SlotsCalendarForm({
           setRefresh(true);
         }
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     }
@@ -221,7 +232,7 @@ export default function SlotsCalendarForm({
             ref={submitRef}
             type="submit"
             variant="contained"
-            loading={isSubmitting}
+            loading={loading}
             loadingIndicator="Loading..."
           >
             {!isCreating ? 'Save' : 'Add'}

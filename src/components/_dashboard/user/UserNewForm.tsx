@@ -86,6 +86,7 @@ export default function UserNewForm({
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const NewUserSchema = Yup.object().shape(
     {
@@ -175,6 +176,7 @@ export default function UserNewForm({
     validationSchema: isEdit ? EditUserSchema : NewUserSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
+        setLoading(true);
         if (isEdit) {
           handleEditUser(values, { setErrors, setSubmitting });
         } else {
@@ -190,6 +192,9 @@ export default function UserNewForm({
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
     await addUser(
       values?.name,
       values?.role,
@@ -203,10 +208,12 @@ export default function UserNewForm({
         enqueueSnackbar('User added successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
+          setLoading(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
       } else {
+        setLoading(false);
         handleError(response?.data, setSubmitting, setErrors);
       }
     });
@@ -229,6 +236,7 @@ export default function UserNewForm({
         enqueueSnackbar('User updated successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
+          setLoading(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
@@ -240,6 +248,7 @@ export default function UserNewForm({
 
   const handleError = (error: any, setSubmitting: any, setErrors: any) => {
     if (isMountedRef.current) {
+      setLoading(false);
       setSubmitting(false);
       setErrors({ afterSubmit: error.message });
     }
@@ -419,7 +428,7 @@ export default function UserNewForm({
                 </Stack>
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  <LoadingButton type="submit" variant="contained" loading={loading}>
                     {!isEdit ? 'Create User' : 'Save Changes'}
                   </LoadingButton>
                 </Box>

@@ -140,6 +140,7 @@ export default function TeamForm({
     },
     validationSchema: NewTeamSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
+      setLoading(true);
       setSubmitting(true);
       try {
         if (isEdit) {
@@ -170,10 +171,12 @@ export default function TeamForm({
         enqueueSnackbar('Team added successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
+          setLoading(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
       } else {
+        setLoading(false);
         handleError(response?.data, setSubmitting, setErrors);
       }
     });
@@ -196,11 +199,13 @@ export default function TeamForm({
       if (response?.data?.statusCode) {
         enqueueSnackbar('Team updated successfully', { variant: 'success' });
         if (isMountedRef.current) {
+          setLoading(false);
           setSubmitting(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
       } else {
+        setLoading(false);
         handleError(response?.data, setSubmitting, setErrors);
       }
     });
@@ -409,7 +414,7 @@ export default function TeamForm({
                 )}
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+                  <LoadingButton type="submit" variant="contained" loading={loading}>
                     {!isEdit ? 'Create Team' : 'Save Changes'}
                   </LoadingButton>
                 </Box>
