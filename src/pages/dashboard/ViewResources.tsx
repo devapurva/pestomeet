@@ -93,6 +93,10 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       textDecoration: 'underline'
     }
+  },
+  linkGroup: {
+    marginTop: 10,
+    marginBottom: 10
   }
 }));
 
@@ -174,7 +178,7 @@ export default function ViewResource({ eventId }: ViewResourceProps) {
       return (
         <>
           {links?.length !== 0 && (
-            <div>
+            <div className={classes.linkGroup}>
               <Typography className={classes.heading}>Links:</Typography>
               {links?.map((link: string, index: number) => (
                 <Typography key={`${link + index}`} className={classes.secondaryHeading}>
