@@ -280,6 +280,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                   />
                   <Divider orientation="vertical" flexItem light={false} />
                   <Button
+                    color="warning"
                     variant="contained"
                     startIcon={<Icon icon={mdiVideoPlusOutline} />}
                     onClick={() => uploadFile(setFieldValue)}
