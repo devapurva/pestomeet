@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context('JWT, before and after Login', () => {
+context('Logout, and JWT Token Checks', () => {
   it('Before Login : JWT Token', () => {
     cy.visit('http://localhost:3000/');
     expect(localStorage.getItem('accessToken')).to.eq(null);

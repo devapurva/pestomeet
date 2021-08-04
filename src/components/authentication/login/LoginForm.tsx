@@ -56,14 +56,7 @@ export default function LoginForm() {
       try {
         await login(values.email, values.password, null).then((response: any) => {
           if (response?.data?.statusCode) {
-            enqueueSnackbar('Login success', {
-              variant: 'success',
-              action: (key) => (
-                <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-                  <Icon icon={closeFill} />
-                </MIconButton>
-              )
-            });
+            enqueueSnackbar('Login success', { variant: 'success' });
             if (isMountedRef.current) {
               setSubmitting(false);
             }

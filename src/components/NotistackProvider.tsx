@@ -97,10 +97,10 @@ function NotistackProvider({ children }: NotistackProviderProps) {
       dense
       maxSnack={5}
       // preventDuplicate
-      autoHideDuration={3000}
+      autoHideDuration={1000}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right'
+        horizontal: 'center'
       }}
       iconVariant={{
         success: <SnackbarIcon icon={checkmarkCircle2Fill} color="success" />,

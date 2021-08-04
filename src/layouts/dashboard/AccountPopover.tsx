@@ -55,6 +55,7 @@ export default function AccountPopover() {
       if (isMountedRef.current) {
         navigate('/');
         handleClose();
+        enqueueSnackbar('Logged Out', { variant: 'success' });
       }
     } catch (error) {
       console.error(error);
