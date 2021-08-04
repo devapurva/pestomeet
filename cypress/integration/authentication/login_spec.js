@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Load App', () => {
+describe('Load App with/without Login', () => {
   it('Login without any inputs', () => {
     cy.visit('http://localhost:3000/');
     cy.get('form').submit();
