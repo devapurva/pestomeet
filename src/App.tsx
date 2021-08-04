@@ -5,7 +5,6 @@ import ThemeConfig from './theme';
 // hooks
 import useAuth from './hooks/useAuth';
 // components
-import Settings from './components/settings';
 import ScrollToTop from './components/ScrollToTop';
 import LoadingScreen from './components/LoadingScreen';
 import NotistackProvider from './components/NotistackProvider';

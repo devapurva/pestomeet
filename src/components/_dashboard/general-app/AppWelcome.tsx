@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Icon } from '@iconify/react';
-import googleClassroom from '@iconify/icons-mdi/google-classroom';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
-import { Typography, Button, Card, CardContent, CardProps } from '@material-ui/core';
+import { Typography, Card, CardContent, CardProps, Button } from '@material-ui/core';
+import { Icon } from '@iconify/react';
+import newspaperVariantPlus from '@iconify/icons-mdi/newspaper-plus';
+import calenderAdd from '@iconify/icons-mdi/calendar-add';
 // components
 import UserCreateModal from 'pages/dashboard/UserCreateModal';
 import BatchModal from 'pages/dashboard//CreateBatchModal';
+// types
+import { UserManager } from '../../../@types/common';
 // redux
 import { RootState, useDispatch, useSelector } from '../../../redux/store';
-import { getAllUserList } from '../../../redux/slices/user';
+import { getAllUserList } from '../../../redux/slices/lists';
 // material
 import { SeoIllustration } from '../../../assets';
 
@@ -32,21 +34,28 @@ const RootStyle = styled(Card)(({ theme }) => ({
 
 interface AppWelcomeProps extends CardProps {
   displayName?: string;
+  userRole?: string;
 }
 
-export default function AppWelcome({ displayName }: AppWelcomeProps) {
+export default function AppWelcome({ displayName, userRole }: AppWelcomeProps) {
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
-  const { userList } = useSelector((state: RootState) => state.user);
+  const { userList } = useSelector((state: RootState) => state.list);
+  const [admins, setAdmins] = useState<UserManager[]>([]);
+  const [otherUsers, setOtherUsers] = useState<UserManager[]>([]);
 
   useEffect(() => {
     dispatch(getAllUserList());
   }, [dispatch]);
 
-  const admins = userList.filter((users) => users.role === 'admin');
-  const otherUsers = userList.filter(
-    (users) => users.role === 'mentor' || users.role === 'student'
-  );
+  useEffect(() => {
+    const adminList = userList?.filter((users) => users.role === 'admin');
+    const otherList = userList?.filter(
+      (users) => users.role !== 'admin' && users.role !== 'super admin'
+    );
+    setAdmins(adminList);
+    setOtherUsers(otherList);
+  }, [userList]);
 
   return (
     <RootStyle>
@@ -63,26 +72,76 @@ export default function AppWelcome({ displayName }: AppWelcomeProps) {
         </Typography>
 
         <Typography variant="body2" sx={{ pb: { xs: 3, xl: 5 }, maxWidth: 480, mx: 'auto' }}>
-          If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything
+          Here are few actions and metrics to get you started!
         </Typography>
 
-        <div style={{ display: 'flex' }}>
-          <UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />
+        {(userRole === 'Admin' || userRole === 'Super Admin') && (
+          <div style={{ display: 'flex' }}>
+            <UserCreateModal isEdit={false} currentUser={null} setRefresh={setRefresh} />
 
-          <div style={{ marginLeft: 15 }}>
-            <BatchModal
-              isEdit={false}
-              currentBatch={null}
-              setRefresh={setRefresh}
-              admins={admins}
-              otherUsers={otherUsers}
-            />
+            <div style={{ marginLeft: 15 }}>
+              <BatchModal
+                isEdit={false}
+                currentBatch={null}
+                setRefresh={setRefresh}
+                admins={admins}
+                otherUsers={otherUsers}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* <Button variant="contained" to="#" component={RouterLink}>
-          Add Batch
-        </Button> */}
+        {userRole === 'Mentor' && (
+          <div style={{ display: 'flex' }}>
+            <Button
+              variant="contained"
+              onClick={() => window.open('/dashboard/assignments', '_self')}
+              startIcon={<Icon icon={newspaperVariantPlus} />}
+            >
+              View Assignments
+            </Button>
+
+            <div style={{ marginLeft: 15 }}>
+              <Button
+                variant="contained"
+                onClick={() => window.open('/dashboard/calendar', '_self')}
+                startIcon={<Icon icon={newspaperVariantPlus} />}
+              >
+                View Events
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {userRole === 'Student' && (
+          <div style={{ display: 'flex' }}>
+            <Button
+              variant="contained"
+              onClick={() => window.open('/dashboard/resources', '_self')}
+              startIcon={<Icon icon={newspaperVariantPlus} />}
+            >
+              View Resources
+            </Button>
+
+            <div style={{ marginLeft: 15, marginRight: 15 }}>
+              <Button
+                variant="contained"
+                onClick={() => window.open('/dashboard/calendar', '_self')}
+                startIcon={<Icon icon={calenderAdd} />}
+              >
+                Book Session
+              </Button>
+            </div>
+
+            <Button
+              variant="contained"
+              onClick={() => window.open('/dashboard/assignments', '_self')}
+              startIcon={<Icon icon={newspaperVariantPlus} />}
+            >
+              View Assignments
+            </Button>
+          </div>
+        )}
       </CardContent>
 
       <SeoIllustration

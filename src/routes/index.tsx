@@ -6,7 +6,7 @@ import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // guards
 import GuestGuard from '../guards/GuestGuard';
 import AuthGuard from '../guards/AuthGuard';
-// import RoleBasedGuard from '../guards/RoleBasedGuard';
+import RoleBasedGuard from '../guards/RoleBasedGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
 
@@ -58,11 +58,7 @@ export default function Router() {
               <Register />
             </GuestGuard>
           )
-        },
-        { path: 'login-unprotected', element: <Login /> },
-        { path: 'register-unprotected', element: <Register /> },
-        { path: 'reset-password', element: <ResetPassword /> },
-        { path: 'verify', element: <VerifyCode /> }
+        }
       ]
     },
 
@@ -79,26 +75,87 @@ export default function Router() {
         { path: '/dashboard', element: <Navigate to="/dashboard/overview" replace /> },
         { path: '/dashboard/overview', element: <GeneralApp /> },
         {
+          path: '/dashboard/all-user',
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Super Admin']}>
+                  <AllUserList />
+                </RoleBasedGuard>
+              )
+            }
+          ]
+        },
+        {
           path: '/dashboard/mentor',
-          children: [{ path: '/', element: <MentorList /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin']}>
+                  <MentorList />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/student',
-          children: [{ path: '/', element: <StudentList /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin', 'Mentor']}>
+                  <StudentList />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/batch',
-          children: [{ path: '/', element: <Batches /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin']}>
+                  <Batches />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/team-mentor',
-          children: [{ path: '/', element: <MentorTeams /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin', 'Mentor']}>
+                  <MentorTeams />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
         {
           path: '/dashboard/buddy-pairing',
-          children: [{ path: '/', element: <BuddyPairing /> }]
+          children: [
+            {
+              path: '/',
+              element: (
+                <RoleBasedGuard accessibleRoles={['Admin', 'Super Admin', 'Mentor']}>
+                  <BuddyPairing />
+                </RoleBasedGuard>
+              )
+            }
+          ]
         },
-        { path: '/dashboard/calendar', element: <Calendar /> }
+        { path: '/dashboard/calendar', element: <Calendar /> },
+        { path: '/dashboard/resources', element: <Resources /> },
+        { path: '/dashboard/assignments', element: <Assignments /> },
+        { path: '/dashboard/my-profile', element: <MyProfile /> }
       ]
     },
 
@@ -122,16 +179,18 @@ export default function Router() {
 // Authentication
 const Login = Loadable(lazy(() => import('../pages/authentication/Login')));
 const Register = Loadable(lazy(() => import('../pages/authentication/Register')));
-const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetPassword')));
-const VerifyCode = Loadable(lazy(() => import('../pages/authentication/VerifyCode')));
 // Dashboard
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
+const AllUserList = Loadable(lazy(() => import('../pages/dashboard/AllUserList')));
 const StudentList = Loadable(lazy(() => import('../pages/dashboard/StudentList')));
 const MentorList = Loadable(lazy(() => import('../pages/dashboard/MentorList')));
 const Batches = Loadable(lazy(() => import('../pages/dashboard/Batches')));
 const MentorTeams = Loadable(lazy(() => import('../pages/dashboard/MentorTeam')));
 const BuddyPairing = Loadable(lazy(() => import('../pages/dashboard/BuddyPairing')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));
+const Resources = Loadable(lazy(() => import('../pages/dashboard/Resources')));
+const Assignments = Loadable(lazy(() => import('../pages/dashboard/Assignments')));
+const MyProfile = Loadable(lazy(() => import('../pages/dashboard/MyProfile')));
 // Main
 const Maintenance = Loadable(lazy(() => import('../pages/Maintenance')));
 const Page500 = Loadable(lazy(() => import('../pages/Page500')));

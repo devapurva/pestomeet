@@ -2,8 +2,8 @@ import { Icon } from '@iconify/react';
 import googleClassroom from '@iconify/icons-mdi/google-classroom';
 
 // material
-import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
-import { Card, Box, Typography } from '@material-ui/core';
+import { experimentalStyled as styled } from '@material-ui/core/styles';
+import { Card, Box, Typography, CardProps } from '@material-ui/core';
 // utils
 import { fNumber } from '../../../utils/formatNumber';
 
@@ -28,15 +28,15 @@ const IconStyle = styled(Icon)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 10;
+interface AppWidgets3Props extends CardProps {
+  batchCount: number;
+}
 
-export default function AppWidgets2() {
-  const theme = useTheme();
-
+export default function AppWidgets3({ batchCount }: AppWidgets3Props) {
   return (
     <RootStyle>
       <Box sx={{ ml: 3, color: 'grey.800' }}>
-        <Typography variant="h4"> {fNumber(TOTAL)}</Typography>
+        <Typography variant="h4"> {fNumber(batchCount)}</Typography>
         <Typography variant="body2" sx={{ opacity: 0.72 }}>
           Total Batches
         </Typography>

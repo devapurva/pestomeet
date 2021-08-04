@@ -1,5 +1,3 @@
-import { filter } from 'lodash';
-import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { useSnackbar } from 'notistack';
 import closeFill from '@iconify/icons-eva/close-fill';
@@ -10,29 +8,23 @@ import {
   Table,
   Stack,
   Avatar,
-  Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  Container,
   Typography,
   TableContainer,
   TablePagination
 } from '@material-ui/core';
 import MIconButton from 'components/@material-extend/MIconButton';
-// redux
-import { RootState, useDispatch, useSelector } from '../../../../redux/store';
-import { deleteUser, editUser } from '../../../../redux/slices/user';
-// routes
-import { PATH_DASHBOARD } from '../../../../routes/paths';
+import { editUser } from '../../../../redux/slices/lists';
 // @types
-import { UserManager } from '../../../../@types/user';
+import { UserManager } from '../../../../@types/common';
+// utils
+import { getComparator, applySortFilter } from '../../../../utils/tableConstants';
 // components
 import Label from '../../../Label';
 import Scrollbar from '../../../Scrollbar';
-import SearchNotFound from '../../../SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from './index';
+import { UserListHead, UserMoreMenu } from './index';
 import EmptyContent from '../../../EmptyContent';
 
 // ----------------------------------------------------------------------
@@ -58,45 +50,9 @@ const STUDENT_HEAD = [
 
 // ----------------------------------------------------------------------
 
-type Anonymous = Record<string | number, string>;
-
-function descendingComparator(a: Anonymous, b: Anonymous, orderBy: string) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order: string, orderBy: string) {
-  return order === 'desc'
-    ? (a: Anonymous, b: Anonymous) => descendingComparator(a, b, orderBy)
-    : (a: Anonymous, b: Anonymous) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(
-  array: UserManager[],
-  comparator: (a: any, b: any) => number,
-  query: string
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as const);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-  }
-  return stabilizedThis.map((el) => el[0]);
-}
-
 type UserListProps = {
   type: string;
   handleRequestSort: any;
-  handleSelectAllClick: any;
   handleClick: any;
   handleChangeRowsPerPage: any;
   handleFilterByName: any;
@@ -115,7 +71,6 @@ type UserListProps = {
 export default function UserList({
   type,
   handleRequestSort,
-  handleSelectAllClick,
   handleClick,
   handleChangeRowsPerPage,
   handleFilterByName,
@@ -137,8 +92,6 @@ export default function UserList({
 
   const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredUsers.length === 0;
-
   const getApprovalText = (approval: string) => {
     switch (approval) {
       case 'inprogress':
@@ -158,6 +111,10 @@ export default function UserList({
         return 'STUDENT';
       case 'mentor':
         return 'MENTOR';
+      case 'super admin':
+        return 'SUPER ADMIN';
+      case 'admin':
+        return 'ADMIN';
       default:
         return 'NA';
     }
@@ -214,7 +171,6 @@ export default function UserList({
               rowCount={userList.length}
               numSelected={selected.length}
               onRequestSort={handleRequestSort}
-              onSelectAllClick={handleSelectAllClick}
             />
             <TableBody>
               {filteredUsers
@@ -245,7 +201,12 @@ export default function UserList({
                       <TableCell align="left">
                         <Label
                           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                          color={(role === 'mentor' && 'warning') || 'info'}
+                          color={
+                            (role === 'mentor' && 'info') ||
+                            (role === 'super admin' && 'primary') ||
+                            (role === 'admin' && 'error') ||
+                            'warning'
+                          }
                         >
                           {getRoleText(role)}
                         </Label>

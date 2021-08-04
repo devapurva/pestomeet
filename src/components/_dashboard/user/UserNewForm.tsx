@@ -1,14 +1,12 @@
 import * as Yup from 'yup';
 import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Form, FormikErrors, FormikProvider, useFormik } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 import eyeFill from '@iconify/icons-eva/eye-fill';
-import closeFill from '@iconify/icons-eva/close-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { Icon } from '@iconify/react';
-import MIconButton from 'components/@material-extend/MIconButton';
 // material
 import { LoadingButton } from '@material-ui/lab';
 import {
@@ -16,7 +14,6 @@ import {
   Card,
   Grid,
   Stack,
-  Switch,
   TextField,
   Typography,
   FormHelperText,
@@ -27,14 +24,13 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core';
-import { addUser, addAvatar, editUser } from '../../../redux/slices/user';
-// routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
+import useAuth from '../../../hooks/useAuth';
+import { addUser, addAvatar, editUser } from '../../../redux/slices/lists';
 // @types
-import { UserManager } from '../../../@types/user';
+import { UserManager } from '../../../@types/common';
+import { AuthUser } from '../../../@types/authentication';
 //
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
-import Label from '../../Label';
 import { UploadAvatar } from '../../upload';
 
 // ----------------------------------------------------------------------
@@ -47,7 +43,7 @@ const useStyles = makeStyles({
 
 type UserNewFormProps = {
   isEdit: boolean;
-  currentUser?: UserManager | null;
+  currentUser?: UserManager | AuthUser | null;
   setRefresh?: any;
   handleClose?: any;
 };
@@ -84,11 +80,23 @@ export default function UserNewForm({
   setRefresh,
   handleClose
 }: UserNewFormProps) {
-  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { user } = useAuth();
   const isMountedRef = useIsMountedRef();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // eslint-disable-next-line consistent-return
+  const getRole = () => {
+    if (pathname.includes('student')) {
+      return 'student';
+    }
+    if (pathname.includes('mentor')) {
+      return 'mentor';
+    }
+  };
 
   const NewUserSchema = Yup.object().shape(
     {
@@ -171,13 +179,14 @@ export default function UserNewForm({
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
       avatar: currentUser?.avatar || null,
-      approval: currentUser?.approval,
-      role: currentUser?.role || '',
+      approval: currentUser?.approval || 'inprogress',
+      role: currentUser?.role || getRole() || '',
       experience: currentUser?.experience || ''
     },
     validationSchema: isEdit ? EditUserSchema : NewUserSchema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
       try {
+        setLoading(true);
         if (isEdit) {
           handleEditUser(values, { setErrors, setSubmitting });
         } else {
@@ -193,6 +202,9 @@ export default function UserNewForm({
     values: FormikValues,
     { setErrors, setSubmitting }: { setErrors: FormikSetErrors; setSubmitting: any }
   ) => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
     await addUser(
       values?.name,
       values?.role,
@@ -203,20 +215,15 @@ export default function UserNewForm({
       'inprogress'
     ).then((response: any) => {
       if (response?.data?.statusCode) {
-        enqueueSnackbar('User added successfully', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
+        enqueueSnackbar('User added successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
+          setLoading(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
       } else {
+        setLoading(false);
         handleError(response?.data, setSubmitting, setErrors);
       }
     });
@@ -233,19 +240,13 @@ export default function UserNewForm({
       values?.phone,
       values?.role === 'student' ? values?.experience : 'not_applicable',
       values?.email,
-      'inprogress'
+      currentUser?.approval ? currentUser?.approval : 'inprogress'
     ).then((response: any) => {
       if (response?.data?.statusCode) {
-        enqueueSnackbar('User updated successfully', {
-          variant: 'success',
-          action: (key) => (
-            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-              <Icon icon={closeFill} />
-            </MIconButton>
-          )
-        });
+        enqueueSnackbar('User updated successfully', { variant: 'success' });
         if (isMountedRef.current) {
           setSubmitting(false);
+          setLoading(false);
         }
         if (setRefresh) setRefresh(true);
         if (handleClose) handleClose();
@@ -257,6 +258,7 @@ export default function UserNewForm({
 
   const handleError = (error: any, setSubmitting: any, setErrors: any) => {
     if (isMountedRef.current) {
+      setLoading(false);
       setSubmitting(false);
       setErrors({ afterSubmit: error.message });
     }
@@ -274,16 +276,23 @@ export default function UserNewForm({
   } = formik;
 
   const handleDrop = useCallback(
-    (acceptedFiles) => {
+    async (acceptedFiles) => {
       const file = acceptedFiles[0];
-      if (file) {
+      if (file && currentUser) {
+        const formData = new FormData();
+        formData.append('profileImage', file);
+        await addAvatar(formData, currentUser.id).then((response: any) => {
+          if (response?.data?.statusCode) {
+            enqueueSnackbar('User profile avartar uploaded successfully', { variant: 'success' });
+          }
+        });
         setFieldValue('avatar', {
           ...file,
           preview: URL.createObjectURL(file)
         });
       }
     },
-    [setFieldValue]
+    [setFieldValue, currentUser, enqueueSnackbar]
   );
 
   return (
@@ -293,20 +302,11 @@ export default function UserNewForm({
           {isEdit && (
             <Grid item xs={12} md={4}>
               <Card sx={{ py: 10, px: 3 }}>
-                {/* {isEdit && (
-                  <Label
-                    color="success"
-                    sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-                  >
-                    Success
-                  </Label>
-                )} */}
-
                 <Box sx={{ mb: 5 }}>
                   <UploadAvatar
                     accept="image/*"
                     file={values.avatar}
-                    maxSize={3145728}
+                    maxSize={2097152}
                     onDrop={handleDrop}
                     error={Boolean(touched.avatar && errors.avatar)}
                     caption={
@@ -363,49 +363,67 @@ export default function UserNewForm({
                   />
                 </Stack>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <FormLabel className={classes.legend} component="legend">
-                    Role:
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    value={values?.role}
-                    aria-label="role"
-                    name="role"
-                    id="role"
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel value="student" control={<Radio />} label="Student" />
-                    <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
-                    <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                    <FormControlLabel value="superadmin" control={<Radio />} label="Super Admin" />
-                  </RadioGroup>
-                </Stack>
+                {pathname.includes('all-user') && (
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
+                    <FormLabel className={classes.legend} component="legend">
+                      Role:
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      value={values?.role}
+                      aria-label="role"
+                      name="role"
+                      id="role"
+                      onChange={handleChange}
+                    >
+                      {user?.role === 'Super Admin' && pathname.includes('all-user') && (
+                        <FormControlLabel
+                          value="super admin"
+                          control={<Radio />}
+                          label="Super Admin"
+                        />
+                      )}
+                      {user?.role === 'Super Admin' && pathname.includes('all-user') && (
+                        <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                      )}
+                      {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
+                        (pathname.includes('mentor') || pathname.includes('all-user')) && (
+                          <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                        )}
+                      {(user?.role === 'Admin' || user?.role === 'Super Admin') &&
+                        (pathname.includes('student') || pathname.includes('all-user')) && (
+                          <FormControlLabel value="student" control={<Radio />} label="Student" />
+                        )}
+                    </RadioGroup>
+                  </Stack>
+                )}
 
                 {touched.role && errors.role && (
                   <FormHelperText error={true}>{errors.role}</FormHelperText>
                 )}
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
-                  <TextField
-                    fullWidth
-                    style={{ width: values?.role === 'student' ? '100%' : '50%' }}
-                    autoComplete="current-password"
-                    type={showPassword ? 'text' : 'password'}
-                    label="Password"
-                    {...getFieldProps('password')}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                            <Icon icon={showPassword ? eyeFill : eyeOffFill} />
-                          </IconButton>
-                        </InputAdornment>
-                      )
-                    }}
-                    error={Boolean(touched.password && errors.password)}
-                    helperText={touched.password && errors.password}
-                  />
+                  {!isEdit && (
+                    <TextField
+                      fullWidth
+                      style={{ width: values?.role === 'student' ? '100%' : '50%' }}
+                      autoComplete="current-password"
+                      type={showPassword ? 'text' : 'password'}
+                      label="Password"
+                      {...getFieldProps('password')}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                              <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                      error={Boolean(touched.password && errors.password)}
+                      helperText={touched.password && errors.password}
+                    />
+                  )}
                   {values?.role === 'student' ? (
                     <TextField
                       fullWidth
@@ -422,8 +440,8 @@ export default function UserNewForm({
                 </Stack>
 
                 <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                  <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                    {!isEdit ? 'Create User' : 'Save Changes'}
+                  <LoadingButton type="submit" variant="contained" loading={loading}>
+                    {!isEdit ? `Add ${getRole() || 'User'}` : 'Save Changes'}
                   </LoadingButton>
                 </Box>
               </Stack>
