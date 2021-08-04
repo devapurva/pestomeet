@@ -65,6 +65,7 @@ export default function AccountPopover() {
   return (
     <>
       <MIconButton
+        id="accountPopover"
         ref={anchorRef}
         onClick={handleOpen}
         sx={{
@@ -127,7 +128,13 @@ export default function AccountPopover() {
         ))}
 
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
+          <Button
+            id="logoutButton"
+            fullWidth
+            color="inherit"
+            variant="outlined"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </Box>
