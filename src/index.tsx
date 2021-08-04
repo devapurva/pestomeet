@@ -16,7 +16,7 @@ import { SettingsProvider } from './contexts/SettingsContext';
 // components
 import LoadingScreen from './components/LoadingScreen';
 
-import { AuthProvider } from './contexts/JWTContext';
+import { AuthProvider } from './contexts/UserContext';
 
 //
 import App from './App';

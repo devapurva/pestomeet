@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 // slices
-import userReducer from './slices/user';
+import listReducer from './slices/lists';
 import calendarReducer from './slices/calendar';
 
 // ----------------------------------------------------------------------
@@ -15,7 +14,7 @@ const rootPersistConfig = {
 };
 
 const rootReducer = combineReducers({
-  user: userReducer,
+  list: listReducer,
   calendar: calendarReducer
 });
 

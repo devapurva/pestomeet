@@ -40,14 +40,6 @@ type InitialValues = {
   afterSubmit?: string;
 };
 
-const style = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexWrap: 'wrap',
-  '& > *': { mx: 1 }
-} as const;
-
 export default function RegisterForm() {
   const { register } = useAuth();
   const isMountedRef = useIsMountedRef();

@@ -1,7 +1,4 @@
 // ----------------------------------------------------------------------
-
-import { batch } from 'react-redux';
-
 function path(root: string, sublink: string) {
   return `${root}${sublink}`;
 }
@@ -33,9 +30,13 @@ export const PATH_DASHBOARD = {
     app: path(ROOTS_DASHBOARD, '/overview')
   },
   calendar: path(ROOTS_DASHBOARD, '/calendar'),
+  users: path(ROOTS_DASHBOARD, '/all-user'),
   mentor: path(ROOTS_DASHBOARD, '/mentor'),
   student: path(ROOTS_DASHBOARD, '/student'),
   batch: path(ROOTS_DASHBOARD, '/batch'),
   mentorTeam: path(ROOTS_DASHBOARD, '/team-mentor'),
-  buddyPairing: path(ROOTS_DASHBOARD, '/buddy-pairing')
+  buddyPairing: path(ROOTS_DASHBOARD, '/buddy-pairing'),
+  resources: path(ROOTS_DASHBOARD, '/resources'),
+  assignments: path(ROOTS_DASHBOARD, '/assignments'),
+  profile: path(ROOTS_DASHBOARD, '/my-profile')
 };

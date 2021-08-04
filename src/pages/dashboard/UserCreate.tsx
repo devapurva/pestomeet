@@ -1,11 +1,5 @@
-import { useEffect } from 'react';
-import { paramCase } from 'change-case';
-import { useParams, useLocation } from 'react-router-dom';
 // material
 import { Container } from '@material-ui/core';
-// redux
-import { useDispatch, useSelector, RootState } from '../../redux/store';
-// import { getUserList } from '../../redux/slices/user';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
@@ -16,30 +10,19 @@ import UserNewForm from '../../components/_dashboard/user/UserNewForm';
 // ----------------------------------------------------------------------
 
 export default function UserCreate() {
-  const dispatch = useDispatch();
-  const { pathname } = useLocation();
-  const { name } = useParams();
-  const { userList } = useSelector((state: RootState) => state.user);
-  const isEdit = pathname.includes('edit');
-  const currentUser = userList.find((user) => paramCase(user.name) === name);
-
-  // useEffect(() => {
-  //   dispatch(getUserList());
-  // }, [dispatch]);
-
   return (
     <Page title="User: Create a new user">
       <Container>
         <HeaderBreadcrumbs
-          heading={!isEdit ? 'Create a new user' : 'Edit user'}
+          heading="Create a new user"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.mentor },
-            { name: !isEdit ? 'New user' : name }
+            { name: 'New user' }
           ]}
         />
 
-        <UserNewForm isEdit={isEdit} />
+        <UserNewForm isEdit={false} />
       </Container>
     </Page>
   );

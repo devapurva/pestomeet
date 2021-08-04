@@ -5,4 +5,5 @@ export { default as SeverErrorIllustration } from './illustration_500';
 export { default as MaintenanceIllustration } from './illustration_maintenance';
 export { default as PageNotFoundIllustration } from './illustration_404';
 export { default as OrderCompleteIllustration } from './illustration_order_complete';
+export { default as PermissionDeniedIllustration } from './illustration_PermissionDenied';
 export { default as SentIcon } from './icon_sent';

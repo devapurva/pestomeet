@@ -39,9 +39,9 @@ const instanceCreator = ($axios: any) => ({
   },
   errorHandler(error: any) {
     const { response } = error;
-    const {
-      data: { status }
-    } = response;
+    // const {
+    //   data: { status }
+    // } = response;
     // if (status.code === 401 && status.message === 'Token Expired'){
     //   store.dispatch(logoutStart());
     // }

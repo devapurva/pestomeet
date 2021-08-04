@@ -1,4 +1,9 @@
-import FullCalendar, { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/react'; // => request placed at the top
+import FullCalendar, {
+  DateSelectArg,
+  EventClickArg,
+  EventDropArg,
+  EventInput
+} from '@fullcalendar/react'; // => request placed at the top
 import listPlugin from '@fullcalendar/list';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -10,8 +15,17 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { useState, useRef, useEffect } from 'react';
 // material
 import { useTheme } from '@material-ui/core/styles';
-import { Card, Button, Container, Dialog, DialogTitle, useMediaQuery } from '@material-ui/core';
+import {
+  Card,
+  Button,
+  Container,
+  Dialog,
+  DialogTitle,
+  useMediaQuery,
+  makeStyles
+} from '@material-ui/core';
 // redux
+import useAuth from '../../hooks/useAuth';
 import { RootState, useDispatch, useSelector } from '../../redux/store';
 import {
   getEvents,
@@ -21,17 +35,29 @@ import {
   selectEvent,
   selectRange
 } from '../../redux/slices/calendar';
-import { getBatchList } from '../../redux/slices/user';
+import { getBatchList, getAllUserByID } from '../../redux/slices/lists';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import { CalendarForm, CalendarStyle, CalendarToolbar } from '../../components/_dashboard/calendar';
-
+import {
+  AdminCalendarForm,
+  CalendarStyle,
+  CalendarToolbar,
+  SlotsCalendarForm
+} from '../../components/_dashboard/calendar';
+import ResourceModal from './AddResources';
+import AssignmentModal from './AddAssignment';
 import { CalendarView } from '../../@types/calendar';
 
 // ----------------------------------------------------------------------
+
+const useStyles = makeStyles((theme) => ({
+  calenderHeader: {
+    display: 'flex'
+  }
+}));
 
 const selectedEventSelector = (state: RootState) => {
   const { events, selectedEventId } = state.calendar;
@@ -41,28 +67,46 @@ const selectedEventSelector = (state: RootState) => {
   return null;
 };
 
+const getViewByUserRole = (userRole: string) => {
+  switch (userRole) {
+    case 'Mentor':
+      return 'timeGridWeek';
+    default:
+      return 'dayGridMonth';
+  }
+};
+
 export default function Calendar() {
-  const dispatch = useDispatch();
   const theme = useTheme();
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const { user } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const calendarRef = useRef<FullCalendar>(null);
   const { enqueueSnackbar } = useSnackbar();
   const [date, setDate] = useState(new Date());
-  const [view, setView] = useState<CalendarView>(isMobile ? 'listWeek' : 'dayGridMonth');
+  const [view, setView] = useState<CalendarView>(
+    isMobile ? 'listWeek' : getViewByUserRole(user?.role)
+  );
+  const [refresh, setRefresh] = useState(false);
   const selectedEvent = useSelector(selectedEventSelector);
   const { events, isOpenModal, selectedRange } = useSelector((state: RootState) => state.calendar);
-  const { batchList } = useSelector((state: RootState) => state.user);
+  const { batchList, userList } = useSelector((state: RootState) => state.list);
 
   useEffect(() => {
-    dispatch(getBatchList('ninja'));
-    dispatch(getEvents());
-  }, [dispatch]);
+    if (user?.role !== 'Student') {
+      dispatch(getBatchList(user?.id));
+      dispatch(getAllUserByID(user?.id));
+    }
+    dispatch(getEvents(user?.role === 'Super Admin' ? null : user?.id));
+    setRefresh(false);
+  }, [dispatch, user?.id, user?.role, refresh]);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;
     if (calendarEl) {
       const calendarApi = calendarEl.getApi();
-      const newView = isMobile ? 'listWeek' : 'dayGridMonth';
+      const newView = isMobile ? 'listWeek' : getViewByUserRole(user?.role);
       calendarApi.changeView(newView);
       setView(newView);
     }
@@ -121,9 +165,9 @@ export default function Calendar() {
     // try {
     //   dispatch(
     //     updateEvent(event.id, {
-    //       allDay: event.allDay,
-    //       start: event.start,
-    //       end: event.end
+    //       ...event,
+    //       eventStart: new Date(event?.start),
+    //       eventEnd: event.end
     //     })
     //   );
     //   enqueueSnackbar('Update event success', { variant: 'success' });
@@ -133,20 +177,20 @@ export default function Calendar() {
   };
 
   const handleDropEvent = async ({ event }: EventDropArg) => {
-    // try {
-    //   dispatch(
-    //     updateEvent(event.id, {
-    //       allDay: event.allDay,
-    //       start: event.start,
-    //       end: event.end
-    //     })
-    //   );
-    //   enqueueSnackbar('Update event success', {
-    //     variant: 'success'
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    try {
+      dispatch(
+        updateEvent(event.id, {
+          ...event,
+          eventStart: event.startStr,
+          eventEnd: event.endStr
+        })
+      );
+      enqueueSnackbar('Update event success', {
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleAddEvent = () => {
@@ -164,13 +208,15 @@ export default function Calendar() {
           heading="Calendar"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Calendar' }]}
           action={
-            <Button
-              variant="contained"
-              startIcon={<Icon icon={plusFill} width={20} height={20} />}
-              onClick={handleAddEvent}
-            >
-              New Event
-            </Button>
+            user?.role !== 'Student' ? (
+              <Button
+                variant="contained"
+                startIcon={<Icon icon={plusFill} width={20} height={20} />}
+                onClick={handleAddEvent}
+              >
+                {user?.role === 'Mentor' ? 'Add Slot' : 'New Event'}
+              </Button>
+            ) : null
           }
         />
 
@@ -214,17 +260,67 @@ export default function Calendar() {
             />
           </CalendarStyle>
         </Card>
+        {(user?.role === 'Admin' || user?.role === 'Super Admin') && (
+          <Dialog open={isOpenModal} onClose={handleCloseModal}>
+            <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+            <AdminCalendarForm
+              role={user?.role}
+              event={selectedEvent || {}}
+              range={selectedRange}
+              onCancel={handleCloseModal}
+              batchList={batchList}
+              setRefresh={setRefresh}
+            />
+          </Dialog>
+        )}
 
-        <Dialog open={isOpenModal} onClose={handleCloseModal}>
-          <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+        {user?.role === 'Student' &&
+          selectedEvent &&
+          Object.keys(selectedEvent).length > 0 &&
+          selectedEvent?.eventType === 'masterclass' && (
+            <Dialog open={isOpenModal} onClose={handleCloseModal}>
+              <DialogTitle>View Event</DialogTitle>
+              <AdminCalendarForm
+                role={user?.role}
+                event={selectedEvent || {}}
+                range={selectedRange}
+                onCancel={handleCloseModal}
+                batchList={batchList}
+                setRefresh={setRefresh}
+              />
+            </Dialog>
+          )}
 
-          <CalendarForm
-            event={selectedEvent || {}}
-            range={selectedRange}
-            onCancel={handleCloseModal}
-            batchList={batchList}
-          />
-        </Dialog>
+        {user?.role === 'Student' &&
+          selectedEvent &&
+          Object.keys(selectedEvent).length > 0 &&
+          selectedEvent?.eventType === 'slot' && (
+            <Dialog open={isOpenModal} onClose={handleCloseModal}>
+              <DialogTitle>{selectedEvent ? 'Edit Slot' : 'Add Slot'}</DialogTitle>
+              <SlotsCalendarForm
+                role={user?.role}
+                event={selectedEvent || {}}
+                range={selectedRange}
+                onCancel={handleCloseModal}
+                batchList={userList}
+                setRefresh={setRefresh}
+              />
+            </Dialog>
+          )}
+
+        {user?.role === 'Mentor' && (
+          <Dialog open={isOpenModal} onClose={handleCloseModal}>
+            <DialogTitle>{selectedEvent ? 'Edit Slot' : 'Add Slot'}</DialogTitle>
+            <SlotsCalendarForm
+              role={user?.role}
+              event={selectedEvent || {}}
+              range={selectedRange}
+              onCancel={handleCloseModal}
+              batchList={userList}
+              setRefresh={setRefresh}
+            />
+          </Dialog>
+        )}
       </Container>
     </Page>
   );
