@@ -101,7 +101,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
     resourceName: Yup.string()
       .max(100, `Resource name cannot be more than ${100} characters`)
       .required('Resource name is required'),
-    resource: Yup.mixed().required('Video is required'),
+    resource: Yup.mixed(),
     eventId: Yup.string().required('Event is required'),
     eventType: Yup.string().required('Event is required'),
     resourceLink: Yup.string()
