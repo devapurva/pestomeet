@@ -70,7 +70,12 @@ export default function ResourceModal({ isEdit, setRefresh, eventId }: ResourceM
   return (
     <div>
       {!isEdit ? (
-        <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
+        <Button
+          id="add-resource"
+          variant="contained"
+          onClick={handleClickOpen}
+          startIcon={<Icon icon={plusFill} />}
+        >
           Add Resources
         </Button>
       ) : (

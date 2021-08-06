@@ -312,6 +312,7 @@ export default function TeamForm({
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                   {batchList && (
                     <Autocomplete
+                      id="batch-list"
                       fullWidth
                       value={batchDetails}
                       inputValue={batchDetails?.batchName ? batchDetails?.batchName : ''}
@@ -328,13 +329,7 @@ export default function TeamForm({
                         </li>
                       )}
                       renderInput={(params) => (
-                        <TextField
-                          error={Boolean(touched.mentorName && errors.mentorName)}
-                          helperText={touched.mentorName && errors.mentorName}
-                          {...params}
-                          label=""
-                          placeholder="Select Batch"
-                        />
+                        <TextField {...params} label="" placeholder="Select Batch" />
                       )}
                     />
                   )}
@@ -348,6 +343,7 @@ export default function TeamForm({
                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 3, sm: 2 }}>
                       <Autocomplete
                         fullWidth
+                        id="team-mentor"
                         value={mentors[0]}
                         isOptionEqualToValue={(option: any, value: any) => option?.id === value}
                         onChange={(event, value) => setMentorNameValues(value, setFieldValue)}
@@ -382,6 +378,7 @@ export default function TeamForm({
                       <Autocomplete
                         {...defaultProps}
                         fullWidth
+                        id="team-member"
                         onChange={(event, value) => setTeamMembers(value, setFieldValue)}
                         multiple
                         value={values.teamMembers}
