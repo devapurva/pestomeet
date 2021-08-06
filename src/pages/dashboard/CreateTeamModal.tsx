@@ -74,6 +74,7 @@ export default function TeamModal({ isEdit, currentTeam, setRefresh, type }: Tea
     <div>
       {!isEdit ? (
         <Button
+          id="create-team"
           variant="contained"
           onClick={handleClickOpen}
           startIcon={<Icon icon={type === 'mentor' ? accountChild : accountMultiplePlus} />}
