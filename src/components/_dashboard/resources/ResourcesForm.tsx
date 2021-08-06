@@ -227,6 +227,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                   {events && (
                     <Autocomplete
                       fullWidth
+                      id="event-list"
                       disabled={isEdit}
                       options={events}
                       value={eventDetails}
@@ -266,6 +267,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
+                            id="add-link"
                             edge="end"
                             color="primary"
                             onClick={() => appendResourceLinks(setFieldValue)}
@@ -280,6 +282,7 @@ export default function ResourcesForm({ isEdit, setRefresh, handleClose, eventId
                   />
                   <Divider orientation="vertical" flexItem light={false} />
                   <Button
+                    id="upload-video"
                     color="warning"
                     variant="contained"
                     startIcon={<Icon icon={mdiVideoPlusOutline} />}
