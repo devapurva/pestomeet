@@ -1,42 +1,28 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## PestoMeet
 
-## 1.install
+_PestoMeet is a digital platform that lives on a responsive mobile-friendly website. Its main aim is to help students, mentors, and organizers efficiently manage and track the programs/batches organized by pesto-tech._
 
-### npm
+## Built With:
 
-```
-npm i
-or
-npm i --legacy-peer-deps
-```
+- Frontend
 
-### yarn
+1. `React JS V17.0+`
+2. `Typescript V4.3+`
 
-```
-yarn install
-```
+- Backend
 
-## 2.Start
+1. `Node JS V10+`
+2. `Express JS V4.7+`
+3. `Typescript V4.3+`
+4. `Mongo Atlas V5.1.3+`
+5. `Twilio APIS V3.6+`
 
-```sh
-npm start
-or
-yarn start
-```
+## Getting Started
 
-## 2.Build
+#### Prerequisites
 
-```sh
-npm run build or yarn build
-```
+Your system must have Node v10.16.3+.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-
-Your app is ready to be deployed.
-
-## User Guide
-
-You can find detailed instructions on using Create React App and many tips in [its documentation](https://facebook.github.io/create-react-app/).
+1. Clone - ``
+2. Install required packages using - `npm i`
+3. Run Application : `npm run start`
