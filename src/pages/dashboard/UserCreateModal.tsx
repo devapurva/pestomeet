@@ -86,7 +86,12 @@ export default function UserCreateModal({ isEdit, currentUser, setRefresh }: Use
   return (
     <div>
       {!isEdit ? (
-        <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
+        <Button
+          id="add-user"
+          variant="contained"
+          onClick={handleClickOpen}
+          startIcon={<Icon icon={plusFill} />}
+        >
           Add {getRole() || 'User'}
         </Button>
       ) : (

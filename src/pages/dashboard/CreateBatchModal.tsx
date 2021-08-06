@@ -80,6 +80,7 @@ export default function BatchModal({
     <div>
       {!isEdit ? (
         <Button
+          id="create-batch"
           variant="contained"
           onClick={handleClickOpen}
           startIcon={<Icon icon={googleClassroom} />}

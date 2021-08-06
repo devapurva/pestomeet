@@ -243,6 +243,7 @@ export default function BatchForm({
                   {admins && (
                     <Autocomplete
                       fullWidth
+                      id="batch-admin"
                       inputValue={values.batchOwner}
                       onChange={(event, value) => setBatchOwnerValues(value, setFieldValue)}
                       options={admins}
@@ -275,6 +276,7 @@ export default function BatchForm({
                     <Autocomplete
                       {...defaultProps}
                       fullWidth
+                      id="batch-members"
                       onChange={(event, value) => setBatchMembers(value, setFieldValue)}
                       multiple
                       value={values.batchMembers}

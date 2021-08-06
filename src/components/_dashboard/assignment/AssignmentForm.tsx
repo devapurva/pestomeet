@@ -215,6 +215,7 @@ export default function AssignmentsForm({
                   {events && (
                     <Autocomplete
                       fullWidth
+                      id="event-list"
                       options={events}
                       value={eventDetails}
                       isOptionEqualToValue={(option: any, value: any) =>
@@ -256,7 +257,11 @@ export default function AssignmentsForm({
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton edge="end" onClick={() => appendResourceLinks(setFieldValue)}>
+                          <IconButton
+                            id="add-link"
+                            edge="end"
+                            onClick={() => appendResourceLinks(setFieldValue)}
+                          >
                             <Icon icon={plusFill} />
                           </IconButton>
                         </InputAdornment>

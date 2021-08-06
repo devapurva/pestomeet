@@ -73,7 +73,12 @@ export default function AssignmentModal({
   return (
     <div>
       {!isEdit ? (
-        <Button variant="contained" onClick={handleClickOpen} startIcon={<Icon icon={plusFill} />}>
+        <Button
+          id="add-assignment"
+          variant="contained"
+          onClick={handleClickOpen}
+          startIcon={<Icon icon={plusFill} />}
+        >
           Add Assignment
         </Button>
       ) : (
