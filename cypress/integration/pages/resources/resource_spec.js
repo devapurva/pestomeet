@@ -27,7 +27,7 @@ describe('Resource Modules', () => {
         cy.get('input[name=resourceName]').type('Resource 999');
         cy.get('input[id="event-list"]').click({ force: true });
         cy.get('li[id="event-list-option-0"]').click({ force: true });
-        cy.get('div[role=dialog]').click();
+        cy.get('div[role=dialog]').click({ force: true });
         cy.get('input[name=resourceLink]').type(
           'https://dashboard.heroku.com/apps/pestomeet-backend/logs'
         );
