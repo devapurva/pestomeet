@@ -85,7 +85,11 @@ export default function Resources() {
         <HeaderBreadcrumbs
           heading="Resources"
           links={[{ name: 'Dashboard', href: PATH_DASHBOARD.root }, { name: 'Resources' }]}
-          action={<ResourceModal isEdit={false} setRefresh={setRefresh} />}
+          action={
+            user?.role !== 'Student' && user?.role !== 'Mentor' ? (
+              <ResourceModal isEdit={false} setRefresh={setRefresh} />
+            ) : null
+          }
         />
         <ResourcesList
           type="mentor"

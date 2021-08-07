@@ -238,11 +238,6 @@ export default function UserList({
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
             {userList?.length === 0 && (
               <TableBody>

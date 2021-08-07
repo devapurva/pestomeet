@@ -87,6 +87,7 @@ export default function TeamForm({
   const { user } = useAuth();
   const { batchList, userList } = useSelector((state: RootState) => state.list);
   const [mentors, setMentors] = useState<UserManager[]>([]);
+  const [selectedMentor, setSelectedMentor] = useState<UserManager>();
   const [students, setStudents] = useState<UserManager[]>([]);
   const [batchDetails, setBatchDetails] = useState<BatchManager>();
   const [loading, setLoading] = useState(false);
@@ -230,8 +231,13 @@ export default function TeamForm({
   } = formik;
 
   const setMentorNameValues = (value: any, setFieldValue: any) => {
-    setFieldValue('mentorName', value ? value.name : null);
-    setFieldValue('mentorId', value ? value.id : null);
+    console.log(value);
+    const findMentor = userList.find((user) => user.id === value.id);
+    if (findMentor) {
+      setSelectedMentor(findMentor);
+      setFieldValue('mentorName', findMentor.name);
+      setFieldValue('mentorId', findMentor.id);
+    }
   };
 
   const setBatchValues = (value: any, setFieldValue: any) => {
@@ -259,6 +265,8 @@ export default function TeamForm({
     getOptionLabel: (option: any) => option?.name,
     fullWidth: true
   };
+
+  // console.log(values);
 
   return (
     <FormikProvider value={formik}>
@@ -344,8 +352,7 @@ export default function TeamForm({
                       <Autocomplete
                         fullWidth
                         id="team-mentor"
-                        value={mentors[0]}
-                        isOptionEqualToValue={(option: any, value: any) => option?.id === value}
+                        inputValue={values.mentorName}
                         onChange={(event, value) => setMentorNameValues(value, setFieldValue)}
                         options={mentors}
                         disableCloseOnSelect

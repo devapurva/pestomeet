@@ -29,6 +29,9 @@ const SimpleBarStyle = styled(SimpleBarReact)(({ theme }) => ({
   },
   '& .simplebar-mask': {
     zIndex: 'inherit'
+  },
+  '& .simplebar-placeholder': {
+    display: 'none !important'
   }
 }));
 
