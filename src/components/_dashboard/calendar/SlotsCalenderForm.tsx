@@ -128,7 +128,7 @@ export default function SlotsCalendarForm({
           eventColor: values.textColor,
           eventStart: values.start,
           eventEnd: values.end,
-          organiserId: user?.id,
+          organiserId: role === 'Student' ? event?.organiserId : user?.id,
           organiserName: user?.name,
           hasAssignment: values.hasAssignment,
           attendees: role === 'Student' ? event?.attendees : batchId || values.attendees,
@@ -166,6 +166,24 @@ export default function SlotsCalendarForm({
     formik;
 
   const isDateError = isBefore(new Date(values.end), new Date(values.start));
+
+  const handleDelete = async () => {
+    if (!event.id) return;
+    try {
+      onCancel();
+      dispatch(deleteEvent(event.id)).then((response) => {
+        if (response?.data?.statusCode) {
+          enqueueSnackbar('Event Deleted', { variant: 'success' });
+          setLoading(true);
+          if (setRefresh) {
+            setRefresh(true);
+          }
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <FormikProvider value={formik}>
@@ -224,6 +242,13 @@ export default function SlotsCalendarForm({
         </DialogContent>
 
         <DialogActions>
+          {!isCreating && role !== 'Student' && (
+            <Tooltip title="Delete Event">
+              <IconButton onClick={handleDelete}>
+                <Icon icon={trash2Fill} width={20} height={20} />
+              </IconButton>
+            </Tooltip>
+          )}
           <Box sx={{ flexGrow: 1 }} />
           <Button type="button" variant="outlined" color="inherit" onClick={onCancel}>
             Cancel
