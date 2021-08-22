@@ -2,7 +2,7 @@
 
 _PestoMeet is a digital platform that lives on a responsive mobile-friendly website. Its main aim is to help students, mentors, and organizers efficiently manage and track the programs/batches organized by pesto-tech._
 
-[PRD](https://drive.google.com/file/d/1XKkDkMHvW-FdSXHtQlis43lBoXzUFv7J/view?usp=sharing) | [Engineering Design HLA](https://drive.google.com/file/d/1vWtPwf2V8cKO00n0x4WpT_P-Pp06WtsV/view?usp=sharing) | [Wireframes](https://www.figma.com/file/nVFJfNGOxDOlJyBzNJNPeW/PestoMeet-Base)
+[DEMO](https://docs.google.com/document/d/1d3SIi276RF9IBbgnQxgYH3_MATF3mrbnonwOvsOQ9JY/edit?usp=sharing) | [PRD](https://drive.google.com/file/d/1XKkDkMHvW-FdSXHtQlis43lBoXzUFv7J/view?usp=sharing) | [Engineering Design HLA](https://drive.google.com/file/d/1vWtPwf2V8cKO00n0x4WpT_P-Pp06WtsV/view?usp=sharing) | [Wireframes](https://www.figma.com/file/nVFJfNGOxDOlJyBzNJNPeW/PestoMeet-Base)
 
 ## Built With:
 
