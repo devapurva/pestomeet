@@ -38,3 +38,7 @@ Your system must have Node v10.16.3+.
 2. Install required packages using - `npm i`
 3. Run Application : `npm start`
 4. Run Test Cases: `npm test`
+
+
+
+Note: The base UI is built using Material Template Started Pack - `Minimal - https://www.minimals.cc/`
