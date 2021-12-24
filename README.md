@@ -12,6 +12,8 @@ _PestoMeet is a digital platform that lives on a responsive mobile-friendly webs
 2. `Typescript V4.3+`
 3. `Cypress V8.1+`
 
+Note: The base UI is built using Material Template Starter Pack - `Minimal - https://www.minimals.cc/`
+
 - Backend
 
 1. `Node JS V10+`
@@ -39,6 +41,3 @@ Your system must have Node v10.16.3+.
 3. Run Application : `npm start`
 4. Run Test Cases: `npm test`
 
-
-
-Note: The base UI is built using Material Template Started Pack - `Minimal - https://www.minimals.cc/`
